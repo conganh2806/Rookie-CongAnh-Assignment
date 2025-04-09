@@ -2,16 +2,19 @@ using AutoMapper;
 using ECommerce.Application.Domain.Interfaces;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
+using ECommerce.Domain.Interfaces;
 
 namespace ECommerce.Application.Services.Product;
 
 public class ProductService : IProductService
 {
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IProductRepository _productRepository;
     private readonly IMapper _mapper;
 
-    public ProductService(IProductRepository productRepository, IMapper mapper)
+    public ProductService(IUnitOfWork unitOfWork, IProductRepository productRepository, IMapper mapper)
     {
+        _unitOfWork = unitOfWork;
         _productRepository = productRepository;
         _mapper = mapper;
     }

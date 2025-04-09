@@ -1,6 +1,6 @@
-using AuthenService.Infrastructure.Persistence;
 using ECommerce.Application.Domain.Interfaces;
 using ECommerce.Domain.Entities;
+using ECommerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Repositories;

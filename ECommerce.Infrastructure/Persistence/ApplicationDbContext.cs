@@ -1,11 +1,19 @@
 using ECommerce.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace ECommerce.Infrastructure.Persistence;
-
-public class ApplicationDbContext : DbContext
+namespace ECommerce.Infrastructure.Persistence
 {
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+    public class ApplicationDbContext : DbContext
+    {
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
-    public DbSet<Product> Products { get; set; }
+        public DbSet<Product> Products { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        }
+    }
 }
