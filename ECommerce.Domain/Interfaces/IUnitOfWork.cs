@@ -1,6 +1,6 @@
 namespace ECommerce.Domain.Interfaces 
 { 
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
         Task<int> SaveChangesAsync();
     }
