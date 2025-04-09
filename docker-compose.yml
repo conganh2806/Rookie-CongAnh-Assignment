@@ -1,14 +1,17 @@
-version: "3"
-
 services:
   # api:
   #   container_name: ${PROJECT_NAME}_api
   #   build:
   #     context: .
   #     dockerfile: ./Deployment/Dockerfile
+  #   depends_on:
+  #     - database
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #     - ConnectionStrings__DefaultConnection=Host=database;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
   #   restart: unless-stopped
   #   ports:
-  #     - 8123:8123
+  #     - "${API_PORT}:8123"
 
   database:
     image: postgres:16
@@ -42,8 +45,8 @@ services:
     container_name: ${PROJECT_NAME}_minio
     restart: unless-stopped
     ports:
-      - "9000:9000"     # S3 API
-      - "9001:9001"     # Console
+      - "9000:9000"
+      - "9001:9001"
     volumes:
       - ./Deployment/minio/data:/data
     environment:
