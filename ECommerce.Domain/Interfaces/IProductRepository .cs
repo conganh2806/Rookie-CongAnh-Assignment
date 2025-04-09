@@ -7,5 +7,5 @@ namespace ECommerce.Application.Domain.Interfaces
         Task<List<Product>> GetFeaturedProductsAsync();
         Task<Product?> GetByIdAsync(Guid id);
         Task<List<Product>> GetByCategoryAsync(Guid categoryId);
-    }
+    }   
 }
