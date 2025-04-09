@@ -1,0 +1,8 @@
+minio-data/
+minio/
+
+pgdata/
+postgres/
+
+redis-data/
+redis/
