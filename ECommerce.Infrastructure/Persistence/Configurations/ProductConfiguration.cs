@@ -11,8 +11,6 @@ namespace ECommerce.Infrastructure.Persistence.Configurations
         {
             base.Configure(builder);
 
-            builder.ToTable("product");
-
             builder.Property(p => p.Name)
                 .IsRequired()
                 .HasMaxLength(100);
