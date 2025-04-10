@@ -1,11 +1,11 @@
-using ECommerce.Domain.Entities.User;
+using ECommerce.Domain.Entities.ApplicationUser;
 
 namespace ECommerce.Domain.Entities
 {
     public class Order : BaseEntity
     {
         public string UserId { get; set; } = null!;
-        public ApplicationUser User { get; set; }
+        public User User { get; set; }
         public int TotalAmount { get; set; }
         public string PaymentType { get; set; } 
         public string PaymentStatus { get; set; } 

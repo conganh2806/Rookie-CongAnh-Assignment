@@ -2,11 +2,11 @@ using ECommerce.Application;
 using ECommerce.Infrastructure;
 using ECommerce.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
-using ECommerce.Domain.Entities.User;
+using ECommerce.Domain.Entities.ApplicationUser;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
