@@ -1,12 +1,12 @@
 services:
-  api:
-    container_name: ${PROJECT_NAME}_api
-    build:
-      context: .
-      dockerfile: ./${PROJECT_NAME}.API/Dockerfile
-    restart: unless-stopped
-    ports:
-      - 8123:8123
+  # api:
+  #   container_name: ${PROJECT_NAME}_api
+  #   build:
+  #     context: .
+  #     dockerfile: ./${PROJECT_NAME}.API/Dockerfile
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8123:8123
 
   # mvc: 
   #   container_name: ${PROJECT_NAME}_mvc
