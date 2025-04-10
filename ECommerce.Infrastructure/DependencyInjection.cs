@@ -14,10 +14,8 @@ namespace ECommerce.Infrastructure
                                                             IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
-
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(connectionString)
-                        .UseSnakeCaseNamingConvention());
+                options.UseNpgsql(connectionString));
 
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
