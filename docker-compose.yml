@@ -6,8 +6,7 @@ services:
       dockerfile: ./${PROJECT_NAME}.API/Dockerfile
     restart: unless-stopped
     ports:
-      - 5017:5017
-      - 7185:7185
+      - ${API_PORT}:5017
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5017
@@ -18,8 +17,7 @@ services:
     build:
       dockerfile: ./${PROJECT_NAME}.MVC/Dockerfile
     ports:
-      - 5226:5226
-      - 7074:7074
+      - ${MVC_PORT}:5226
     restart: unless-stopped
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
