@@ -11,10 +11,4 @@ public class FeaturedProductsViewComponent : ViewComponent
     {
         _productService = productService;
     }
-
-    public async Task<IViewComponentResult> InvokeAsync()
-    {
-        var products = await _productService.GetFeaturedProductsAsync();
-        return View(products);
-    }
 }

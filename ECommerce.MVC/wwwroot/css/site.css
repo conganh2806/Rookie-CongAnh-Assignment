@@ -29,3 +29,31 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+body {
+  background-color: #f8f9fa;
+  font-family: Arial, sans-serif;
+}
+
+.login-form {
+  border-radius: 8px;
+  padding: 30px;
+  margin: 0 auto;
+  max-width: 500px;
+}
+
+.btn-primary {
+  background-color: #4285f4;
+  border-color: #4285f4;
+  height: 44px;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.show-password {
+  border-color: #ced4da;
+}

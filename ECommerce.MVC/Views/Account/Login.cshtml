@@ -1,0 +1,119 @@
+@model ECommerce.MVC.Models.LoginViewModel
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="login-form mt-5 p-4 bg-white shadow-sm rounded">
+                <h2 class="text-center mb-4">Sign in</h2>
+                @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(m => m.Password, "Password", new { @class = "form-label" })
+                        <div class="input-group">
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                            <button type="button" class="btn btn-outline-secondary show-password">Show</button>
+                        </div>
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="text-end mb-3">
+                        <a href="@Url.Action("ForgotPassword", "Account")" class="text-primary">Forgot password?</a>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <button type="submit" class="btn btn-primary w-100">Sign in</button>
+                    </div>
+                }
+
+                <div class="text-center mb-3">
+                    <p class="text-muted">or sign in with</p>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-4">
+                        <a href="#" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-google"></i> Google
+                        </a>
+                    </div>
+                    <div class="col-4">
+                        <a href="#" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-facebook"></i> Facebook
+                        </a>
+                    </div>
+                    <div class="col-4">
+                        <a href="#" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-paypal"></i> PayPal
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-4">
+                        <a href="#" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-tiktok"></i> TikTok
+                        </a>
+                    </div>
+                    <div class="col-4">
+                        <a href="#" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-twitch"></i> Twitch
+                        </a>
+                    </div>
+                    <div class="col-4">
+                        <a href="#" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-twitter-x"></i> Twitter
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <a href="#" class="btn btn-outline-secondary w-100">
+                            <img src="~/Content/images/apple-icon.png" alt="Apple" class="icon" /> Apple
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="#" class="btn btn-outline-secondary w-100">
+                            <img src="~/Content/images/phone-icon.png" alt="Phone" class="icon" /> Phone - sellers only
+                        </a>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <p>New to G2A? Start your journey! <a href="@Url.Action("Register", "Account")" class="text-primary">Create an account</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.show-password').click(function () {
+                var passwordField = $(this).siblings('input[type="password"]');
+                var buttonText = $(this).text();
+                
+                if (buttonText === "Show") {
+                    passwordField.attr('type', 'text');
+                    $(this).text('Hide');
+                } else {
+                    passwordField.attr('type', 'password');
+                    $(this).text('Show');
+                }
+            });
+        });
+    </script>
+}
