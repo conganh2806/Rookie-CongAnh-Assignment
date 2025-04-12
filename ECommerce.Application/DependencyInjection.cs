@@ -1,6 +1,5 @@
 using ECommerce.Application.Interfaces;
 using ECommerce.Application.Mapping;
-using ECommerce.Application.Services.Product;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ECommerce.Application;

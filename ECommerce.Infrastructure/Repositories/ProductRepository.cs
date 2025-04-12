@@ -1,5 +1,6 @@
 using ECommerce.Application.Domain.Interfaces;
 using ECommerce.Domain.Entities;
+using ECommerce.Domain.Interfaces;
 using ECommerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,18 +15,35 @@ public class ProductRepository : IProductRepository
         _context = context;
     }
 
-    public Task<List<Product>> GetByCategoryAsync(Guid categoryId)
+    public IUnitOfWork UnitOfWork => _context;
+
+    public async Task<IEnumerable<Product>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await _context.Products
+                             .Include(p => p.Categories)
+                             .ToListAsync();
     }
 
-    public Task<Product?> GetByIdAsync(Guid id)
+    public async Task<Product?> GetByIdAsync(string id)
     {
-        throw new NotImplementedException();
+        return await _context.Products
+                             .Include(p => p.Categories)
+                             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public Task<List<Product>> GetFeaturedProductsAsync()
+    public async Task<IEnumerable<Product>> GetByCategoryAsync(string categoryId)
     {
-        throw new NotImplementedException();
+        return await _context.Products
+                             .Where(p => p.CategoryId == categoryId)
+                             .Include(p => p.Categories)
+                             .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Product>> GetProductsBySlug(string slug)
+    {
+        return await _context.Products
+                            .Where(p => p.Slug == slug)
+                            .Include(p => p.Categories)
+                            .ToListAsync();
     }
 }

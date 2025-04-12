@@ -1,20 +1,23 @@
 using ECommerce.Application;
+using ECommerce.Application.Settings;
 using ECommerce.Infrastructure;
-using ECommerce.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Identity;
-using ECommerce.Domain.Entities.ApplicationUser;
+using ECommerce.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+builder.Services.AddCustomIdentity(builder.Configuration);
+builder.Services.AddJWTAuthentication(builder.Configuration);
+builder.Services.AddCustomAuthorization(builder.Configuration);
+
+builder.Services.Configure<JwtSettings>(
+    builder.Configuration.GetSection("Jwt"));
 
 builder.Services.AddApplication();      
 builder.Services.AddInfrastructure(builder.Configuration); 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerDocumentation();
 
 var app = builder.Build();
 
@@ -25,7 +28,14 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+// using (var scope = app.Services.CreateScope())
+// {
+//     var services = scope.ServiceProvider;
+//     //await IdentityDataSeeder.SeedRolesAndAdminAsync(services);
+// }
 
 app.Run();

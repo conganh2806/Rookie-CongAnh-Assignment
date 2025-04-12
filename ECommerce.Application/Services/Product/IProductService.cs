@@ -1,10 +1,13 @@
 using ECommerce.Application.DTOs;
 
-namespace ECommerce.Application.Interfaces;
-
-public interface IProductService
+namespace ECommerce.Application.Interfaces
 {
-    Task<List<ProductDto>> GetFeaturedProductsAsync();
-    Task<List<ProductDto>> GetByCategoryAsync(Guid categoryId);
-    Task<ProductDto?> GetByIdAsync(Guid id);
+    public interface IProductService
+    {
+        Task<IEnumerable<ProductDTO>> GetAllAsync();
+        Task<IEnumerable<ProductDTO>> GetByCategoryAsync(string categoryId);
+        Task<ProductDTO?> GetByIdAsync(string id);
+        Task<IEnumerable<ProductDTO>> GetBySlugAsync(string slug);
+    }
 }
+
