@@ -11,23 +11,40 @@ namespace ECommerce.Infrastructure.Persistence.Configurations
         {
             base.Configure(builder);
 
+            builder.Property(p => p.CategoryId)
+                .IsRequired()
+                .HasMaxLength(50);
+
             builder.Property(p => p.Name)
                 .IsRequired()
                 .HasMaxLength(100);
             
+            builder.Property(p => p.Slug)
+                   .IsRequired()
+                   .HasMaxLength(100);
+
+            builder.HasIndex(p => p.Slug).IsUnique();
+
             builder.Property(p => p.Description)
                 .HasMaxLength(1000);
-            
+
             builder.Property(p => p.Price)
-                .IsRequired()
-                .HasColumnType("decimal(18,2)");
+                .IsRequired();
+
+            builder.Property(p => p.Discount);
+
+            builder.Property(p => p.Quantity)
+                .IsRequired();
+            
+            builder.Property(p => p.Sold)
+                   .IsRequired();
+
+            builder.Property(p => p.ProductStatus)
+                   .IsRequired();
             
             builder.Property(p => p.ImageURL)
                 .HasMaxLength(500);
             
-            builder.Property(p => p.CategoryId)
-                .IsRequired()
-                .HasMaxLength(50);
         }
     }
 }

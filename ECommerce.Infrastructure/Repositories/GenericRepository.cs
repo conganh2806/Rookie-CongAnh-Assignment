@@ -1,13 +1,19 @@
 using System.Linq.Expressions;
+using ECommerce.Domain.Interfaces;
 using ECommerce.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
     protected readonly ApplicationDbContext _context;
+    private readonly DbSet<T> _dbSet;
     public GenericRepository(ApplicationDbContext context)
     {
         _context = context;
+        _dbSet = context.Set<T>();
     }
+
+    public IUnitOfWork UnitOfWork => _context;
 
     public void Add(T entity)
     {
@@ -29,7 +35,7 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return _context.Set<T>().ToList();
     }
 
-    public T GetById(int id)
+    public T? GetById(string id)
     {
         return _context.Set<T>().Find(id);
     }

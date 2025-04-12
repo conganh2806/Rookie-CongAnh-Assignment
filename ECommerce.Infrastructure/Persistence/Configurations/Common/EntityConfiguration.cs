@@ -11,9 +11,13 @@ namespace ECommerce.Infrastructure.Persistence.Configurations.Common
         {
             builder.HasKey(e => e.Id);
             builder.Property(e => e.Id).ValueGeneratedOnAdd();
-            builder.Property(e => e.CreatedAt).IsRequired();
-            builder.Property(e => e.UpdatedAt).IsRequired();
-            builder.Property(e => e.IsDeleted).IsRequired();
+            builder.Property(e => e.CreatedAt)
+                    .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                    .ValueGeneratedOnAdd();
+            builder.Property(e => e.UpdatedAt)
+                    .ValueGeneratedOnUpdate()
+                    .IsRequired(false);
+            builder.Property(e => e.IsDeleted);
         }
     }
 }
