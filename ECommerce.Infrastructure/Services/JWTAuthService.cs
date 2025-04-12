@@ -8,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using ECommerce.Application.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Application.Services.Authentication;
 
@@ -25,7 +26,7 @@ public class JWTAuthService : IJWTAuthService
 
     public async Task<JWTAuthResponse?> RegisterAsync(RegisterRequest request)
     {
-        if (await _userRepository.EmailExistsAsync(request.Email))
+        if (await _userRepository.Users.AnyAsync(u => u.Email == request.Email))
         {
             return null;
         }
@@ -40,7 +41,7 @@ public class JWTAuthService : IJWTAuthService
             RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7),
         };
 
-        await _userRepository.AddUserAsync(user);
+        _userRepository.Add(user);
 
         await _userRepository.UnitOfWork.SaveChangesAsync();
 
@@ -49,7 +50,8 @@ public class JWTAuthService : IJWTAuthService
 
     public async Task<JWTAuthResponse?> LoginAsync(LoginRequest request)
     {
-        var user = await _userRepository.GetUserByEmailAsync(request.Email);
+        var user = await _userRepository.Users.Where(u => u.Email == request.Email)
+                                              .FirstOrDefaultAsync();
 
         if (user == null || !PasswordMatches(request.Password, user.PasswordHash!))
         {
@@ -61,7 +63,9 @@ public class JWTAuthService : IJWTAuthService
         user.RefreshToken = response.RefreshToken;
         user.RefreshTokenExpiryTime = response.Expiration.AddDays(7);
 
-        await _userRepository.UpdateUserAsync(user);
+        _userRepository.Update(user);
+
+        await _userRepository.UnitOfWork.SaveChangesAsync();
 
         return response;
     }
@@ -69,23 +73,23 @@ public class JWTAuthService : IJWTAuthService
     public async Task<JWTAuthResponse?> RefreshTokenAsync(string refreshToken)
     {
 
-        var user = await _userRepository.GetUserByRefreshTokenAsync(refreshToken);
+        var user = await _userRepository.Users
+                                        .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
 
         if (user == null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
         {
             return null;
         }
 
-        var newRefreshToken = Guid.NewGuid().ToString();
-        var newRefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-
-        await _userRepository.UpdateRefreshTokenAsync(user.Id, newRefreshToken, 
-                                                    newRefreshTokenExpiryTime);
-
-        await _userRepository.UnitOfWork.SaveChangesAsync();
-
         var accessToken = GenerateToken(user);
 
+        var newRefreshToken = Guid.NewGuid().ToString();
+        var newRefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+        user.RefreshToken = newRefreshToken;
+        user.RefreshTokenExpiryTime = newRefreshTokenExpiryTime;
+    
+        await _userRepository.UnitOfWork.SaveChangesAsync();
+        
         return new JWTAuthResponse
         {
             Token = accessToken.Token,

@@ -5,14 +5,10 @@ namespace ECommerce.Domain.Interfaces
 {
     public interface IUserRepository
     {
-        Task<bool> EmailExistsAsync(string email);
-        Task<User?> GetUserByEmailAsync(string email);
-        Task<User?> GetUserByIdAsync(string id);
-        Task<User?> GetUserByRefreshTokenAsync(string refreshToken);
-        Task UpdateRefreshTokenAsync(string userId, string newRefreshToken, DateTime refreshTokenExpiryTime);
-        Task AddUserAsync(User user);
-        Task UpdateUserAsync(User user);
-        Task DeleteUserAsync(string id);
+        IQueryable<User> Users { get; }
+        void Add(User user);
+        void Update(User user);
+        void Delete(User user);
         IUnitOfWork UnitOfWork { get; }
     }
 }

@@ -7,6 +7,7 @@ using ECommerce.Domain.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Application.Services.Authentication
 {
@@ -25,7 +26,7 @@ namespace ECommerce.Application.Services.Authentication
 
         public async Task<CookieAuthResponse?> RegisterAsync(RegisterRequest request)
         {
-            if (await _userRepository.EmailExistsAsync(request.Email))
+            if (await _userRepository.Users.AnyAsync(u => u.Email == request.Email))
                 return null;
 
             var user = new User
@@ -36,7 +37,7 @@ namespace ECommerce.Application.Services.Authentication
                 LastName = request.LastName
             };
 
-            await _userRepository.AddUserAsync(user);
+            _userRepository.Add(user);
             await _userRepository.UnitOfWork.SaveChangesAsync();
 
             await SignInWithCookieAsync(user);
@@ -52,7 +53,8 @@ namespace ECommerce.Application.Services.Authentication
 
         public async Task<CookieAuthResponse?> LoginAsync(LoginRequest request)
         {
-            var user = await _userRepository.GetUserByEmailAsync(request.Email);
+            var user = await _userRepository.Users.Where(u => u.Email == request.Email)
+                                                .FirstOrDefaultAsync();
             if (user == null || !PasswordMatches(request.Password, user.PasswordHash!))
                 return null;
 

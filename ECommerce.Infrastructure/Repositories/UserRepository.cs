@@ -16,56 +16,20 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public async Task AddUserAsync(User user)
+    public IQueryable<User> Users => _context.Users.AsQueryable();
+
+    public void Add(User user)
     {
-        await _context.Users.AddAsync(user);
+        _context.Users.Add(user);
     }
 
-    public async Task DeleteUserAsync(string id)
+    public void Update(User user)
     {
-        var user = await _context.Users.FindAsync(id);
-        if (user != null)
-        {
-            _context.Users.Remove(user);
-        }
+        _context.Users.Update(user);
     }
 
-    public Task<bool> EmailExistsAsync(string email)
+    public void Delete(User user)
     {
-        return _context.Users.AnyAsync(u => u.Email == email);
-    }
-
-    public Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
-    {
-        return _context.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
-    }
-
-    public async Task UpdateRefreshTokenAsync(string userId, string newRefreshToken, DateTime refreshTokenExpiryTime)
-    {
-        var user = await _context.Users.FindAsync(userId);
-        if (user != null)
-        {
-            user.RefreshToken = newRefreshToken;
-            user.RefreshTokenExpiryTime = refreshTokenExpiryTime;
-        }
-    }
-
-    public Task<User?> GetUserByEmailAsync(string email)
-    {
-        return _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-    }
-
-    public async Task UpdateUserAsync(User user)
-    {
-        var existingUser = await _context.Users.FindAsync(user.Id);
-        if (existingUser != null)
-        {
-            _context.Entry(existingUser).CurrentValues.SetValues(user);
-        }
-    }
-
-    public Task<User?> GetUserByIdAsync(string id)
-    {
-        return _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        _context.Users.Remove(user);
     }
 }
