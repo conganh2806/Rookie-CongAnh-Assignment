@@ -4,7 +4,6 @@ namespace ECommerce.Domain.Interfaces
 { 
     public interface IUnitOfWork : IDisposable
     {
-        IProductRepository ProductRepository { get; }
-        Task<int> SaveChangesAsync();
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }
