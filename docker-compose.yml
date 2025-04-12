@@ -11,6 +11,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5017
+    networks: [docker-network]
 
   mvc: 
     container_name: ${PROJECT_NAME}_mvc
@@ -23,6 +24,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:5226
+    networks: [docker-network]
 
   database:
     image: postgres:16
@@ -36,6 +38,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ./${PROJECT_NAME}.Deployment/postgres/.data:/var/lib/postgresql/data
+    networks: [docker-network]
 
   redis:
     image: redis:latest
@@ -50,6 +53,7 @@ services:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_PORT=${REDIS_PORT}
       - REDIS_DATABASES=${REDIS_DATABASES}
+    networks: [docker-network]
 
   minio:
     image: minio/minio:latest
@@ -64,6 +68,7 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     command: server /data --console-address ":9001"
+    networks: [docker-network]
 
 networks:
   docker-network:
