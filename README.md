@@ -30,4 +30,12 @@ dotnet ef migrations add [Migration-Msg] --project ECommerce.Infrastructure --st
 dotnet ef database update --project ECommerce.Infrastructure --startup-project ECommerce.API
 ```
 
-## -- 
+## -- Deploy to docker -- 
+### Build
+```sh
+docker compose up --build
+```
+### Run 
+```sh 
+docker compose up -d 
+```
