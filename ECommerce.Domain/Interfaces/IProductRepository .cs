@@ -1,11 +1,14 @@
 using ECommerce.Domain.Entities;
+using ECommerce.Domain.Interfaces;
 
 namespace ECommerce.Application.Domain.Interfaces
 {
     public interface IProductRepository
     {
-        Task<List<Product>> GetFeaturedProductsAsync();
-        Task<Product?> GetByIdAsync(Guid id);
-        Task<List<Product>> GetByCategoryAsync(Guid categoryId);
+        Task<IEnumerable<Product>> GetAllAsync();
+        Task<IEnumerable<Product>> GetByCategoryAsync(string categoryId);
+        Task<Product?> GetByIdAsync(string id);
+        Task<IEnumerable<Product>> GetProductsBySlug(string slug);
+        IUnitOfWork UnitOfWork { get; }
     }   
 }
