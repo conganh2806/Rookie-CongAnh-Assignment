@@ -1,22 +1,28 @@
 services:
-  # api:
-  #   container_name: ${PROJECT_NAME}_api
-  #   build:
-  #     context: .
-  #     dockerfile: ./${PROJECT_NAME}.API/Dockerfile
-  #   restart: unless-stopped
-  #   ports:
-  #     - 8123:8123
+  api:
+    container_name: ${PROJECT_NAME}_api
+    build:
+      context: .
+      dockerfile: ./${PROJECT_NAME}.API/Dockerfile
+    restart: unless-stopped
+    ports:
+      - 5017:5017
+      - 7185:7185
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5017
 
-  # mvc: 
-  #   container_name: ${PROJECT_NAME}_mvc
-  #   build:
-  #     dockerfile: ./${PROJECT_NAME}.MVC/Dockerfile
-  #   ports:
-  #     - "5123:5123"
-  #   restart: unless-stopped
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
+  mvc: 
+    container_name: ${PROJECT_NAME}_mvc
+    build:
+      dockerfile: ./${PROJECT_NAME}.MVC/Dockerfile
+    ports:
+      - 5226:5226
+      - 7074:7074
+    restart: unless-stopped
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5226
 
   database:
     image: postgres:16
