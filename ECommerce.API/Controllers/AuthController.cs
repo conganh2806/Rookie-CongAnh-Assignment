@@ -8,34 +8,33 @@ namespace ECommerce.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController : ControllerBase
+    public class AuthController : BaseController<AuthController>
     {
         private readonly IJWTAuthService _jwtService;
 
-        public AuthController(IJWTAuthService jwtService)
+        public AuthController(IJWTAuthService jwtService, ILogger<AuthController> logger) 
+                : base(logger)
         {
             _jwtService = jwtService;
         }
 
         [HttpPost("register")]
-        public async Task<BaseResponse<JWTAuthResponse>> Register([FromBody] RegisterRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             var result = await _jwtService.RegisterAsync(request);
 
             return result == null
-                ? BaseResponse<JWTAuthResponse>
-                            .Fail("Email already exists or registration failed.", HttpStatusCode.Conflict)
-                : BaseResponse<JWTAuthResponse>.Success(result, "Sign up successfully");
+                ? Error("Email already exists or registration failed.", HttpStatusCode.Conflict)
+                : Success(result, "Registration successful.");
         }
 
         [HttpPost("login")]
-        public async Task<BaseResponse<JWTAuthResponse>> Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var result = await _jwtService.LoginAsync(request);
             return result == null 
-                ? BaseResponse<JWTAuthResponse>
-                                .Fail("Invalid email or password", HttpStatusCode.Unauthorized)
-                : BaseResponse<JWTAuthResponse>.Success(result, "Login Successfully");
+                ? Error("Invalid email or password.", HttpStatusCode.Unauthorized)
+                : Success(result, "Login successful.");
         }
 
         [HttpPost("refresh-token")]
