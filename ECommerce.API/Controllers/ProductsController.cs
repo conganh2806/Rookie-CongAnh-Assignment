@@ -16,7 +16,7 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetAll()
+        public async Task<ActionResult<List<ProductDTO>>> GetAll()
         {
             var products = await _productService.GetAllAsync();
             return Ok(products);
