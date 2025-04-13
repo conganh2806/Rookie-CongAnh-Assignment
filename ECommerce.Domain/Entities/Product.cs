@@ -1,12 +1,20 @@
+using ECommerce.Domain.Entities.Enum;
+
 namespace ECommerce.Domain.Entities
 {
     public class Product : BaseEntity
     { 
-        public string Description { get; set; } = string.Empty;
+        public string CategoryId { get; set; } = default!;
+        public string Slug { get; set; } = default!; 
+        public string? Description { get; set; }
         public decimal Price { get; set; }
-        public string ImageURL { get; set; } = string.Empty;
-        public string CategoryId { get; set; }
-        public ICollection<Category> Categories { get; set; }
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; } 
+        public float Discount { get; set; }
+        public int Quantity { get; set; }
+        public int Sold { get; set; }
+        public ProductStatus ProductStatus { get; set; }
+        public string? ImageURL { get; set; }
+        
+        public virtual ICollection<Category> Categories { get; set; } = new HashSet<Category>();
+        public virtual OrderDetail OrderDetail { get; set; } = default!;
     }
 }

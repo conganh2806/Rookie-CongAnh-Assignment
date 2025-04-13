@@ -11,19 +11,23 @@ namespace ECommerce.Infrastructure.Persistence.Configurations
         {
             base.Configure(builder);
 
-            builder.HasKey(o => o.Id);
             builder.Property(o => o.UserId).IsRequired();
-            builder.Property(o => o.TotalAmount).IsRequired();
-            builder.Property(o => o.PaymentType).IsRequired();
-            builder.Property(o => o.PaymentStatus).IsRequired();
-            builder.Property(o => o.Status).IsRequired();
-            builder.Property(o => o.Quantity).IsRequired();
-            builder.Property(o => o.Note).HasMaxLength(500);
-            builder.Property(o => o.CreatedAt);
 
+            builder.Property(o => o.TotalAmount)
+                    .IsRequired();
+
+            builder.Property(o => o.PaymentType);
+
+            builder.Property(o => o.PaymentStatus);
+                    
+            builder.Property(o => o.Status)
+                    .IsRequired();
+                    
+            builder.Property(o => o.Note).HasMaxLength(500);
+            
             builder.HasMany(o => o.OrderDetails)
-                .WithOne(oi => oi.Order)
-                .HasForeignKey(oi => oi.OrderId);
+                .WithOne(od => od.Order)
+                .HasForeignKey(od => od.OrderId);
         }
     }
 }

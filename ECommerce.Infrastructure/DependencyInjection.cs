@@ -1,4 +1,6 @@
 using ECommerce.Application.Domain.Interfaces;
+using ECommerce.Application.Interfaces;
+using ECommerce.Application.Services.Authentication;
 using ECommerce.Domain.Interfaces;
 using ECommerce.Infrastructure.Persistence;
 using ECommerce.Infrastructure.Repositories;
@@ -18,7 +20,10 @@ namespace ECommerce.Infrastructure
                 options.UseNpgsql(connectionString));
 
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IJWTAuthService, JWTAuthService>();
+            services.AddScoped<ICookieAuthService, CookieAuthService>();
             return services;
         }
     }

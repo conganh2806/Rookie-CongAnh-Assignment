@@ -8,10 +8,14 @@ public class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetail>
 {
     public void Configure(EntityTypeBuilder<OrderDetail> builder)
     {
-        builder.HasKey(od => od.Id);
-        builder.Property(od => od.OrderId);
-        builder.Property(od => od.ProductId);
+        builder.Property(od => od.OrderId)
+                .IsRequired();
+                
+        builder.Property(od => od.ProductId)
+                .IsRequired();
+
         builder.Property(od => od.ProductName);
+
         builder.Property(od => od.Price);
 
         builder.HasOne(od => od.Order)
@@ -19,7 +23,6 @@ public class OrderDetailConfiguration : IEntityTypeConfiguration<OrderDetail>
                .HasForeignKey(od => od.OrderId);
 
         builder.HasOne(od => od.Product)
-               .WithMany(p => p.OrderDetails)
-               .HasForeignKey(od => od.ProductId);
+               .WithOne(p => p.OrderDetail);
     }
 }

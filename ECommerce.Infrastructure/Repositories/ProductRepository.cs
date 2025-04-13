@@ -1,7 +1,7 @@
 using ECommerce.Application.Domain.Interfaces;
 using ECommerce.Domain.Entities;
+using ECommerce.Domain.Interfaces;
 using ECommerce.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Repositories;
 
@@ -14,18 +14,21 @@ public class ProductRepository : IProductRepository
         _context = context;
     }
 
-    public Task<List<Product>> GetByCategoryAsync(Guid categoryId)
+    public IQueryable<Product> Ts =>  _context.Products.AsQueryable();
+    public IUnitOfWork UnitOfWork => _context;
+
+    public void Add(Product product)
     {
-        throw new NotImplementedException();
+        _context.Products.Add(product);
     }
 
-    public Task<Product?> GetByIdAsync(Guid id)
+    public void Update(Product product)
     {
-        throw new NotImplementedException();
+        _context.Products.Update(product);
     }
 
-    public Task<List<Product>> GetFeaturedProductsAsync()
+    public void Delete(Product product)
     {
-        throw new NotImplementedException();
+        _context.Products.Remove(product);
     }
 }
