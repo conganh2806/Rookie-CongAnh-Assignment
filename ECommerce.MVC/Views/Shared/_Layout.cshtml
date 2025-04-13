@@ -8,34 +8,55 @@
     <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-    <header class="p-3 border-bottom bg-white">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <a href="@Url.Action("Index", "Home")" class="text-decoration-none">
-                        <img src="~/Content/images/g2a-logo.png" alt="G2A" height="30" />
-                    </a>
-                </div>
-                <div class="d-flex align-items-center">
-                    <div class="me-3">
-                        <a href="#" class="btn btn-sm btn-outline-secondary">
-                            <i class="fa fa-lock"></i> Secure login
-                        </a>
-                    </div>
-                    <div class="dropdown">
-                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            EN / USD
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="languageDropdown">
-                            <li><a class="dropdown-item" href="#">EN / USD</a></li>
-                            <li><a class="dropdown-item" href="#">EN / EUR</a></li>
-                            <li><a class="dropdown-item" href="#">FR / EUR</a></li>
-                        </ul>
-                    </div>
-                </div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                <img 
+                    src="https://via.placeholder.com/120x40" 
+                    alt="Brand Logo" 
+                    class="d-inline-block align-text-center"
+                /> 
+                G2A Layout Demo
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="@Url.Action("Index", "Home")">Trang chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Danh mục</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Bestsellers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Deal hot</a>
+                    </li>
+                </ul>
+
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Tìm kiếm..." aria-label="Search">
+                    <button class="btn btn-outline-light" type="submit">Tìm</button>
+                </form>
+
+                <ul class="navbar-nav ms-3">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Đăng nhập</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Đăng ký</a>
+                    </li>
+                </ul>
             </div>
         </div>
-    </header>
+    </nav>
+
+    
 
     <div class="container body-content">
         @RenderBody()

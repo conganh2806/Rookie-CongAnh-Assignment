@@ -2,6 +2,7 @@ using ECommerce.Application;
 using ECommerce.Application.Settings;
 using ECommerce.Infrastructure;
 using ECommerce.Infrastructure.Extensions;
+using ECommerce.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,10 +33,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-// using (var scope = app.Services.CreateScope())
-// {
-//     var services = scope.ServiceProvider;
-//     //await IdentityDataSeeder.SeedRolesAndAdminAsync(services);
-// }
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await SeedData.Initialize(services);
+}
 
 app.Run();
