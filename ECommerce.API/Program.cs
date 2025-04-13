@@ -1,30 +1,31 @@
+using ECommerce.Application;
+using ECommerce.Infrastructure;
 using ECommerce.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using ECommerce.Domain.Entities.ApplicationUser;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
-builder.Services.AddOpenApi();
+builder.Services.AddApplication();      
+builder.Services.AddInfrastructure(builder.Configuration); 
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Database.EnsureCreated();
-}
-
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
-
-app.MapGet("/products", async (ApplicationDbContext db) =>
-    await db.Products.ToListAsync()
-);
+app.UseAuthorization();
+app.MapControllers();
 
 app.Run();
