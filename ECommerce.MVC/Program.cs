@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using ECommerce.MVC.Data;
 using ECommerce.Application;
 using ECommerce.Infrastructure.Extensions;
 using ECommerce.Infrastructure;
@@ -8,20 +5,15 @@ using ECommerce.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructure(builder.Configuration);
-
-// Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddCustomIdentity(builder.Configuration);
 
 builder.Services.AddCookieAuthentication(builder.Configuration);
 builder.Services.AddAuthorization();
 builder.Services.AddControllersWithViews();
 builder.Services.AddApplication();
+
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 

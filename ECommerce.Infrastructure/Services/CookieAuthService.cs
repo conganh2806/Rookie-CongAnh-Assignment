@@ -26,7 +26,7 @@ namespace ECommerce.Application.Services.Authentication
 
         public async Task<CookieAuthResponse?> RegisterAsync(RegisterRequest request)
         {
-            if (await _userRepository.Users.AnyAsync(u => u.Email == request.Email))
+            if (await _userRepository.Ts.AnyAsync(u => u.Email == request.Email))
                 return null;
 
             var user = new User
@@ -53,7 +53,7 @@ namespace ECommerce.Application.Services.Authentication
 
         public async Task<CookieAuthResponse?> LoginAsync(LoginRequest request)
         {
-            var user = await _userRepository.Users.Where(u => u.Email == request.Email)
+            var user = await _userRepository.Ts.Where(u => u.Email == request.Email)
                                                 .FirstOrDefaultAsync();
             if (user == null || !PasswordMatches(request.Password, user.PasswordHash!))
                 return null;

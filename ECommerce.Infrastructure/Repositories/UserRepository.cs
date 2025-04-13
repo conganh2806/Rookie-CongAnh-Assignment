@@ -16,7 +16,7 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public IQueryable<User> Users => _context.Users.AsQueryable();
+    public IQueryable<User> Ts =>  _context.Users.AsQueryable();
 
     public void Add(User user)
     {

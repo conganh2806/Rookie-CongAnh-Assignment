@@ -26,7 +26,7 @@ public class JWTAuthService : IJWTAuthService
 
     public async Task<JWTAuthResponse?> RegisterAsync(RegisterRequest request)
     {
-        if (await _userRepository.Users.AnyAsync(u => u.Email == request.Email))
+        if (await _userRepository.Ts.AnyAsync(u => u.Email == request.Email))
         {
             return null;
         }
@@ -50,7 +50,7 @@ public class JWTAuthService : IJWTAuthService
 
     public async Task<JWTAuthResponse?> LoginAsync(LoginRequest request)
     {
-        var user = await _userRepository.Users.Where(u => u.Email == request.Email)
+        var user = await _userRepository.Ts.Where(u => u.Email == request.Email)
                                               .FirstOrDefaultAsync();
 
         if (user == null || !PasswordMatches(request.Password, user.PasswordHash!))
@@ -73,7 +73,7 @@ public class JWTAuthService : IJWTAuthService
     public async Task<JWTAuthResponse?> RefreshTokenAsync(string refreshToken)
     {
 
-        var user = await _userRepository.Users
+        var user = await _userRepository.Ts
                                         .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
 
         if (user == null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
