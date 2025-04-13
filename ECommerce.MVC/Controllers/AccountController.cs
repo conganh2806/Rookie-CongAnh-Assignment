@@ -61,7 +61,6 @@ namespace ECommerce.MVC.Controllers
             if (!await _authService.IsSignedInAsync())
                 return RedirectToAction("Login");
 
-            // Lấy thông tin user từ cookie (claims)
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var email  = User.FindFirst(ClaimTypes.Email)?.Value;
             var first  = User.FindFirst(ClaimTypes.GivenName)?.Value;
