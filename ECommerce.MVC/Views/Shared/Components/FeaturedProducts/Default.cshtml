@@ -1,17 +1,8 @@
-@model List<ECommerce.Application.DTOs.ProductDTO>
+@model List<ProductFeatureResponse>
 
-<div class="row">
-    @foreach (var product in Model)
+<div class="game-cards-container">
+    @foreach (var card in Model)
     {
-        <div class="col-md-3 mb-4">
-            <div class="card h-100">
-                <img src="@product.ImageURL" class="card-img-top" alt="@product.Name" />
-                <div class="card-body">
-                    <h5 class="card-title">@product.Name</h5>
-                    <p class="card-text">@product.Description</p>
-                    <p class="fw-bold text-primary">$@product.Price</p>
-                </div>
-            </div>
-        </div>
+        <partial name="Partials/FeatureCard" model="card" />
     }
 </div>

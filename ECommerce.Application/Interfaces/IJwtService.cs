@@ -2,8 +2,9 @@ using ECommerce.Application.DTOs;
 
 namespace ECommerce.Application.Interfaces
 {
-    public interface IJWTAuthService : IAuthService<JWTAuthResponse>
+    public interface IJWTAuthService : IAuthService<JWTLoginAuthResponse>
     {
-        Task<JWTAuthResponse?> RefreshTokenAsync(string refreshToken);
+        Task<bool?> RegisterAsync(RegisterRequest request);
+        Task<JWTLoginAuthResponse?> RefreshTokenAsync(RefreshTokenRequest request);
     }
 }

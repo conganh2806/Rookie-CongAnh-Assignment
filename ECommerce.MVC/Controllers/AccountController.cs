@@ -3,16 +3,53 @@ using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.MVC.Models;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using CommunityToolkit.HighPerformance.Helpers;
 
 namespace ECommerce.MVC.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private readonly ICookieAuthService _authService;
 
-        public AccountController(ICookieAuthService authService)
+        public AccountController(ICookieAuthService authService, ILogger<AccountController> logger) 
+            : base(logger)
         {
             _authService = authService;
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View(new RegisterViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var request = new RegisterRequest
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                Password = model.Password
+            };
+
+            var result = await _authService.RegisterAsync(request);
+
+            if (result == null)
+            {
+                ModelState.AddModelError("", "Register Failed");
+                return View(model);
+            }
+
+            return RedirectToAction("Login");
         }
 
         [HttpGet]
@@ -25,11 +62,12 @@ namespace ECommerce.MVC.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
-
+                
             var request = new LoginRequest
             {
                 Email = model.Email,
@@ -37,14 +75,13 @@ namespace ECommerce.MVC.Controllers
             };
 
             var result = await _authService.LoginAsync(request);
+
             if (result == null)
             {
-                ModelState.AddModelError("", "Email hoặc mật khẩu không đúng");
+                ModelState.AddModelError("", "Email or password is incorrect.");
                 return View(model);
             }
-
-            // CookieAuthService created cookie in LoginAsync
-            // Can check with IsSignedInAsync or redirect directly
+            
             return RedirectToAction("Index", "Home");
         }
 
@@ -56,6 +93,7 @@ namespace ECommerce.MVC.Controllers
         }
 
         [HttpGet]
+        // [Authorize]
         public async Task<IActionResult> Profile()
         {
             if (!await _authService.IsSignedInAsync())
@@ -68,12 +106,44 @@ namespace ECommerce.MVC.Controllers
 
             var model = new ProfileViewModel
             {
-                UserId    = Guid.Parse(userId!),
+                UserId    = userId!,
                 Email     = email!,
                 FirstName = first!,
                 LastName  = last!
             };
             return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SimpleLogin()
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, "testuser@example.com")
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                principal,
+                new AuthenticationProperties
+                {
+                    IsPersistent = true,
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
+                });
+
+            return RedirectToAction("Protected");
+        }
+
+        [HttpGet]
+        public IActionResult Protected()
+        {
+            var isAuth = User.Identity?.IsAuthenticated ?? false;
+            var name = User.Identity?.Name;
+
+            return Content($"Authenticated: {isAuth}, Name: {name}");
         }
     }
 }

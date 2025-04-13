@@ -3,17 +3,30 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Persistence.Seed
 {
-    public static class CategorySeeder
+    public class CategorySeeder
     {
-        public static async Task SeedAsync(ApplicationDbContext context)
+        public async Task SeedAsync(ApplicationDbContext context)
         {
             if (await context.Categories.AnyAsync()) return;
 
+            var actionCategory = new Category { Id = Guid.NewGuid().ToString(), Name = "Action" };
+            var rpgCategory = new Category { Id = Guid.NewGuid().ToString(), Name = "RPG" };
+            var shooterCategory = new Category { Id = Guid.NewGuid().ToString(), Name = "Shooter" };
+
             var categories = new List<Category>
             {
-                new Category { Id = Guid.NewGuid().ToString(), Name = "Action" },
-                new Category { Id = Guid.NewGuid().ToString(), Name = "RPG" },
-                new Category { Id = Guid.NewGuid().ToString(), Name = "Shooter" },
+                new Category { Id = Guid.NewGuid().ToString(), Name = "Action - FPS", ParentId = actionCategory.Id },
+                new Category { Id = Guid.NewGuid().ToString(), Name = "Action - Adventure", ParentId = actionCategory.Id },
+
+                new Category { Id = Guid.NewGuid().ToString(), Name = "RPG - Fantasy", ParentId = rpgCategory.Id },
+                new Category { Id = Guid.NewGuid().ToString(), Name = "RPG - Sci-fi", ParentId = rpgCategory.Id },
+
+                new Category { Id = Guid.NewGuid().ToString(), Name = "Shooter - Tactical", ParentId = shooterCategory.Id },
+                new Category { Id = Guid.NewGuid().ToString(), Name = "Shooter - Arcade", ParentId = shooterCategory.Id },
+
+                actionCategory,
+                rpgCategory,
+                shooterCategory,
                 new Category { Id = Guid.NewGuid().ToString(), Name = "Simulation" },
                 new Category { Id = Guid.NewGuid().ToString(), Name = "Strategy" },
                 new Category { Id = Guid.NewGuid().ToString(), Name = "Horror" },
@@ -22,7 +35,8 @@ namespace ECommerce.Infrastructure.Persistence.Seed
 
             foreach (var category in categories)
             {
-                var slug = GenerateSlug(category.Name);
+                var slug = GenerateSlug(category.Name ?? 
+                                    throw new ArgumentNullException(nameof(category.Name), "Category name cannot be null."));
                 category.Slug = await GetUniqueSlug(context, slug);
             }
 
@@ -31,7 +45,7 @@ namespace ECommerce.Infrastructure.Persistence.Seed
         }
 
         private static string GenerateSlug(string name)
-        {
+        {   
             return name.ToLower().Replace(" ", "-");
         }
 

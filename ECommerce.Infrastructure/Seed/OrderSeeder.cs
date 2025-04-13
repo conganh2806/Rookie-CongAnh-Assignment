@@ -3,9 +3,9 @@ using ECommerce.Domain.Enum;
 using ECommerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-public static class OrderSeeder
+public class OrderSeeder
 {
-    public static async Task SeedAsync(ApplicationDbContext context)
+    public async Task SeedAsync(ApplicationDbContext context)
     {
         if (await context.Orders.AnyAsync()) return;
 

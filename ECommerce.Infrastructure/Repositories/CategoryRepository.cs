@@ -13,7 +13,7 @@ namespace ECommerce.Infrastructure.Repositories
             _context = context;
         }
 
-        public IQueryable<Category> Ts => _context.Categories.AsQueryable();
+        public IQueryable<Category> Entity => _context.Categories.AsQueryable();
         public IUnitOfWork UnitOfWork => _context;
 
         public void Add(Category category)

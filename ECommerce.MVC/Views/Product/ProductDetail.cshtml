@@ -1,0 +1,91 @@
+@model ProductDetailResponse
+@{
+    ViewData["Title"] = "Product Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="@Html.BuildMediaUrl(Model.ImageURL)" class="img-fluid rounded border mb-3" />
+
+            <h3 class="mt-3">@Model.Name</h3>
+
+            <p>
+                <strong>Categories:</strong>
+                @string.Join(", ", Model.CategoryNames)
+            </p>
+
+            <p><strong>Sold:</strong> @Model.Sold units</p>
+        </div>
+
+        <div class="col-md-6">
+            <div class="border p-4 rounded shadow-sm">
+                @{
+                    var discountedPrice = Model.Price * (1 - (decimal)(Model.Discount / 100));
+                }
+
+                <h4>
+                    <span class="text-primary fw-bold fs-3">$@discountedPrice.ToString("0.00")</span>
+                    @if (Model.Discount > 0)
+                    {
+                        <span class="text-muted text-decoration-line-through ms-2 fs-5">$@Model.Price.ToString("0.00")</span>
+                        <span class="badge bg-success ms-2">@Model.Discount% OFF</span>
+                    }
+                </h4>
+
+                <p><strong>In stock:</strong> @Model.Quantity units</p>
+
+                <button class="btn btn-primary w-100 mt-3">Add to Cart</button>
+                <form asp-controller="Payment" asp-action="CreatePaymentUrl" method="get">
+                    <input type="hidden" name="money" value="100000" />  
+                    <input type="hidden" name="description" value="Purchase Game XYZ" /> 
+                    <button class="btn btn-warning w-100 mt-2">Buy Now</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <h5>Description</h5>
+            <p>@Model.Description</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/site-cart.js"></script>
+    <script>
+        $(document).ready(function () {
+            const request = {
+                productId: '@Model.Id',
+                quantity: 1
+            };
+
+            $('.btn-primary').click(function () {
+                $.ajax({
+                    url: '/Cart/AddToCart',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(request),
+                    success: function (res) {
+                        console.log(res);
+                        if (res.success) {
+                            showToast(res.message);
+                            updateCartIcon();
+                        } else {
+                            showToast(res.message, true);
+                            setTimeout(() => window.location.href = "/Account/Login", 1500);
+                        }
+                    },
+                    error: function () {
+                        showToast("Error happened when add product to cart!", true);
+                    }
+                });
+            });
+        });
+    </script>
+    
+}
+

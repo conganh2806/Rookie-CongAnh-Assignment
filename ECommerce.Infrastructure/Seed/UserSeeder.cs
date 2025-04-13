@@ -1,37 +1,44 @@
 using ECommerce.Domain.Entities.ApplicationUser;
 using Microsoft.AspNetCore.Identity;
+using BCrypt.Net;
+using ECommerce.Domain.Interfaces;
 
 namespace ECommerce.Infrastructure.Persistence.Seed
 {
-    public static class UserSeeder
+    public class UserSeeder
     {
-        public static async Task SeedAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
-        {
-            var user = await userManager.FindByEmailAsync("admin@example.com");
+        private readonly IUserRepository _userRepository;
 
-            if (user == null)
+        public UserSeeder(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
+        public async Task SeedAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        {
+            var adminUser = await userManager.FindByEmailAsync("admin@example.com");
+
+            if (adminUser == null)
             {
-                user = new User
+                adminUser = new User
                 {
                     UserName = "admin@example.com",
                     Email = "admin@example.com",
                     FirstName = "Admin",
                     LastName = "User",
                     EmailConfirmed = true,
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("Password123!")
                 };
 
-                var result = await userManager.CreateAsync(user, "Password123!");
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(user, "Admin");
-                }
+                _userRepository.Add(adminUser);
+                await userManager.AddToRoleAsync(adminUser, "Admin");
             }
 
-            user = await userManager.FindByEmailAsync("user@example.com");
+            var normalUser = await userManager.FindByEmailAsync("user@example.com");
 
-            if (user == null)
+            if (normalUser == null)
             {
-                user = new User
+                normalUser = new User
                 {
                     UserName = "user@example.com",
                     Email = "user@example.com",
@@ -40,10 +47,10 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                     EmailConfirmed = true,
                 };
 
-                var result = await userManager.CreateAsync(user, "Password123!");
+                var result = await userManager.CreateAsync(normalUser, "Password123!");
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(user, "User");
+                    await userManager.AddToRoleAsync(normalUser, "User");
                 }
             }
         }
