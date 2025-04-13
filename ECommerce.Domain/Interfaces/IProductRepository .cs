@@ -2,10 +2,7 @@ using ECommerce.Domain.Entities;
 
 namespace ECommerce.Application.Domain.Interfaces
 {
-    public interface IProductRepository
+    public interface IProductRepository : IGenericRepository<Product>
     {
-        Task<List<Product>> GetFeaturedProductsAsync();
-        Task<Product?> GetByIdAsync(Guid id);
-        Task<List<Product>> GetByCategoryAsync(Guid categoryId);
     }   
 }

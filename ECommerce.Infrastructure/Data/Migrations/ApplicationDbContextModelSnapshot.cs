@@ -41,6 +41,37 @@ namespace ECommerce.Infrastructure.Data.Migrations
                     b.ToTable("category_product", (string)null);
                 });
 
+            modelBuilder.Entity("ECommerce.Domain.Entities.ApplicationUser.Role", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text")
+                        .HasColumnName("concurrency_stamp");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("normalized_name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_asp_net_roles");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
             modelBuilder.Entity("ECommerce.Domain.Entities.ApplicationUser.User", b =>
                 {
                     b.Property<string>("Id")
@@ -52,12 +83,10 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasColumnName("access_failed_count");
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("address");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("city");
 
@@ -67,11 +96,10 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasColumnName("concurrency_stamp");
 
                     b.Property<string>("Country")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("country");
 
-                    b.Property<DateTimeOffset>("DateOfBirth")
+                    b.Property<DateTimeOffset?>("DateOfBirth")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_of_birth");
 
@@ -85,12 +113,10 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasColumnName("email_confirmed");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("first_name");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("last_name");
 
@@ -124,12 +150,19 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("phone_number_confirmed");
 
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("text")
+                        .HasColumnName("refresh_token");
+
+                    b.Property<DateTimeOffset?>("RefreshTokenExpiryTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("refresh_token_expiry_time");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text")
                         .HasColumnName("security_stamp");
 
                     b.Property<string>("State")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("state");
 
@@ -143,12 +176,11 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasColumnName("user_name");
 
                     b.Property<string>("ZipCode")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("zip_code");
 
                     b.HasKey("Id")
-                        .HasName("pk_roles");
+                        .HasName("pk_users");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -157,7 +189,7 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("roles", (string)null);
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Category", b =>
@@ -168,8 +200,10 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasColumnName("id");
 
                     b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
@@ -177,7 +211,8 @@ namespace ECommerce.Infrastructure.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("name");
 
                     b.Property<string>("Slug")
@@ -185,14 +220,19 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("slug");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .ValueGeneratedOnUpdate()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id")
-                        .HasName("pk_category");
+                        .HasName("pk_categories");
 
-                    b.ToTable("category", (string)null);
+                    b.HasIndex("Slug")
+                        .IsUnique()
+                        .HasDatabaseName("ix_categories_slug");
+
+                    b.ToTable("categories", (string)null);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Order", b =>
@@ -203,48 +243,42 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasColumnName("id");
 
                     b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
                         .HasColumnName("note");
 
-                    b.Property<string>("PaymentStatus")
-                        .IsRequired()
-                        .HasColumnType("text")
+                    b.Property<int>("PaymentStatus")
+                        .HasColumnType("integer")
                         .HasColumnName("payment_status");
 
-                    b.Property<string>("PaymentType")
-                        .IsRequired()
-                        .HasColumnType("text")
+                    b.Property<int>("PaymentType")
+                        .HasColumnType("integer")
                         .HasColumnName("payment_type");
 
-                    b.Property<int>("Quantity")
+                    b.Property<int>("Status")
                         .HasColumnType("integer")
-                        .HasColumnName("quantity");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text")
                         .HasColumnName("status");
 
-                    b.Property<int>("TotalAmount")
-                        .HasColumnType("integer")
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("numeric")
                         .HasColumnName("total_amount");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .ValueGeneratedOnUpdate()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
@@ -254,12 +288,12 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_order");
+                        .HasName("pk_orders");
 
                     b.HasIndex("UserId")
-                        .HasDatabaseName("ix_order_user_id");
+                        .HasDatabaseName("ix_orders_user_id");
 
-                    b.ToTable("order", (string)null);
+                    b.ToTable("orders", (string)null);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.OrderDetail", b =>
@@ -277,7 +311,6 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasColumnName("is_deleted");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("name");
 
@@ -286,8 +319,8 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("order_id");
 
-                    b.Property<int>("Price")
-                        .HasColumnType("integer")
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric")
                         .HasColumnName("price");
 
                     b.Property<string>("ProductId")
@@ -296,24 +329,28 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasColumnName("product_id");
 
                     b.Property<string>("ProductName")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("product_name");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("quantity");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id")
-                        .HasName("pk_order_detail");
+                        .HasName("pk_order_details");
 
                     b.HasIndex("OrderId")
-                        .HasDatabaseName("ix_order_detail_order_id");
+                        .HasDatabaseName("ix_order_details_order_id");
 
                     b.HasIndex("ProductId")
-                        .HasDatabaseName("ix_order_detail_product_id");
+                        .IsUnique()
+                        .HasDatabaseName("ix_order_details_product_id");
 
-                    b.ToTable("order_detail", (string)null);
+                    b.ToTable("order_details", (string)null);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Product", b =>
@@ -330,17 +367,21 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasColumnName("category_id");
 
                     b.Property<DateTimeOffset>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("character varying(1000)")
                         .HasColumnName("description");
 
+                    b.Property<float>("Discount")
+                        .HasColumnType("real")
+                        .HasColumnName("discount");
+
                     b.Property<string>("ImageURL")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)")
                         .HasColumnName("image_url");
@@ -356,15 +397,38 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasColumnName("name");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)")
+                        .HasColumnType("numeric")
                         .HasColumnName("price");
 
-                    b.Property<DateTimeOffset>("UpdatedAt")
+                    b.Property<int>("ProductStatus")
+                        .HasColumnType("integer")
+                        .HasColumnName("product_status");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("quantity");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("slug");
+
+                    b.Property<int>("Sold")
+                        .HasColumnType("integer")
+                        .HasColumnName("sold");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .ValueGeneratedOnUpdate()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
 
                     b.HasKey("Id")
                         .HasName("pk_products");
+
+                    b.HasIndex("Slug")
+                        .IsUnique()
+                        .HasDatabaseName("ix_products_slug");
 
                     b.ToTable("products", (string)null);
                 });
@@ -376,28 +440,21 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
                         .HasColumnType("text")
                         .HasColumnName("concurrency_stamp");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("text")
                         .HasColumnName("name");
 
                     b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("text")
                         .HasColumnName("normalized_name");
 
                     b.HasKey("Id")
-                        .HasName("pk_asp_net_roles");
+                        .HasName("pk_roles");
 
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex");
-
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("roles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -540,7 +597,7 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasForeignKey("CategoriesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_category_product_category_categories_id");
+                        .HasConstraintName("fk_category_product_categories_categories_id");
 
                     b.HasOne("ECommerce.Domain.Entities.Product", null)
                         .WithMany()
@@ -557,7 +614,7 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_order_users_user_id");
+                        .HasConstraintName("fk_orders_users_user_id");
 
                     b.Navigation("User");
                 });
@@ -569,14 +626,14 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_order_detail_order_order_id");
+                        .HasConstraintName("fk_order_details_orders_order_id");
 
                     b.HasOne("ECommerce.Domain.Entities.Product", "Product")
-                        .WithMany("OrderDetails")
-                        .HasForeignKey("ProductId")
+                        .WithOne("OrderDetail")
+                        .HasForeignKey("ECommerce.Domain.Entities.OrderDetail", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_order_detail_products_product_id");
+                        .HasConstraintName("fk_order_details_products_product_id");
 
                     b.Navigation("Order");
 
@@ -585,7 +642,7 @@ namespace ECommerce.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("ECommerce.Domain.Entities.ApplicationUser.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -600,7 +657,7 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_user_claims_roles_user_id");
+                        .HasConstraintName("fk_user_claims_users_user_id");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -610,12 +667,12 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_user_logins_roles_user_id");
+                        .HasConstraintName("fk_user_logins_users_user_id");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                    b.HasOne("ECommerce.Domain.Entities.ApplicationUser.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -627,7 +684,7 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_user_roles_roles_user_id");
+                        .HasConstraintName("fk_user_roles_users_user_id");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -637,7 +694,7 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_user_tokens_roles_user_id");
+                        .HasConstraintName("fk_user_tokens_users_user_id");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.ApplicationUser.User", b =>
@@ -652,7 +709,8 @@ namespace ECommerce.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("ECommerce.Domain.Entities.Product", b =>
                 {
-                    b.Navigation("OrderDetails");
+                    b.Navigation("OrderDetail")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

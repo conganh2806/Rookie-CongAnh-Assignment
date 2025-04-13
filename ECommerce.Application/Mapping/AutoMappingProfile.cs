@@ -1,4 +1,6 @@
 using AutoMapper;
+using ECommerce.Application.DTOs;
+using ECommerce.Domain.Entities;
 
 namespace ECommerce.Application.Mapping
 {
@@ -6,8 +8,12 @@ namespace ECommerce.Application.Mapping
     {
         public AutoMappingProfile()
         {
-            // CreateMap<Product, ProductDto>()
-            //     .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
+            CreateMap<Product, ProductDTO>()
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => 
+                        src.Categories != null && src.Categories.Any()
+                            ? src.Categories.First().Name
+                            : string.Empty
+                    ));
 
         }
     }
