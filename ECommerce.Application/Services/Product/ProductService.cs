@@ -1,37 +1,53 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using ECommerce.Application.Domain.Interfaces;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
-using ECommerce.Domain.Interfaces;
-
-namespace ECommerce.Application.Services.Product;
+using Microsoft.EntityFrameworkCore;
 
 public class ProductService : IProductService
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IProductRepository _productRepository;
     private readonly IMapper _mapper;
+    private readonly IConfigurationProvider _config;
 
-    public ProductService(IUnitOfWork unitOfWork, IMapper mapper)
+    public ProductService(IProductRepository productRepository, IMapper mapper)
     {
-        _unitOfWork = unitOfWork;
+        _productRepository = productRepository;
         _mapper = mapper;
+        _config = _mapper.ConfigurationProvider;
     }
 
-    public async Task<List<ProductDto>> GetFeaturedProductsAsync()
+    public async Task<List<ProductDTO>> GetAllAsync()
     {
-        var products = await _unitOfWork.ProductRepository.GetFeaturedProductsAsync();
-        return _mapper.Map<List<ProductDto>>(products);
+        return await _productRepository.Ts.
+                        ProjectTo<ProductDTO>(_config)
+                        .AsNoTracking()
+                        .ToListAsync();
     }
 
-    public async Task<List<ProductDto>> GetByCategoryAsync(Guid categoryId)
+    public async Task<List<ProductDTO>> GetByCategoryAsync(string categoryId)
     {
-        var products = await _unitOfWork.ProductRepository.GetByCategoryAsync(categoryId);
-        return _mapper.Map<List<ProductDto>>(products);
+        return await _productRepository.Ts
+                            .Where(p => p.CategoryId == categoryId)
+                            .ProjectTo<ProductDTO>(_config)
+                            .AsNoTracking()
+                            .ToListAsync();
     }
 
-    public async Task<ProductDto?> GetByIdAsync(Guid id)
+    public async Task<ProductDTO?> GetByIdAsync(string id)
     {
-        var product = await _unitOfWork.ProductRepository.GetByIdAsync(id);
-        return product != null ? _mapper.Map<ProductDto>(product) : null;
+        return await _productRepository.Ts.Where(p => p.Id == id)
+                                                .ProjectTo<ProductDTO>(_config)
+                                                .AsNoTracking()
+                                                .FirstOrDefaultAsync();  
+    }
+
+    public async Task<List<ProductDTO>> GetBySlugAsync(string slug)
+    {
+        return await _productRepository.Ts.Where(p => p.Slug == slug)
+                                                .ProjectTo<ProductDTO>(_config)
+                                                .AsNoTracking()
+                                                .ToListAsync(); 
     }
 }

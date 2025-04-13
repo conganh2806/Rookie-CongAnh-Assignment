@@ -4,7 +4,7 @@ namespace ECommerce.Domain.Entities
     {
         public string OrderId { get; set; } = default!;
         public string ProductId { get; set; } = default!;
-        public string ProductName { get; set; } = default!;
+        public string? ProductName { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
 
