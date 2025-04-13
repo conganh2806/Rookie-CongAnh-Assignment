@@ -2,7 +2,6 @@ using ECommerce.Application.Domain.Interfaces;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Interfaces;
 using ECommerce.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Repositories;
 
@@ -15,35 +14,21 @@ public class ProductRepository : IProductRepository
         _context = context;
     }
 
+    public IQueryable<Product> Ts =>  _context.Products.AsQueryable();
     public IUnitOfWork UnitOfWork => _context;
 
-    public async Task<IEnumerable<Product>> GetAllAsync()
+    public void Add(Product product)
     {
-        return await _context.Products
-                             .Include(p => p.Categories)
-                             .ToListAsync();
+        _context.Products.Add(product);
     }
 
-    public async Task<Product?> GetByIdAsync(string id)
+    public void Update(Product product)
     {
-        return await _context.Products
-                             .Include(p => p.Categories)
-                             .FirstOrDefaultAsync(p => p.Id == id);
+        _context.Products.Update(product);
     }
 
-    public async Task<IEnumerable<Product>> GetByCategoryAsync(string categoryId)
+    public void Delete(Product product)
     {
-        return await _context.Products
-                             .Where(p => p.CategoryId == categoryId)
-                             .Include(p => p.Categories)
-                             .ToListAsync();
-    }
-
-    public async Task<IEnumerable<Product>> GetProductsBySlug(string slug)
-    {
-        return await _context.Products
-                            .Where(p => p.Slug == slug)
-                            .Include(p => p.Categories)
-                            .ToListAsync();
+        _context.Products.Remove(product);
     }
 }
