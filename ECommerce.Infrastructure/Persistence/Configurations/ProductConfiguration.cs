@@ -44,7 +44,9 @@ namespace ECommerce.Infrastructure.Persistence.Configurations
             
             builder.Property(p => p.ImageURL)
                 .HasMaxLength(500);
-            
+
+            builder.Property(p => p.IsFeatured)
+                .HasDefaultValue(false);
         }
     }
 }
