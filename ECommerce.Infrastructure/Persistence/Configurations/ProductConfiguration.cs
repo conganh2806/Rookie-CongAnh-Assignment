@@ -11,10 +11,6 @@ namespace ECommerce.Infrastructure.Persistence.Configurations
         {
             base.Configure(builder);
 
-            builder.Property(p => p.CategoryId)
-                .IsRequired()
-                .HasMaxLength(50);
-
             builder.Property(p => p.Name)
                 .IsRequired()
                 .HasMaxLength(100);
@@ -47,6 +43,9 @@ namespace ECommerce.Infrastructure.Persistence.Configurations
 
             builder.Property(p => p.IsFeatured)
                 .HasDefaultValue(false);
+
+            builder.HasMany(c => c.Categories)
+                .WithMany(p => p.Products);
         }
     }
 }

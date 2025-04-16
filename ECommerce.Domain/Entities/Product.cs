@@ -4,7 +4,6 @@ namespace ECommerce.Domain.Entities
 {
     public class Product : BaseEntity
     { 
-        public string CategoryId { get; set; } = default!;
         public string Slug { get; set; } = default!; 
         public string? Description { get; set; }
         public decimal Price { get; set; }
