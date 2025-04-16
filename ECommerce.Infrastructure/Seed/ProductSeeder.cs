@@ -37,7 +37,6 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                 {
                     Name = "God of War",
                     Price = 59.99m,
-                    CategoryId = actionId,
                     Slug = "god-of-war",
                     CreatedAt = DateTime.UtcNow
                 },
@@ -45,7 +44,6 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                 {
                     Name = "Elden Ring",
                     Price = 69.99m,
-                    CategoryId = rpgId,
                     Slug = "elden-ring",
                     CreatedAt = DateTime.UtcNow
                 },
@@ -53,7 +51,6 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                 {
                     Name = "Call of Duty: Modern Warfare",
                     Price = 49.99m,
-                    CategoryId = shooterId,
                     Slug = "call-of-duty-modern-warfare",
                     CreatedAt = DateTime.UtcNow
                 }
