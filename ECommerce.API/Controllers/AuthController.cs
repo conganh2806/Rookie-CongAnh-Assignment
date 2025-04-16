@@ -1,5 +1,5 @@
 using System.Net;
-using ECommerce.Application.Common;
+using ECommerce.Application.Common.Utilities;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECommerce.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController : BaseController<AuthController>
     {
         private readonly IJWTAuthService _jwtService;
@@ -24,8 +24,8 @@ namespace ECommerce.API.Controllers
             var result = await _jwtService.RegisterAsync(request);
 
             return result == null
-                ? Error("Email already exists or registration failed.", HttpStatusCode.Conflict)
-                : Success(result, "Registration successful.");
+                ? Error(Constants.REGISTER_SUCCESS, HttpStatusCode.Conflict)
+                : Success(result, Constants.REGISTER_SUCCESS);
         }
 
         [HttpPost("login")]
@@ -33,15 +33,15 @@ namespace ECommerce.API.Controllers
         {
             var result = await _jwtService.LoginAsync(request);
             return result == null 
-                ? Error("Invalid email or password.", HttpStatusCode.Unauthorized)
-                : Success(result, "Login successful.");
+                ? Error(Constants.LOGIN_ERROR, HttpStatusCode.Unauthorized)
+                : Success(result, Constants.LOGIN_SUCCESS);
         }
 
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
         {
             var result = await _jwtService.RefreshTokenAsync(refreshToken);
-            if (result == null) return Unauthorized("Invalid refresh token.");
+            if (result == null) return Unauthorized(Constants.REFRESH_TOKEN_INVALID);
             return Ok(result);
         }
     }
