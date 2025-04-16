@@ -4,16 +4,17 @@ using ECommerce.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCookieAuthentication(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddCookieAuthentication(builder.Configuration);
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddCustomIdentity(builder.Configuration);
 
 builder.Services.AddAuthorization();
 builder.Services.AddControllersWithViews();
 builder.Services.AddApplication();
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorPages();
 
