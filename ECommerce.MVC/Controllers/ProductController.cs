@@ -4,6 +4,7 @@ using YourProjectNamespace.Controllers;
 
 namespace ECommerce.MVC.Controllers
 {
+    [Route("products")]
     public class ProductController : BaseController
     {
         private readonly IProductService _productService;
@@ -20,14 +21,14 @@ namespace ECommerce.MVC.Controllers
             return View(products);
         }
 
-        [HttpGet]
+        [HttpGet("categories")]
         public async Task<IActionResult> GetProductsByCategory(string categoryId)
         {
             var products = await _productService.GetByCategoryAsync(categoryId);
             return PartialView("Partials/ProductList", products);
         }
 
-        [Route("product/{slug}-i{id}")]
+        [Route("{slug}-i{id}")]
         public async Task<IActionResult> Detail(string slug, string id)
         {
             var product = await _productService.GetDetails(id);

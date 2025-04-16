@@ -4,7 +4,7 @@
     @foreach (var child in Model)
     {
         <li class="subcategory-item">
-            <a href="#">@child.Name</a> 
+            <a href="/products/categories?categoryId=@child.Id">@child.Name</a> 
 
             @if (child.SubCategories != null && child.SubCategories.Any())
             {
