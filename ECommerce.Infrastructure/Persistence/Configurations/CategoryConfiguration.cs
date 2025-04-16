@@ -21,6 +21,11 @@ namespace ECommerce.Infrastructure.Persistence.Configurations
 
             builder.HasMany(c => c.Products)
                 .WithMany(p => p.Categories);
+
+            builder.HasOne(c => c.Parent)
+                .WithMany(c => c.SubCategories)
+                .HasForeignKey(c => c.ParentId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
