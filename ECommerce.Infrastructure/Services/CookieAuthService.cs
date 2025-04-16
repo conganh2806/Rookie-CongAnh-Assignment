@@ -94,7 +94,7 @@ namespace ECommerce.Application.Services.Authentication
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Email, user.Email ?? string.Empty),
                 new Claim(ClaimTypes.GivenName, user.FirstName ?? string.Empty),
                 new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty)
             };
@@ -102,8 +102,6 @@ namespace ECommerce.Application.Services.Authentication
             var identity = new ClaimsIdentity(
                 claims, CookieAuthenticationDefaults.AuthenticationScheme); 
             var principal = new ClaimsPrincipal(identity);
-
-            System.Console.WriteLine($"[CookieAuthService] SignInWithCookieAsync: ");
             
             var authProperties = new AuthenticationProperties
             {

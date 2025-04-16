@@ -4,15 +4,20 @@ namespace ECommerce.Application.Responses
     {
         private int _perPage { get; set; }
         private int _currentPage { get; set; }
-        public Pagination(IEnumerable<T> _data, int perPage, int currentPage)
+        
+        public IEnumerable<T> data { get; set; }
+        public MetaData Meta { get; set; }
+        
+        public Pagination(IEnumerable<T> _data, 
+                            int perPage, int currentPage, MetaData metaData)
         {
             data = _data;
             _perPage = perPage;
             _currentPage = currentPage;
+            Meta = metaData;
             Paginate();
         }
-        public IEnumerable<T> data { get; set; }
-        public MetaData Meta { get; set; }
+
         private void Paginate()
         {
             Meta = new MetaData();

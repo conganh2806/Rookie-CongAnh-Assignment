@@ -14,12 +14,14 @@ namespace ECommerce.Infrastructure.Extensions
         public static IServiceCollection AddJWTAuthentication(this IServiceCollection services,
                                                                 IConfiguration configuration)
         {
-            var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
+            var jwtSettings = configuration.GetRequiredSection("JwtSettings")
+                                            .Get<JwtSettings>()!;
 
             services.AddAuthentication(options => { 
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
+
             .AddJwtBearer(options => {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -30,7 +32,7 @@ namespace ECommerce.Infrastructure.Extensions
                     ValidIssuer = jwtSettings.Issuer,
                     ValidAudience = jwtSettings.Audience,
                     IssuerSigningKey = new 
-                                SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
+                            SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret)),
                 };
             });
 

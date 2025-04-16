@@ -47,7 +47,7 @@ namespace ECommerce.Application.Common.Utilities
         #endregion
 
         #region  FOLDER PATH
-        public static string ROOT_PATH = Directory.GetParent(Directory.GetCurrentDirectory()).FullName;
+        public static string ROOT_PATH = Directory.GetParent(Directory.GetCurrentDirectory())!.FullName;
         public static string ROOT_PATH_DATA = "Domain";
         public static string ROOT_PATH_MAIL_TEMPLATE = "Common/MailTemplates";
         public static string ROOT_PATH_SEED_DATA = "Common/SeedData";
