@@ -14,7 +14,7 @@ public class ProductRepository : IProductRepository
         _context = context;
     }
 
-    public IQueryable<Product> Ts =>  _context.Products.AsQueryable();
+    public IQueryable<Product> Entity =>  _context.Products.AsQueryable();
     public IUnitOfWork UnitOfWork => _context;
 
     public void Add(Product product)

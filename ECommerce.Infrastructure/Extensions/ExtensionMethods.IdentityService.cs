@@ -10,7 +10,7 @@ namespace ECommerce.Infrastructure.Extensions
     {
         public static IServiceCollection AddCustomIdentity(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<User, Role>()
                             .AddEntityFrameworkStores<ApplicationDbContext>()
                             .AddDefaultTokenProviders();
 

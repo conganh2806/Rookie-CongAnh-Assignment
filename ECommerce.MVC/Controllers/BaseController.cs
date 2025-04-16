@@ -1,51 +1,53 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace ECommerce.MVC.Controllers
+namespace YourProjectNamespace.Controllers
 {
-    public abstract class BaseController<T> : Controller where T : class
+    public class BaseController : Controller
     {
-        protected readonly ILogger<T> _logger;
+        protected readonly ILogger Logger;
 
-        protected BaseController(ILogger<T> logger)
+        public BaseController(ILogger logger)
         {
-            _logger = logger;
+            Logger = logger;
         }
 
-        protected Guid? CurrentUserId =>
-            User.Identity?.IsAuthenticated == true
-                ? Guid.TryParse(User.FindFirst("sub")?.Value, out var id) ? id : null
-                : null;
-
-        protected void SetSuccessMessage(string message)
+        protected IActionResult SuccessResponse(object data, string message = "Success")
         {
-            TempData["SuccessMessage"] = message;
+            return Ok(new
+            {
+                success = true,
+                message,
+                data
+            });
         }
 
-        protected void SetErrorMessage(string message)
+        protected IActionResult ErrorResponse(string message = "An error occurred", 
+                                                int statusCode = 500)
         {
-            TempData["ErrorMessage"] = message;
+            Logger.LogError(message);
+            return StatusCode(statusCode, new
+            {
+                success = false,
+                message
+            });
         }
 
-        protected void SetWarningMessage(string message)
+        protected IActionResult NotFoundResponse(string message = "Resource not found")
         {
-            TempData["WarningMessage"] = message;
+            return NotFound(new
+            {
+                success = false,
+                message
+            });
         }
-
-        protected void SetInfoMessage(string message)
+        
+        protected IActionResult BadRequestResponse(string message = "Bad request")
         {
-            TempData["InfoMessage"] = message;
-        }
-
-        protected IActionResult RedirectWithSuccess(string url, string message)
-        {
-            SetSuccessMessage(message);
-            return Redirect(url);
-        }
-
-        protected IActionResult RedirectWithError(string url, string message)
-        {
-            SetErrorMessage(message);
-            return Redirect(url);
+            return BadRequest(new
+            {
+                success = false,
+                message
+            });
         }
     }
 }

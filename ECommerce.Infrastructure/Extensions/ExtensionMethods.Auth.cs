@@ -5,13 +5,14 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ECommerce.Application.Settings;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace ECommerce.Infrastructure.Extensions
 {
     public static partial class ExtensionMethods
     {
         public static IServiceCollection AddJWTAuthentication(this IServiceCollection services,
-                                                                        IConfiguration configuration)
+                                                                IConfiguration configuration)
         {
             var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
 
@@ -37,16 +38,20 @@ namespace ECommerce.Infrastructure.Extensions
         }
 
         public static IServiceCollection AddCookieAuthentication(this IServiceCollection services, 
-                                                                        IConfiguration configuration)
+                                                                IConfiguration configuration)
         {
-            services.AddAuthentication(options => {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            })
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options => {
                 options.LoginPath = "/Account/Login";
                 options.LogoutPath = "/Account/Logout";
                 options.AccessDeniedPath = "/Account/AccessDenied";
+
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SameSite = SameSiteMode.Strict; 
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                
+                options.SlidingExpiration = true;
+                options.AccessDeniedPath = "/Forbidden/";
             });
 
             return services;

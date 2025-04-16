@@ -1,8 +1,10 @@
+using ECommerce.API.Middleware;
 using ECommerce.Application;
 using ECommerce.Application.Settings;
 using ECommerce.Infrastructure;
 using ECommerce.Infrastructure.Extensions;
 using ECommerce.Infrastructure.Persistence;
+using ECommerce.JsonNamingPolicy;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +17,16 @@ builder.Services.Configure<JwtSettings>(
 
 builder.Services.AddApplication();      
 builder.Services.AddInfrastructure(builder.Configuration); 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        // Use snake_case for both requests and responses
+        options.JsonSerializerOptions.PropertyNamingPolicy = SnakeCaseNamingPolicy.Instance;
+        options.JsonSerializerOptions.DictionaryKeyPolicy = SnakeCaseNamingPolicy.Instance;
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+        // options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    });
+
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerDocumentation();
@@ -28,10 +39,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+
 
 using (var scope = app.Services.CreateScope())
 {

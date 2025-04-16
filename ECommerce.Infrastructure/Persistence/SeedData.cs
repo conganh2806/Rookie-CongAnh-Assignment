@@ -8,7 +8,7 @@ namespace ECommerce.Infrastructure.Persistence
 {
     public static class SeedData
     {
-        public static async Task SeedAsync(this IServiceProvider serviceProvider)
+        public static async Task Initialize(this IServiceProvider serviceProvider)
         {
             var context = serviceProvider.GetRequiredService<ApplicationDbContext>();
             using var scope = serviceProvider.CreateScope();
@@ -17,8 +17,8 @@ namespace ECommerce.Infrastructure.Persistence
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
             await UserSeeder.SeedAsync(userManager, roleManager);
-            await ProductSeeder.SeedAsync(context);
             await CategorySeeder.SeedAsync(context);
+            await ProductSeeder.SeedAsync(context);
             await OrderSeeder.SeedAsync(context);
         }
     }

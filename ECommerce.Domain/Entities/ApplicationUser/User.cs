@@ -15,6 +15,7 @@ namespace ECommerce.Domain.Entities.ApplicationUser
         public string? State { get; set; }
         public string? ZipCode { get; set; }
         public string? Country { get; set; }
+        //THEM ISACTIVE
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }
