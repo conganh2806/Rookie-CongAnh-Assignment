@@ -1,32 +1,51 @@
 {
     "version": "0.2.0",
     "configurations": [
-        {
-            "name": "C#: ECommerce Debug",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/ECommerce.MVC/bin/Debug/net9.0/ECommerce.MVC.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/ECommerce.MVC",
-            "stopAtEntry": false,
-            "serverReadyAction": {
-                "action": "openExternally",
-                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
-            },
-            "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
-            },
-            "sourceFileMap": {
-                "/Views": "${workspaceFolder}/ECommerce.MVC/Views"
-            },
-            "requireExactSource": false
+      {
+        "name": "C#: ECommerce.MVC Debug",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "build",
+        "program": "${workspaceFolder}/ECommerce.MVC/bin/Debug/net9.0/ECommerce.MVC.dll",
+        "args": [],
+        "cwd": "${workspaceFolder}/ECommerce.MVC",
+        "stopAtEntry": false,
+        "serverReadyAction": {
+          "action": "openExternally",
+          "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
         },
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach",
-            "processId": "${command:pickProcess}"
-        }
+        "env": {
+          "ASPNETCORE_ENVIRONMENT": "Development"
+        },
+        "sourceFileMap": {
+          "/Views": "${workspaceFolder}/ECommerce.MVC/Views"
+        },
+        "requireExactSource": false
+      },
+      {
+        "name": "C#: ECommerce.API Debug",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "build",
+        "program": "${workspaceFolder}/ECommerce.API/bin/Debug/net9.0/ECommerce.API.dll",
+        "args": [],
+        "cwd": "${workspaceFolder}/ECommerce.API",
+        "stopAtEntry": false,
+        "serverReadyAction": {
+          "action": "openExternally",
+          "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+        },
+        "env": {
+          "ASPNETCORE_ENVIRONMENT": "Development"
+        },
+        "requireExactSource": false
+      },
+      {
+        "name": ".NET Core Attach",
+        "type": "coreclr",
+        "request": "attach",
+        "processId": "${command:pickProcess}"
+      }
     ]
-}
+  }
+  
