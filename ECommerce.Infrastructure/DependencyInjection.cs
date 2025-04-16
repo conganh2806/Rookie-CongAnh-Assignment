@@ -1,4 +1,5 @@
 using ECommerce.Application.Domain.Interfaces;
+using ECommerce.Application.DTOs.Common;
 using ECommerce.Application.Interfaces;
 using ECommerce.Application.Services.Authentication;
 using ECommerce.Domain.Interfaces;
@@ -7,6 +8,8 @@ using ECommerce.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Minio;
 
 namespace ECommerce.Infrastructure
 {
@@ -19,8 +22,21 @@ namespace ECommerce.Infrastructure
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(connectionString));
 
+            services.AddSingleton(resolver =>
+            {
+                var config = resolver.GetRequiredService<IOptions<MinioSettings>>().Value;
+                return new MinioClient()
+                    .WithEndpoint(config.Endpoint)
+                    .WithCredentials(config.AccessKey, config.SecretKey)
+                    .WithSSL(false)
+                    .Build();
+            });
+
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IJWTAuthService, JWTAuthService>();
             services.AddScoped<ICookieAuthService, CookieAuthService>();
