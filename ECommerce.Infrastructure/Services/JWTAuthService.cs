@@ -26,7 +26,7 @@ public class JWTAuthService : IJWTAuthService
 
     public async Task<JWTAuthResponse?> RegisterAsync(RegisterRequest request)
     {
-        if (await _userRepository.Ts.AnyAsync(u => u.Email == request.Email))
+        if (await _userRepository.Entity.AnyAsync(u => u.Email == request.Email))
         {
             return null;
         }
@@ -50,7 +50,7 @@ public class JWTAuthService : IJWTAuthService
 
     public async Task<JWTAuthResponse?> LoginAsync(LoginRequest request)
     {
-        var user = await _userRepository.Ts.Where(u => u.Email == request.Email)
+        var user = await _userRepository.Entity.Where(u => u.Email == request.Email)
                                               .FirstOrDefaultAsync();
 
         if (user == null || !PasswordMatches(request.Password, user.PasswordHash!))
@@ -73,7 +73,7 @@ public class JWTAuthService : IJWTAuthService
     public async Task<JWTAuthResponse?> RefreshTokenAsync(string refreshToken)
     {
 
-        var user = await _userRepository.Ts
+        var user = await _userRepository.Entity
                                         .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
 
         if (user == null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
@@ -105,9 +105,9 @@ public class JWTAuthService : IJWTAuthService
 
     private string HashPassword(string password)
     {
+        Console.WriteLine($"Hashing password: {BCrypt.Net.BCrypt.HashPassword(password)}");
         return BCrypt.Net.BCrypt.HashPassword(password);
     }
-
 
     private JWTAuthResponse GenerateToken(User user)
     {

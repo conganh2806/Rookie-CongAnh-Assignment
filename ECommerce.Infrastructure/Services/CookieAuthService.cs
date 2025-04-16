@@ -26,7 +26,7 @@ namespace ECommerce.Application.Services.Authentication
 
         public async Task<CookieAuthResponse?> RegisterAsync(RegisterRequest request)
         {
-            if (await _userRepository.Ts.AnyAsync(u => u.Email == request.Email))
+            if (await _userRepository.Entity.AnyAsync(u => u.Email == request.Email))
                 return null;
 
             var user = new User
@@ -53,11 +53,15 @@ namespace ECommerce.Application.Services.Authentication
 
         public async Task<CookieAuthResponse?> LoginAsync(LoginRequest request)
         {
-            var user = await _userRepository.Ts.Where(u => u.Email == request.Email)
-                                                .FirstOrDefaultAsync();
-            if (user == null || !PasswordMatches(request.Password, user.PasswordHash!))
-                return null;
+            var user = await _userRepository.Entity
+                .Where(u => u.Email == request.Email)
+                .FirstOrDefaultAsync();
 
+            if (user == null || !PasswordMatches(request.Password, user.PasswordHash!))
+            {
+                return null;
+            }
+            
             await SignInWithCookieAsync(user);
 
             return new CookieAuthResponse
@@ -95,9 +99,12 @@ namespace ECommerce.Application.Services.Authentication
                 new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty)
             };
 
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var identity = new ClaimsIdentity(
+                claims, CookieAuthenticationDefaults.AuthenticationScheme); 
             var principal = new ClaimsPrincipal(identity);
 
+            System.Console.WriteLine($"[CookieAuthService] SignInWithCookieAsync: ");
+            
             var authProperties = new AuthenticationProperties
             {
                 IsPersistent = true,
@@ -108,13 +115,18 @@ namespace ECommerce.Application.Services.Authentication
             await context.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 principal,
-                authProperties);
+                authProperties
+            );
         }
+
 
         private bool PasswordMatches(string password, string hashedPassword)
             => BCrypt.Net.BCrypt.Verify(password, hashedPassword);
-
+          
         private string HashPassword(string password)
             => BCrypt.Net.BCrypt.HashPassword(password);
+
+        
+        
     }
 }
