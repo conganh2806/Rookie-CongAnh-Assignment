@@ -48,7 +48,7 @@ namespace ECommerce.MVC.Controllers
                 ModelState.AddModelError("", "Email or password is incorrect.");
                 return View(model);
             }
-            System.Console.WriteLine("Login successful, redirecting to Profile");
+            
             return RedirectToAction("Profile", "Account");
         }
 

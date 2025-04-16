@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-using ECommerce.Application.Common.Utilities.Exceptions;
 using ECommerce.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using YourProjectNamespace.Controllers;
