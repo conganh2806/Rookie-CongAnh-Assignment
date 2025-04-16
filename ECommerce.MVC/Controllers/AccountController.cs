@@ -3,14 +3,18 @@ using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.MVC.Models;
 using System.Security.Claims;
+using YourProjectNamespace.Controllers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication;
 
 namespace ECommerce.MVC.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         private readonly ICookieAuthService _authService;
 
-        public AccountController(ICookieAuthService authService)
+        public AccountController(ICookieAuthService authService, ILogger<AccountController> logger) 
+            : base(logger)
         {
             _authService = authService;
         }
@@ -25,11 +29,12 @@ namespace ECommerce.MVC.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
-
+                
             var request = new LoginRequest
             {
                 Email = model.Email,
@@ -37,15 +42,14 @@ namespace ECommerce.MVC.Controllers
             };
 
             var result = await _authService.LoginAsync(request);
+
             if (result == null)
             {
-                ModelState.AddModelError("", "Email hoặc mật khẩu không đúng");
+                ModelState.AddModelError("", "Email or password is incorrect.");
                 return View(model);
             }
-
-            // CookieAuthService created cookie in LoginAsync
-            // Can check with IsSignedInAsync or redirect directly
-            return RedirectToAction("Index", "Home");
+            System.Console.WriteLine("Login successful, redirecting to Profile");
+            return RedirectToAction("Profile", "Account");
         }
 
         [HttpPost]
@@ -56,6 +60,7 @@ namespace ECommerce.MVC.Controllers
         }
 
         [HttpGet]
+        // [Authorize]
         public async Task<IActionResult> Profile()
         {
             if (!await _authService.IsSignedInAsync())
@@ -68,7 +73,7 @@ namespace ECommerce.MVC.Controllers
 
             var model = new ProfileViewModel
             {
-                UserId    = Guid.Parse(userId!),
+                UserId    = userId!,
                 Email     = email!,
                 FirstName = first!,
                 LastName  = last!

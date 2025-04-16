@@ -19,6 +19,10 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: #111;
+  color: white;
+  font-family: Arial, sans-serif;
+  
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {

@@ -1,0 +1,24 @@
+@model ProductFeatureResponse
+
+<a href="@Url.Action("Detail", "Product", new { slug = Model.Slug, id = Model.Id })">
+    <div class="game-card">
+        <img src="@Model.ImageUrl" alt="@Model.Name" class="game-card-image" />
+
+        <div class="game-card-overlay">
+            @if (!string.IsNullOrEmpty(Model.Name))
+            {
+                <h3 class="game-title">@Model.Name</h3>
+            }
+
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                <p class="game-description">@Model.Description</p>
+            }
+
+            @if (Model.Price > 0)
+            {
+                <p class="game-price">$@Model.Price</p>
+            }
+        </div>
+    </div>
+</a>

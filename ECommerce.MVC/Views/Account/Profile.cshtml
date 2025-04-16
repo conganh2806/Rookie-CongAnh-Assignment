@@ -1,0 +1,51 @@
+@model ProfileViewModel
+
+@{
+    ViewBag.Title = "User Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // nếu có Layout
+}
+
+<style>
+    .container {
+        max-width: 700px;
+        margin: auto;
+        font-family: Arial, sans-serif;
+    }
+
+    .card {
+        background-color: #fdfdfd;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    }
+
+    dt {
+        font-weight: bold;
+        color: #555;
+    }
+
+    dd {
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="card shadow-lg p-4">
+        <h2 class="text-primary mb-4">👤 User Profile</h2>
+        
+        <dl class="row">
+            <dt class="col-sm-3">User ID:</dt>
+            <dd class="col-sm-9">@Model.UserId</dd>
+
+            <dt class="col-sm-3">Email:</dt>
+            <dd class="col-sm-9">@Model.Email</dd>
+
+            <dt class="col-sm-3">First Name:</dt>
+            <dd class="col-sm-9">@Model.FirstName</dd>
+
+            <dt class="col-sm-3">Last Name:</dt>
+            <dd class="col-sm-9">@Model.LastName</dd>
+        </dl>
+
+        <a href="/Account/Logout" class="btn btn-outline-danger mt-3">Logout</a>
+    </div>
+</div>

@@ -1,18 +1,20 @@
 using ECommerce.Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using YourProjectNamespace.Controllers;
 
 namespace ECommerce.MVC.Controllers
 {
-    public class CategoryController : Controller
+    public class CategoryController : BaseController
     {
         private readonly ICategoryService _categoryService;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, 
+                                    ILogger<CategoryController> logger) 
+            : base(logger)
         {
             _categoryService = categoryService;
         }
 
-        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var categories = await _categoryService.GetAllAsync();

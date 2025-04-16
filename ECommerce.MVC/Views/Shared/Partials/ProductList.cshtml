@@ -1,0 +1,17 @@
+@model List<ProductDTO>
+
+@{
+    ViewData["Title"] = "Product List"; 
+    Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+
+<ul>
+    @foreach (var product in Model)
+    {
+        <li>
+            <a href="@Url.Action("Detail", "Product", new { id = product.Id, slug = product.Slug })">
+                @product.Name
+            </a>
+        </li>
+    }
+</ul>
