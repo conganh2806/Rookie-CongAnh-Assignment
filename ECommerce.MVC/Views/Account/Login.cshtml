@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Login";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutAuth.cshtml";
 }
 
 <div class="container">
@@ -101,20 +101,5 @@
 </div>
 
 @section Scripts {
-    <script>
-        $(document).ready(function () {
-            $('.show-password').click(function () {
-                var passwordField = $(this).siblings('input[type="password"]');
-                var buttonText = $(this).text();
-                
-                if (buttonText === "Show") {
-                    passwordField.attr('type', 'text');
-                    $(this).text('Hide');
-                } else {
-                    passwordField.attr('type', 'password');
-                    $(this).text('Show');
-                }
-            });
-        });
-    </script>
+    <script src="~/js/showHidePassword.js"></script>
 }

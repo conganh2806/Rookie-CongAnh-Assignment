@@ -50,14 +50,25 @@
                     <div class="d-flex align-items-center ms-3">
                         @if (User.Identity != null && (User.Identity?.IsAuthenticated ?? false))
                         {
-                            <a href="/Profile">
-                                <img src="/images/default-avatar.png" class="rounded-circle" style="width: 40px; height: 40px;" />
-                            </a>
+                            <div class="dropdown">
+                                <button class="btn text-white dropdown-toggle d-flex align-items-center" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-circle me-1 fs-4"></i>
+                                    <span class="fw-bold">@User.Identity.Name</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="/Profile">Profile</a></li>
+                                    <li>
+                                        <form method="post" action="/Account/Logout" class="d-inline">
+                                            <button type="submit" class="dropdown-item">Sign out</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
                         }
                         else
                         {
                             <a href="@Url.Action("Login", "Account")" class="text-white me-2">Sign in</a>
-                            <a href="#" class="text-white">Register</a>
+                            <a href="@Url.Action("Register", "Account")" class="text-white me-2">Register</a>
                         }
                     </div>
                 </div>
@@ -99,8 +110,8 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/layout.js"></script>
 
     @RenderBody()
