@@ -4,14 +4,14 @@ using ECommerce.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCookieAuthentication(builder.Configuration);
+builder.Services.AddControllersWithViews();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddCustomIdentity(builder.Configuration);
 
 builder.Services.AddAuthorization();
-builder.Services.AddControllersWithViews();
+
 builder.Services.AddApplication();
 
 builder.Services.AddHttpContextAccessor();
@@ -34,6 +34,7 @@ else
 app.UseStaticFiles();
 
 app.UseRouting();  
+app.UseCookiePolicy();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -41,7 +42,7 @@ app.UseAuthorization();
 app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}");
 
 app.Run();
 

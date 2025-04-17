@@ -4,7 +4,9 @@ using ECommerce.Application.Interfaces;
 using ECommerce.Application.Services.Authentication;
 using ECommerce.Domain.Interfaces;
 using ECommerce.Infrastructure.Persistence;
+using ECommerce.Infrastructure.Persistence.Seed;
 using ECommerce.Infrastructure.Repositories;
+using ECommerce.Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -41,6 +43,13 @@ namespace ECommerce.Infrastructure
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IJWTAuthService, JWTAuthService>();
             services.AddScoped<ICookieAuthService, CookieAuthService>();
+
+            services.AddTransient<UserSeeder>();
+            services.AddTransient<RolesSeeder>();
+            services.AddTransient<ProductSeeder>();
+            services.AddTransient<CategorySeeder>();
+            services.AddTransient<OrderSeeder>();
+            services.AddScoped<ISeedService, SeedService>();
             
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             return services;
