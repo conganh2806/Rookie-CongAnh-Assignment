@@ -17,7 +17,7 @@
             {
                 <partial name="_FeatureCard" model="card" />
             } *@
-        <vc:featured-products></vc:featured-products>
+        @await Component.InvokeAsync("FeaturedProducts")
     </div>
     
     <script>
