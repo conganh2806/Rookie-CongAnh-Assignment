@@ -6,7 +6,6 @@
 
 <div class="container mt-5">
     <div class="row">
-        <!-- Ảnh và info bên trái -->
         <div class="col-md-6">
             <img src="@Model.ImageURL" class="img-fluid rounded border mb-3" />
 
@@ -20,7 +19,6 @@
             <p><strong>Sold:</strong> @Model.Sold units</p>
         </div>
 
-        <!-- Thông tin giá và mua bên phải -->
         <div class="col-md-6">
             <div class="border p-4 rounded shadow-sm">
                 @{
@@ -44,7 +42,6 @@
         </div>
     </div>
 
-    <!-- Mô tả sản phẩm -->
     <div class="row mt-5">
         <div class="col-12">
             <h5>Description</h5>
@@ -52,3 +49,36 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/site-cart.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.btn-primary').click(function () {
+                $.ajax({
+                    url: '/Cart/AddToCart',
+                    type: 'POST',
+                    data: {
+                        productId: '@Model.Id',
+                        quantity: 1
+                    },
+                    success: function (res) {
+                        console.log(res);
+                        if (res.success) {
+                            showToast(res.message);
+                            updateCartIcon();
+                        } else {
+                            showToast(res.message, true);
+                            setTimeout(() => window.location.href = "/Account/Login", 1500);
+                        }
+                    },
+                    error: function () {
+                        showToast("Error happened when add product to cart!", true);
+                    }
+                });
+            });
+        });
+    </script>
+    
+}
+

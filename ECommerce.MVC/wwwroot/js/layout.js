@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    updateCartIcon();
+
     const $toggleButton = $('#toggleCategories');
     const $categoryList = $('#categoryList');
 

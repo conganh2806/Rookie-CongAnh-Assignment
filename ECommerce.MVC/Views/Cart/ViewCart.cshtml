@@ -1,0 +1,50 @@
+@model CartDto
+@{
+    ViewData["Title"] = "Your Cart";
+}
+
+<div class="container mt-5">
+    <h2>Your cart</h2>
+    <hr />
+
+    @if (Model?.Items != null && Model.Items.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.ProductName</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.Price.ToString("C")</td>
+                        <td>@(item.Price* item.Quantity).ToString("C")</td>
+                        <td>
+                            <form asp-action="RemoveFromCart" method="post">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="text-end">
+            <h4>Total: @Model.Items.Sum(x => x.Quantity * x.Price).ToString("C")</h4>
+            <a href="/Checkout" class="btn btn-primary">Continue to payment</a>
+        </div>
+    }
+    else
+    {
+        <p>Your cart is empty.</p>
+    }
+</div>
