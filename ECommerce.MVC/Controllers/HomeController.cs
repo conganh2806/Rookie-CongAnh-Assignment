@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using ECommerce.MVC.Models;
 using ECommerce.Application.Interfaces;
 using ECommerce.Application.Services;
-using YourProjectNamespace.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;

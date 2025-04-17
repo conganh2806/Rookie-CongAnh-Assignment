@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace YourProjectNamespace.Controllers
+namespace ECommerce.MVC.Controllers
 {
     public class BaseController : Controller
     {

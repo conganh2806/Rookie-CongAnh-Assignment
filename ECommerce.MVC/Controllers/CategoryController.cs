@@ -1,6 +1,5 @@
 using ECommerce.Application.Services;
 using Microsoft.AspNetCore.Mvc;
-using YourProjectNamespace.Controllers;
 
 namespace ECommerce.MVC.Controllers
 {
