@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ECommerce.Infrastructure.Persistence.Seed
 {
-    public static class RolesSeeder
+    public class RolesSeeder
     {
-        public static async Task SeedAsync(UserManager<User> userManager, 
+        public async Task SeedAsync(UserManager<User> userManager, 
                                         RoleManager<IdentityRole> roleManager)
         {
             string[] roleNames = { "Admin", "User", "Manager" };

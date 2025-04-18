@@ -24,11 +24,11 @@ public class JWTAuthService : IJWTAuthService
         _jwtSettings = jwtOptions.Value;
     }
 
-    public async Task<JWTAuthResponse?> RegisterAsync(RegisterRequest request)
+    public async Task<bool?> RegisterAsync(RegisterRequest request)
     {
         if (await _userRepository.Entity.AnyAsync(u => u.Email == request.Email))
         {
-            return null;
+            return false;
         }
 
         var user = new User
@@ -45,10 +45,10 @@ public class JWTAuthService : IJWTAuthService
 
         await _userRepository.UnitOfWork.SaveChangesAsync();
 
-        return GenerateToken(user);
+        return true;
     }
 
-    public async Task<JWTAuthResponse?> LoginAsync(LoginRequest request)
+    public async Task<JWTLoginAuthResponse?> LoginAsync(LoginRequest request)
     {
         var user = await _userRepository.Entity.Where(u => u.Email == request.Email)
                                               .FirstOrDefaultAsync();
@@ -70,11 +70,11 @@ public class JWTAuthService : IJWTAuthService
         return response;
     }
 
-    public async Task<JWTAuthResponse?> RefreshTokenAsync(string refreshToken)
+    public async Task<JWTLoginAuthResponse?> RefreshTokenAsync(RefreshTokenRequest request)
     {
 
         var user = await _userRepository.Entity
-                                        .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+                                        .FirstOrDefaultAsync(u => u.RefreshToken == request.Token);
 
         if (user == null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
         {
@@ -90,7 +90,7 @@ public class JWTAuthService : IJWTAuthService
     
         await _userRepository.UnitOfWork.SaveChangesAsync();
         
-        return new JWTAuthResponse
+        return new JWTLoginAuthResponse
         {
             Token = accessToken.Token,
             RefreshToken = newRefreshToken,
@@ -105,13 +105,12 @@ public class JWTAuthService : IJWTAuthService
 
     private string HashPassword(string password)
     {
-        Console.WriteLine($"Hashing password: {BCrypt.Net.BCrypt.HashPassword(password)}");
         return BCrypt.Net.BCrypt.HashPassword(password);
     }
 
-    private JWTAuthResponse GenerateToken(User user)
+    private JWTLoginAuthResponse GenerateToken(User user)
     {
-        string role = "User";
+        string role = "Admin";
         
         var key = Encoding.UTF8.GetBytes(_jwtSettings.Secret);
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -120,7 +119,8 @@ public class JWTAuthService : IJWTAuthService
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email!),
+                new Claim(ClaimTypes.GivenName, user.LastName ?? string.Empty),
+                new Claim(ClaimTypes.Surname, user.FirstName ?? string.Empty),
                 new Claim(ClaimTypes.Role, role)
             }),
             Expires = DateTime.UtcNow.AddHours(_jwtSettings.ExpirationHours),
@@ -133,7 +133,7 @@ public class JWTAuthService : IJWTAuthService
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        return new JWTAuthResponse 
+        return new JWTLoginAuthResponse 
         {
             Token = tokenHandler.WriteToken(token),
             RefreshToken = Guid.NewGuid().ToString(),

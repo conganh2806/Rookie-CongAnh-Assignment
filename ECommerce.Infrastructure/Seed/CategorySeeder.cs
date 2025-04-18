@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Persistence.Seed
 {
-    public static class CategorySeeder
+    public class CategorySeeder
     {
-        public static async Task SeedAsync(ApplicationDbContext context)
+        public async Task SeedAsync(ApplicationDbContext context)
         {
             if (await context.Categories.AnyAsync()) return;
 
