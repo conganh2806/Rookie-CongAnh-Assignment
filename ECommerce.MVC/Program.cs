@@ -1,11 +1,14 @@
 using ECommerce.Application;
 using ECommerce.Infrastructure.Extensions;
 using ECommerce.Infrastructure;
+using ECommerce.MVC.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddMVCService(builder.Configuration);
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddCustomIdentity(builder.Configuration);
