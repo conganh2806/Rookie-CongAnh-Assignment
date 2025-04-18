@@ -79,7 +79,7 @@ namespace ECommerce.Infrastructure.Services
 
         public async Task<string> UploadFileAsync(CreateMediaFileRequest request)
         {
-            var s3Key = $"{request.ObjectType}/{Guid.NewGuid()}.{request.FileExtension}";
+            var s3Key = $"{request.ObjectType}/{Guid.NewGuid()}.{request.FileExtension.TrimStart('.')}";
 
             var bucketExists = await _minioClient.BucketExistsAsync(
                 new BucketExistsArgs().WithBucket(_minio.BucketName)
@@ -87,7 +87,8 @@ namespace ECommerce.Infrastructure.Services
 
             if (!bucketExists)
             {
-                await _minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(_minio.BucketName));
+                await _minioClient.MakeBucketAsync(
+                    new MakeBucketArgs().WithBucket(_minio.BucketName));
             }
 
             await CheckExistMediaFileRecord(request.ObjectType, request.ObjectId, s3Key);
@@ -114,7 +115,8 @@ namespace ECommerce.Infrastructure.Services
                 .WithContentType(request.ContentType)
             );
 
-            await UpdateImageUrl(objectType: request.ObjectType, objectId: request.ObjectId, s3Key);
+            await UpdateImageUrl(objectType: request.ObjectType, 
+                                    objectId: request.ObjectId, s3Key);
 
             await _mediaFileRepository.UnitOfWork.SaveChangesAsync();
 
@@ -142,10 +144,11 @@ namespace ECommerce.Infrastructure.Services
             await _mediaFileRepository.UnitOfWork.SaveChangesAsync();
         }
 
-        private async Task CheckExistMediaFileRecord(string objectType, string objectId, string s3Key)
+        private async Task CheckExistMediaFileRecord(string objectType, string objectId, 
+                                                    string s3Key)
         {
             var existedRecord = await _mediaFileRepository.Entity
-                .FirstOrDefaultAsync(_ => _.ObjectId == objectId && _.ObjectType == objectType);
+            .FirstOrDefaultAsync(_ => _.ObjectId == objectId && _.ObjectType == objectType);
 
             if (existedRecord is not null)
             {

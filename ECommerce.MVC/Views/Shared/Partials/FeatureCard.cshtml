@@ -2,7 +2,7 @@
 
 <a href="@Url.Action("Detail", "Product", new { slug = Model.Slug, id = Model.Id })">
     <div class="game-card">
-        <img src="@Model.ImageUrl" alt="@Model.Name" class="game-card-image" />
+        <img src="@Html.BuildMediaUrl(Model.ImageUrl ?? "")" alt="@Model.Name" class="game-card-image" />
 
         <div class="game-card-overlay">
             @if (!string.IsNullOrEmpty(Model.Name))

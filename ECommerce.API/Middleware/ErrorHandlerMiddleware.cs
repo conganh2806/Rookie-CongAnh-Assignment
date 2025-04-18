@@ -61,6 +61,31 @@ namespace ECommerce.API.Middleware
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
                     errorDetail.Message = "Object validation error.";
                     break;
+                case Minio.Exceptions.AccessDeniedException e:
+                    response.StatusCode = (int)HttpStatusCode.Forbidden;
+                    errorDetail.Message = "Access denied while uploading to MinIO.";
+                    break;
+
+                case Minio.Exceptions.AuthorizationException e:
+                    response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    errorDetail.Message = @"MinIO authorization failed. 
+                                            Please check AccessKey/SecretKey.";
+                    break;
+
+                case Minio.Exceptions.BucketNotFoundException e:
+                    response.StatusCode = (int)HttpStatusCode.NotFound;
+                    errorDetail.Message = "The specified MinIO bucket does not exist.";
+                    break;
+
+                case Minio.Exceptions.InvalidBucketNameException e:
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    errorDetail.Message = "Invalid MinIO bucket name.";
+                    break;
+
+                case Minio.Exceptions.InvalidObjectNameException e:
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    errorDetail.Message = "Invalid object name for MinIO.";
+                    break;
                 default:
                     // unhandled error
                     response.StatusCode = (int)HttpStatusCode.BadRequest;

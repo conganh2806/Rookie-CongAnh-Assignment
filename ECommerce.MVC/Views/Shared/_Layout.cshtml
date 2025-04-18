@@ -115,7 +115,7 @@
                 </button>
 
                 <div id="categoryList" class="custom-dropdown-menu d-none position-absolute">
-                    <vc:category-menu></vc:category-menu>
+                    @await Component.InvokeAsync("CategoryMenu")
                 </div>
             </div>
             </div>
