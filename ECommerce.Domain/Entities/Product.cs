@@ -14,7 +14,8 @@ namespace ECommerce.Domain.Entities
         public string? ImageURL { get; set; }
         public bool IsFeatured { get; set; }
         
-        public virtual ICollection<Category> Categories { get; set; } = new HashSet<Category>();
+        public virtual ICollection<Category> Categories { get; set; } = new List<Category>();
         public virtual OrderDetail OrderDetail { get; set; } = default!;
+
     }
 }

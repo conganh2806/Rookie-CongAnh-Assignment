@@ -90,6 +90,7 @@ namespace ECommerce.Application.Services
                                             
             var product = _mapper.Map<Product>(request);
             product.Categories = categories;
+            // product.Slug = product.Name.GenerateSlug();
             
             _productRepository.Add(product);
             await _productRepository.UnitOfWork.SaveChangesAsync();

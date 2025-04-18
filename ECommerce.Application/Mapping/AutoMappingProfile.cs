@@ -19,6 +19,7 @@ namespace ECommerce.Application.Mapping
             CreateMap<CategoryCreateRequest, Category>();
             CreateMap<CategoryUpdateRequest, Category>();
             CreateMap<OrderCreateRequest, Order>();
+            CreateMap<OrderUpdateRequest, Order>();
             CreateMap<Order, OrderDto>();
             CreateMap<UserDto, User>();
             CreateMap<UserUpdateRequest, User>();

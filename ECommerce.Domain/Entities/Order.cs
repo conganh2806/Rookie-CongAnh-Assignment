@@ -13,6 +13,7 @@ namespace ECommerce.Domain.Entities
         public string? Note { get; set; }
         
         public virtual User User { get; set; } = default!; 
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new HashSet<OrderDetail>();
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; } 
+                                                                = new HashSet<OrderDetail>();
     }
 }

@@ -14,7 +14,7 @@ namespace ECommerce.Application.DTOs
         public ProductStatus ProductStatus { get; set; }
         public string Slug { get; set; } = default!;
         public string ImageURL { get; set; } = default!;
-        public List<string> CategoryName { get; set; } = new List<string>();
+        public List<string> CategoryNames { get; set; } = new List<string>();
         public bool IsFeatured { get; set; }
     }
 }

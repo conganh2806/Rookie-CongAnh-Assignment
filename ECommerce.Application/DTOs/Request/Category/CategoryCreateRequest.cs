@@ -11,6 +11,6 @@ namespace ECommerce.Application.DTOs
         [StringLength(100, ErrorMessage = "Slug cannot be longer than 100 characters")]
         public string Slug { get; set; } = default!;
 
-        public string? ParentId { get; set; } = default!;
+        public string? ParentId { get; set; }
     }
 }

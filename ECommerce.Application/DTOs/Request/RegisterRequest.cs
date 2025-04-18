@@ -9,7 +9,8 @@ namespace ECommerce.Application.DTOs
         public string Email { get; set; } = default!;
 
         [Required(ErrorMessage = "Password is required.")]
-        [StringLength(100, ErrorMessage = "Password must be at least 6 characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "Password must be at least 6 characters long.",
+                            MinimumLength = 6)]
         public string Password { get; set; } = default!;
 
         public string FirstName { get; set; } = default!;

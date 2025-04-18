@@ -19,7 +19,8 @@ namespace ECommerce.Infrastructure.Persistence
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<MediaFile> MediaFiles { get; set; }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public override Task<int> SaveChangesAsync(
+            CancellationToken cancellationToken = default)
         {
             return base.SaveChangesAsync(cancellationToken);
         }

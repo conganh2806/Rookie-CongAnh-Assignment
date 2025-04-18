@@ -66,7 +66,7 @@ namespace ECommerce.Application.Services
 
         public async Task<CategoryDto> CreateAsync(CategoryCreateRequest request)
         {
-            if(request.ParentId != null)
+            if(!string.IsNullOrWhiteSpace(request.ParentId))
             {
                 var parentCategory = await _categoryRepository.Entity
                                             .FirstOrDefaultAsync(c => c.Id == request.ParentId);
@@ -95,7 +95,7 @@ namespace ECommerce.Application.Services
                 throw new NotFoundException($"Category with id {id} not found.");
             }
 
-            if (request.ParentId != null)
+            if (!string.IsNullOrWhiteSpace(request.ParentId))
             {
                 var parentCategory = await _categoryRepository.Entity
                     .FirstOrDefaultAsync(c => c.Id == request.ParentId);

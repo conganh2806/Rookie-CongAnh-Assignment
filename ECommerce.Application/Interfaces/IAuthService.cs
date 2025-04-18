@@ -6,7 +6,6 @@ namespace ECommerce.Application.Interfaces
     public interface IAuthService<TResponse> 
         where TResponse : IAuthResponse
     {
-        Task<TResponse?> RegisterAsync(RegisterRequest request);
         Task<TResponse?> LoginAsync(LoginRequest request);
     }
 
