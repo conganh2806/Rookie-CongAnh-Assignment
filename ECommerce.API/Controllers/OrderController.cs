@@ -3,12 +3,14 @@ using ECommerce.Application.DTOs;
 using ECommerce.Application.DTOs.Request;
 using ECommerce.Application.Services;
 using ECommerce.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
 {
     [ApiController]
     [Route("api/orders")]
+    [Authorize(Roles = "Admin")]
     public class OrderController : BaseController<Order>
     { 
         private readonly IOrderService _orderService;

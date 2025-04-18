@@ -18,6 +18,7 @@ namespace ECommerce.API.Controllers
         protected IActionResult Success<TData>(TData data, string message = "Success")
         {
             var response = BaseResponse<TData>.Success(data, message);
+
             return StatusCode((int)response.StatusCode, response);
         }
 
@@ -26,6 +27,7 @@ namespace ECommerce.API.Controllers
         {
             var response = BaseResponse<object>.Fail(message, statusCode);
             _logger.LogWarning("Error response: {Message}", message);
+            
             return StatusCode((int)statusCode, response);
         }
 

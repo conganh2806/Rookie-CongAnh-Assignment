@@ -1,6 +1,7 @@
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Services;
 using ECommerce.Domain.Entities.ApplicationUser;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -8,6 +9,7 @@ namespace ECommerce.API.Controllers
 {
     [ApiController]
     [Route("api/user")]
+    [Authorize(Roles = "Admin")]
     public class UserController : BaseController<User>
     {
         private readonly IUserService _userService;

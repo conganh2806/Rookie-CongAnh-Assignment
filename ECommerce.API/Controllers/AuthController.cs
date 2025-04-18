@@ -1,7 +1,9 @@
 using System.Net;
 using ECommerce.Application.Common.Utilities;
+using ECommerce.Application.Common.Utilities.Exceptions;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.API.Controllers
@@ -24,7 +26,7 @@ namespace ECommerce.API.Controllers
             var result = await _jwtService.RegisterAsync(request);
 
             return result == null
-                ? Error(Constants.REGISTER_SUCCESS, HttpStatusCode.Conflict)
+                ? Error(Constants.REGISTER_ERROR, HttpStatusCode.Conflict)
                 : Success(result, Constants.REGISTER_SUCCESS);
         }
 
@@ -38,11 +40,15 @@ namespace ECommerce.API.Controllers
         }
 
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
         {
-            var result = await _jwtService.RefreshTokenAsync(refreshToken);
-            if (result == null) return Unauthorized(Constants.REFRESH_TOKEN_INVALID);
-            return Ok(result);
+            var result = await _jwtService.RefreshTokenAsync(request);
+            if (result == null) 
+            {
+                throw new UnAuthorizedException("Refresh token not valid or expired!");
+            }
+
+            return Success(result);
         }
     }
 }
