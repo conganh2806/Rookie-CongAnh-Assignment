@@ -21,9 +21,15 @@ appsettings.Development.json
 appsettings.json
 ```
 
+# Database Configuration
+```sh
+"Host=;Port=5432;Database=ecommerce_db;Username=root;Password=root"
+```
+## 🧠 Remember: In Docker, the host name to connect to the database should be database (the name of the service in docker-compose.yml), not localhost.
+
 # Minio Configuration
 ## -- In appsettings.*.json, if in Development environment, settings like this
-```markdown
+<pre lang="md">
 ```json
 "MinioSettings": {
   "Endpoint": "localhost:9000",
@@ -32,13 +38,14 @@ appsettings.json
   "BucketName": "ecommerce-media",
   "UseSSL": false
 }
+</pre>
 ### Note that access key and secret key must get from env file
 
 # VNPAY Configuration
 🚧 *This section is currently under development.* 
 
 ## -- Deploy to docker -- 
-### Build
+### Build and run
 ```sh
 docker compose up --build
 ```
@@ -46,6 +53,10 @@ docker compose up --build
 ```sh 
 docker compose up -d 
 ```
+
+## ⚠️ Note:
+After deploying to Docker, if you want to run the application **outside Docker (locally)**, make sure to change `"Host=database"` back to `"Host=localhost"` in your `appsettings.*.json`.
+## -- Finally, run 
 
 # Entity Framework Core
 ## -- Add a new migration -- 
@@ -59,6 +70,7 @@ dotnet ef migrations add [Migration-Msg] --project ECommerce.Infrastructure --st
 ```sh
 dotnet ef database update --project ECommerce.Infrastructure --startup-project ECommerce.API
 ```
+
 
 ## -- Run seed command --
 ```sh
