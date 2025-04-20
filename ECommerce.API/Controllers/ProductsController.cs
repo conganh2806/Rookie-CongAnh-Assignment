@@ -39,7 +39,11 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> GetById(string id)
         {
             var product = await _productService.GetByIdAsync(id);
-            if (product == null) return Error("Product not found", HttpStatusCode.NotFound);
+
+            if (product == null) 
+            {
+                return Error("Product not found", HttpStatusCode.NotFound);
+            }
 
             return Success(product, "Get product successfully.");
         }
@@ -67,8 +71,13 @@ namespace ECommerce.API.Controllers
             {
                 return Error("Error validate", HttpStatusCode.BadRequest);
             }   
+
             var product = await _productService.CreateAsync(request);
-            if (product == null) return Error("Product not found", HttpStatusCode.NotFound);
+
+            if (product == null) 
+            {
+                return Error("Product not found", HttpStatusCode.NotFound);
+            }
 
             return Success(product, "Create product successfully.");
         }
@@ -80,8 +89,13 @@ namespace ECommerce.API.Controllers
             {
                 return Error("Error validate", HttpStatusCode.BadRequest);
             }   
+
             var product = await _productService.UpdateAsync(id, request);
-            if (product == null) return Error("Product not found", HttpStatusCode.NotFound);
+
+            if (product == null) 
+            {
+                return Error("Product not found", HttpStatusCode.NotFound);
+            }
 
             return Success(product, "Update product successfully.");
         }
