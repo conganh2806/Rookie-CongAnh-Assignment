@@ -19,6 +19,7 @@ builder.Services.Configure<JwtSettings>(
 builder.Services.AddApplication();
 
 builder.Services.AddInfrastructure(builder.Configuration); 
+builder.Services.AddSeeder(builder.Configuration);
 builder.Services.AddAPIService(builder.Configuration);
 
 builder.Services.AddControllers()
@@ -54,7 +55,6 @@ if (args.Length > 0)
     return;
 }
 
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -70,8 +70,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-
 
 using (var scope = app.Services.CreateScope())
 {
