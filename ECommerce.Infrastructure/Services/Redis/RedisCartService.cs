@@ -7,11 +7,14 @@ namespace ECommerce.Infrastructure.Services
     public class RedisCartService : IRedisCartService
     {
         private readonly IDatabase _db;
+        private readonly IProductService _productService;
         private readonly string _cartKeyPrefix = "cart:";
 
-        public RedisCartService(IConnectionMultiplexer redis)
+        public RedisCartService(IConnectionMultiplexer redis,
+                                IProductService productService)
         { 
             _db = redis.GetDatabase();
+            _productService = productService;
         }
 
         public async Task<CartDto> AddOrUpdateItemAsync(string userId, CartItemDto item)
@@ -36,6 +39,7 @@ namespace ECommerce.Infrastructure.Services
         public async Task<CartDto> GetCartAsync(string userId)
         {
             var cartItems = await GetAllItemsInCartAsync(userId);
+            
             return new CartDto
             {
                 UserId = userId,
@@ -48,25 +52,41 @@ namespace ECommerce.Infrastructure.Services
             var cartKey = GetCartKey(userId);
             var hashEntries = await _db.HashGetAllAsync(cartKey);
 
-            return hashEntries.Select(entry => new CartItemDto
+            var cartItems = new List<CartItemDto>();
+
+            foreach (var entry in hashEntries)
             {
-                ProductId = entry.Name,
-                Quantity = (int)entry.Value
-            }).ToList();
+                var productId = entry.Name.ToString();
+
+                if (!int.TryParse(entry.Value.ToString(), out var quantity))
+                    continue;
+
+                var product = await _productService.GetByIdAsync(productId);
+                if (product is null)
+                    continue;
+
+                cartItems.Add(new CartItemDto
+                {
+                    ProductId = product.Id,
+                    ProductName = product.Name,
+                    Price = product.Price,
+                    Quantity = quantity
+                });
+            }
+
+            return cartItems;
         }
 
         public async Task<bool> RemoveItemAsync(string userId, string productId)
         {
             var cartKey = GetCartKey(userId);
-            var result = await _db.HashDeleteAsync(cartKey, productId);
-            return result;
+            return await _db.HashDeleteAsync(cartKey, productId);
         }
 
         public async Task<bool> ClearCartAsync(string userId)
         {
             var cartKey = GetCartKey(userId);
-            var result = await _db.KeyDeleteAsync(cartKey);
-            return result;
+            return await _db.KeyDeleteAsync(cartKey);
         }
 
         private string GetCartKey(string userId)
