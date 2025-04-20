@@ -44,7 +44,7 @@ namespace ECommerce.Infrastructure.Services
             await _categorySeeder.SeedAsync(_context);
             await _productSeeder.SeedAsync(_context);
             await _orderSeeder.SeedAsync(_context);
-            Console.WriteLine("Seeding completed.");
+            Console.WriteLine("---------------Seeding completed.-------------");
         }
     }
 }

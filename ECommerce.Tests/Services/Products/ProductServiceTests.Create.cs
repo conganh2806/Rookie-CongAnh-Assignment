@@ -51,8 +51,8 @@ namespace ECommerce.Tests.Services.Products
             Assert.NotNull(result);
             Assert.NotNull(result?.Id);
             Assert.Equal("Game X", result?.Name);
-            Assert.Contains("Action", result?.CategoryNames);
-            Assert.Contains("Adventure", result?.CategoryNames);
+            Assert.Contains("Action", result?.CategoryNames!);
+            Assert.Contains("Adventure", result?.CategoryNames!);
 
             _mockProductRepo.Verify(repo => repo.Add(It.IsAny<Product>()), Times.Once);
             _mockProductRepo.Verify(repo => 

@@ -8,7 +8,7 @@ namespace ECommerce.Infrastructure.Persistence.Seed
         public async Task SeedAsync(UserManager<User> userManager, 
                                         RoleManager<IdentityRole> roleManager)
         {
-            string[] roleNames = { "Admin", "User", "Manager" };
+            string[] roleNames = { "Admin", "User" };
 
             foreach (var roleName in roleNames)
             {

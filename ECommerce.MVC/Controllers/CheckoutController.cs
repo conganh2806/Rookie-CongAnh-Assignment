@@ -30,7 +30,7 @@ namespace ECommerce.MVC.Controllers
                 //return not found
             }
 
-            var cart = await _cartService.GetCartAsync(userId);
+            var cart = await _cartService.GetCartAsync(userId ?? string.Empty);
             if (cart == null || !cart.Items.Any())
             {
                 TempData["Error"] = "Cart is empty.";
@@ -39,7 +39,7 @@ namespace ECommerce.MVC.Controllers
 
             var orderRequest = new OrderCreateRequest
             {
-                UserId = userId,
+                UserId = userId ?? string.Empty,
                 TotalAmount = cart.Items.Sum(x => x.Price * x.Quantity),
                 PaymentStatus = PaymentStatus.Pending,
                 PaymentType = PaymentType.CashOnDelivery,
@@ -49,7 +49,7 @@ namespace ECommerce.MVC.Controllers
             };
 
             await _orderService.CreateAsync(orderRequest);
-            await _cartService.ClearCartAsync(userId);
+            await _cartService.ClearCartAsync(userId ?? string.Empty);
 
             TempData["Success"] = "Order has been placed successfully!";
             return RedirectToAction("Success");

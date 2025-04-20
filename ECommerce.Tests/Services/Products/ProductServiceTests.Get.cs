@@ -119,8 +119,8 @@ namespace ECommerce.Tests.Services.Products
             Assert.Equal(productId, result?.Id);
             Assert.Equal("Game X", result?.Name);
             Assert.Equal(2, result?.CategoryNames.Count);
-            Assert.Contains("Action", result?.CategoryNames);
-            Assert.Contains("Adventure", result?.CategoryNames);
+            Assert.Contains("Action", result?.CategoryNames!);
+            Assert.Contains("Adventure", result?.CategoryNames!);
         }
 
         [Fact]

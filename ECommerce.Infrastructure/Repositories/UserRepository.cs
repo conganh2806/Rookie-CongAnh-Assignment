@@ -20,6 +20,7 @@ public class UserRepository : IUserRepository
 
     public void Add(User user)
     {
+        System.Console.WriteLine($"Add: {user.LastName}");
         _context.Users.Add(user);
     }
 
