@@ -15,6 +15,7 @@ namespace ECommerce.Application.Interfaces
         Task<ProductDTO> CreateAsync(ProductCreateRequest request);
         Task<ProductDTO> UpdateAsync(string id, ProductUpdateRequest request);
         Task DeleteAsync(string id);
+        Task<List<ProductDTO>> SearchProductsAsync(string query);
     }
 }
 

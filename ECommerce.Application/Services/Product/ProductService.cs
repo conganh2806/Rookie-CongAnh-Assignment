@@ -147,6 +147,20 @@ namespace ECommerce.Application.Services
                                                     .Take(take)
                                                     .ToListAsync();
         }
+
+        public async Task<List<ProductDTO>> SearchProductsAsync(string keyword)
+        {
+            if (string.IsNullOrWhiteSpace(keyword)) 
+            {
+                return new List<ProductDTO>();
+            }
+
+            return await _productRepository.Entity.Where(p =>
+                            (p.Name != null && p.Name.Contains(keyword)) ||
+                            (p.Description != null && p.Description.Contains(keyword)))
+                        .ProjectTo<ProductDTO>(_config)
+                        .ToListAsync();
+        }
     }
 }
 

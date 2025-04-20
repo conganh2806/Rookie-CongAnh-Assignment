@@ -10,7 +10,8 @@ namespace ECommerce.Application.Mapping
     {
         public AutoMappingProfile()
         {
-            CreateMap<Product, ProductDTO>();
+            CreateMap<Product, ProductDTO>().ForMember(dest => dest.CategoryNames,
+                                opt => opt.MapFrom(src => src.Categories.Select(c => c.Name)));
             CreateMap<Product, ProductFeatureResponse>();
             CreateMap<Product, ProductDetailResponse>();
             CreateMap<ProductCreateRequest, Product>();

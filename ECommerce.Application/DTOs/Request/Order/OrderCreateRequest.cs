@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using ECommerce.Domain.Entities;
 using ECommerce.Domain.Enum;
 
 namespace ECommerce.Application.DTOs.Request
@@ -25,5 +26,6 @@ namespace ECommerce.Application.DTOs.Request
         [EnumDataType(typeof(OrderStatus), ErrorMessage = "Invalid order status.")]
         public OrderStatus Status { get; set; }
         public string? Note { get; set; }
+        public List<OrderDetail> OrderDetail { get; set; } = new List<OrderDetail>();
     }
 }
