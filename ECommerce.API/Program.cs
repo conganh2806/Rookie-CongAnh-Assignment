@@ -41,9 +41,12 @@ var rootCommand = new RootCommand("ECommerce CLI");
 var seedCommand = new Command("seed", "Seed the database");
 seedCommand.SetHandler(async () =>
 {
-    using var scope = builder.Services.BuildServiceProvider().CreateScope();
+    var host = builder.Build();
+
+    using var scope = host.Services.CreateScope();
     var seeder = scope.ServiceProvider.GetRequiredService<ISeedService>();
     await seeder.ExecuteSeedAsync();
+
     Console.WriteLine("Done seeding database.");
 });
 

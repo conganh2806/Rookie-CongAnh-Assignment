@@ -26,20 +26,25 @@ namespace ECommerce.Infrastructure.Extensions
 
         internal static string GetIpAddress(HttpContext httpContext)
         {
-            string ipAddress = string.Empty;
+            string? ipAddress = string.Empty;
             try
             {
-                ipAddress = httpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+                ipAddress = httpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault() 
+                                                                            ?? string.Empty;
 
-                if (string.IsNullOrEmpty(ipAddress) || (ipAddress.ToLower() == "unknown") || ipAddress.Length > 45)
+                if (string.IsNullOrEmpty(ipAddress) || 
+                    (ipAddress.ToLower() == "unknown") || 
+                    ipAddress.Length > 45)
+                {
                     ipAddress = httpContext.Connection.RemoteIpAddress?.ToString();
+                }
             }
             catch (Exception ex)
             {
                 ipAddress = "Invalid IP:" + ex.Message;
             }
 
-            return ipAddress;
+            return ipAddress ?? string.Empty;
         }
     }
 }
