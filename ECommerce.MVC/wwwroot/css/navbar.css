@@ -16,7 +16,12 @@
     background: linear-gradient(90deg, #f7941d, #27aae1);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin-right: 20px;
+}
+
+.navbar .dropdown-toggle{
+    --bs-btn-border-radius: 0 !important;
 }
 
 .search-bar {

@@ -1,4 +1,3 @@
-
 function showToast(message, isError = false) {
     const toast = `<div class="toast-container position-fixed bottom-0 end-0 p-3">
         <div class="toast align-items-center text-bg-${isError ? 'danger' : 'success'} border-0 show" role="alert">
@@ -13,6 +12,7 @@ function showToast(message, isError = false) {
 }
 
 function updateCartIcon() {
+    console.log("udadsad");
     $.get('/Cart/GetCartItemCount', function (data) {
         console.log("Received cart count:", data);
 
