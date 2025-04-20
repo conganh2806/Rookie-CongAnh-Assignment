@@ -1,4 +1,5 @@
 using System.Net;
+using AutoMapper;
 using ECommerce.Application.Common.Utilities;
 using ECommerce.Application.Common.Utilities.Exceptions;
 using ECommerce.Application.DTOs;
@@ -14,7 +15,8 @@ namespace ECommerce.API.Controllers
     {
         private readonly IJWTAuthService _jwtService;
 
-        public AuthController(IJWTAuthService jwtService, ILogger<AuthController> logger) 
+        public AuthController(IJWTAuthService jwtService, 
+                                ILogger<AuthController> logger) 
                 : base(logger)
         {
             _jwtService = jwtService;

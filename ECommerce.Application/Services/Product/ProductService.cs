@@ -135,6 +135,7 @@ namespace ECommerce.Application.Services
             }
 
             _productRepository.Delete(product);
+
             await _productRepository.UnitOfWork.SaveChangesAsync();
         }
 
@@ -156,10 +157,10 @@ namespace ECommerce.Application.Services
             }
 
             return await _productRepository.Entity.Where(p =>
-                            (p.Name != null && p.Name.Contains(keyword)) ||
-                            (p.Description != null && p.Description.Contains(keyword)))
-                        .ProjectTo<ProductDTO>(_config)
-                        .ToListAsync();
+                                        (p.Name != null && p.Name.Contains(keyword)) ||
+                                        (p.Description != null && p.Description.Contains(keyword)))
+                                    .ProjectTo<ProductDTO>(_config)
+                                    .ToListAsync();
         }
     }
 }

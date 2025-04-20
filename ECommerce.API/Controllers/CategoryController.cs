@@ -1,3 +1,4 @@
+using AutoMapper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Services;
 using ECommerce.Domain.Entities;
@@ -13,7 +14,8 @@ namespace ECommerce.API.Controllers
     public class CategoryController : BaseController<Category>
     { 
         private readonly ICategoryService _categoryService;
-        public CategoryController(ICategoryService categoryService, ILogger<Category> logger)
+        public CategoryController(ICategoryService categoryService, 
+                                    ILogger<Category> logger)
             : base(logger)
         {
             _categoryService = categoryService;

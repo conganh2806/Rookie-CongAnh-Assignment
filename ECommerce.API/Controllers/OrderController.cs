@@ -1,4 +1,5 @@
 using System.Net;
+using AutoMapper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.DTOs.Request;
 using ECommerce.Application.Services;
@@ -15,7 +16,8 @@ namespace ECommerce.API.Controllers
     { 
         private readonly IOrderService _orderService;
 
-        public OrderController(ILogger<Order> logger, IOrderService orderService) 
+        public OrderController(ILogger<Order> logger, 
+                                IOrderService orderService) 
                 : base(logger)
         {
             _orderService = orderService;
@@ -49,6 +51,7 @@ namespace ECommerce.API.Controllers
             }
 
             var order = await _orderService.CreateAsync(request);
+
             if (order == null) 
             {
                 return Error("Order not found", HttpStatusCode.NotFound);
@@ -66,7 +69,11 @@ namespace ECommerce.API.Controllers
             }
 
             var order = await _orderService.UpdateAsync(id, request);
-            if (order == null) return Error("Order not found", HttpStatusCode.NotFound);
+
+            if (order == null) 
+            {
+                return Error("Order not found", HttpStatusCode.NotFound);
+            }
         
             return Success(order, "Update order successfully.");
         }
@@ -75,9 +82,13 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             var order = await _orderService.GetByIdAsync(id);
-            if (order == null) return Error("Order not found", HttpStatusCode.NotFound);
+            if (order == null)
+            {
+                return Error("Order not found", HttpStatusCode.NotFound);
+            }
 
             await _orderService.DeleteAsync(id);
+            
             return Success<Order?>(null, "Delete order successfully.");
         }
     }

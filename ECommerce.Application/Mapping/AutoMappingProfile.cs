@@ -1,5 +1,6 @@
 using AutoMapper;
 using ECommerce.Application.DTOs;
+using ECommerce.Application.DTOs.Common;
 using ECommerce.Application.DTOs.Request;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Entities.ApplicationUser;
@@ -24,7 +25,8 @@ namespace ECommerce.Application.Mapping
             CreateMap<Order, OrderDto>();
             CreateMap<UserDto, User>();
             CreateMap<UserUpdateRequest, User>();
-            CreateMap<User, UserDto>();            
+            CreateMap<User, UserDto>();
+            CreateMap<CreateMediaFileRequest, UploadMediaFileResponse>();
         }
     }
 }

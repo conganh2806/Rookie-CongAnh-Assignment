@@ -22,10 +22,9 @@ namespace ECommerce.Application.Services
 
         public async Task<List<CategoryDto>> GetAllAsync()
         {
-            var categories = await _categoryRepository.Entity.
-                        ProjectTo<CategoryDto>(_config)
-                        .AsNoTracking()
-                        .ToListAsync();
+            var categories = await _categoryRepository.Entity.ProjectTo<CategoryDto>(_config)
+                                                            .AsNoTracking()
+                                                            .ToListAsync();
 
             var result = categories.Where(c => c.ParentId == null).ToList();
             foreach (var parentCategory in result)
@@ -132,6 +131,7 @@ namespace ECommerce.Application.Services
             }
 
             _categoryRepository.Delete(category);
+
             await _categoryRepository.UnitOfWork.SaveChangesAsync();
         }
     }

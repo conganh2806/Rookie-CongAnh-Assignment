@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using ECommerce.Application.Common;
+using AutoMapper;
 
 namespace ECommerce.API.Controllers
 {
@@ -30,6 +31,8 @@ namespace ECommerce.API.Controllers
             
             return StatusCode((int)statusCode, response);
         }
+
+        
 
         protected Guid? CurrentUserId =>
             User.Identity?.IsAuthenticated == true

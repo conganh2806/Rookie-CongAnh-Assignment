@@ -2,20 +2,19 @@ using ECommerce.Application.Domain.Interfaces;
 using ECommerce.Application.DTOs.Common;
 using ECommerce.Application.Interfaces;
 using ECommerce.Application.Services.Authentication;
+using ECommerce.Application.Settings;
 using ECommerce.Domain.Interfaces;
 using ECommerce.ECommerce.Application.DTOs.Common;
 using ECommerce.Infrastructure.Persistence;
 using ECommerce.Infrastructure.Persistence.Seed;
 using ECommerce.Infrastructure.Repositories;
 using ECommerce.Infrastructure.Services;
-using ECommerce.Infrastructure.Services.Payments;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Minio;
-using Minio.Helper;
 using StackExchange.Redis;
 using VNPAY.NET;
 
@@ -44,6 +43,8 @@ namespace ECommerce.Infrastructure
                     .Build();
             });
 
+            services.AddScoped<IMediaFileService, MediaFileService>();
+
             //Redis
             services.AddSingleton<IConnectionMultiplexer>(sp => { 
                 var configuration = ConfigurationOptions.Parse("localhost:6379", true);
@@ -52,8 +53,6 @@ namespace ECommerce.Infrastructure
 
             //VNPay
             services.Configure<VNPaySettings>(configuration.GetSection("VnPay"));
-            
-            services.AddScoped<IMediaFileService, MediaFileService>();
 
             services.AddRepository(configuration);
             
@@ -89,6 +88,7 @@ namespace ECommerce.Infrastructure
                                                             IConfiguration configuration)
         {
             services.AddScoped<IJWTAuthService, JWTAuthService>();
+            services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
 
             return services;
         }

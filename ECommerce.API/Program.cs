@@ -13,8 +13,7 @@ builder.Services.AddCustomIdentity(builder.Configuration);
 builder.Services.AddJWTAuthentication(builder.Configuration);
 builder.Services.AddCustomAuthorization(builder.Configuration);
 
-builder.Services.Configure<JwtSettings>(
-    builder.Configuration.GetSection("Jwt"));
+
 
 builder.Services.AddApplication();
 

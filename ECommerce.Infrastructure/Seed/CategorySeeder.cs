@@ -36,7 +36,8 @@ namespace ECommerce.Infrastructure.Persistence.Seed
             foreach (var category in categories)
             {
                 var slug = GenerateSlug(category.Name ?? 
-                                    throw new ArgumentNullException(nameof(category.Name), "Category name cannot be null."));
+                            throw new ArgumentNullException(nameof(category.Name), 
+                                                            "Category name cannot be null."));
                 category.Slug = await GetUniqueSlug(context, slug);
             }
 

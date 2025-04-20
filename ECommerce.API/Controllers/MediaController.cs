@@ -1,3 +1,4 @@
+using AutoMapper;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.DTOs.Common;
 using ECommerce.Application.Interfaces;
@@ -13,9 +14,9 @@ namespace ECommerce.API.Controllers
     {
         private readonly IMediaFileService _mediaService;
 
-        public MediaController(IMediaFileService mediaService, ILogger<MediaController> logger)
-            : 
-            base(logger)
+        public MediaController(IMediaFileService mediaService, 
+                                ILogger<MediaController> logger)
+            : base(logger)
         {
             _mediaService = mediaService;
         }

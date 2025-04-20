@@ -23,7 +23,7 @@ appsettings.json
 
 # Database Configuration
 ```sh
-"Host=;Port=5432;Database=ecommerce_db;Username=root;Password=root"
+"Host=database;Port=5432;Database=ecommerce_db;Username=root;Password=root"
 ```
 ## 🧠 Remember: In Docker, the host name to connect to the database should be database (the name of the service in docker-compose.yml), not localhost.
 
@@ -66,6 +66,11 @@ dotnet ef migrations add [Migration-Msg] --project ECommerce.Infrastructure --st
 
 ### Replace [MigrationName] with a descriptive name for your migration.
 
+### Then, change back database config to localhost
+```sh
+"Host=localhost;Port=5432;Database=ecommerce_db;Username=root;Password=root"
+```
+
 ## -- Apply Migrations to the Database --
 ```sh
 dotnet ef database update --project ECommerce.Infrastructure --startup-project ECommerce.API
@@ -79,3 +84,6 @@ cd .\ECommerce.API\
 ```sh
 dotnet run seed
 ```
+
+### ⚠️ Note:
+If it give error when seed, try again for a few times

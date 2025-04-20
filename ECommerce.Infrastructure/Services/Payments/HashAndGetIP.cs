@@ -23,7 +23,6 @@ namespace ECommerce.Infrastructure.Extensions
             return hash.ToString();
         }
      
-
         internal static string GetIpAddress(HttpContext httpContext)
         {
             string? ipAddress = string.Empty;
