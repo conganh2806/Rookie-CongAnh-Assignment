@@ -29,7 +29,7 @@ appsettings.json
 
 # Minio Configuration
 ## -- In appsettings.*.json, if in Development environment, settings like this
-```markdown
+<pre lang="md">
 ```json
 "MinioSettings": {
   "Endpoint": "localhost:9000",
@@ -38,6 +38,7 @@ appsettings.json
   "BucketName": "ecommerce-media",
   "UseSSL": false
 }
+</pre>
 ### Note that access key and secret key must get from env file
 
 # VNPAY Configuration
@@ -53,6 +54,10 @@ docker compose up --build
 docker compose up -d 
 ```
 
+## ⚠️ Note:
+After deploying to Docker, if you want to run the application **outside Docker (locally)**, make sure to change `"Host=database"` back to `"Host=localhost"` in your `appsettings.*.json`.
+## -- Finally, run 
+
 # Entity Framework Core
 ## -- Add a new migration -- 
 ```sh
@@ -65,6 +70,7 @@ dotnet ef migrations add [Migration-Msg] --project ECommerce.Infrastructure --st
 ```sh
 dotnet ef database update --project ECommerce.Infrastructure --startup-project ECommerce.API
 ```
+
 
 ## -- Run seed command --
 ```sh
