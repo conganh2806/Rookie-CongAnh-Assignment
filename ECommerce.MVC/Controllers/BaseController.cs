@@ -49,5 +49,10 @@ namespace ECommerce.MVC.Controllers
                 message
             });
         }
+
+        protected string? GetUserId()
+        {
+            return User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        }
     }
 }
