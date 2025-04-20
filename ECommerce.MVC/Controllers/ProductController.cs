@@ -1,3 +1,4 @@
+using ECommerce.Application.Common.Utilities.Exceptions;
 using ECommerce.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +25,7 @@ namespace ECommerce.MVC.Controllers
         public async Task<IActionResult> GetProductsByCategory(string categoryId)
         {
             var products = await _productService.GetByCategoryAsync(categoryId);
+
             return PartialView("Partials/ProductList", products);
         }
 
@@ -31,6 +33,11 @@ namespace ECommerce.MVC.Controllers
         public async Task<IActionResult> Detail(string slug, string id)
         {
             var product = await _productService.GetDetails(id);
+
+            if(product is null)
+            {
+                throw new NotFoundException("Product not found !");
+            }
 
             return View("ProductDetail", product);
         }
