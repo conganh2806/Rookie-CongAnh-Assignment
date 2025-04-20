@@ -4,14 +4,19 @@ using ECommerce.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllersWithViews();
+
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddMVCService(builder.Configuration);
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
 builder.Services.AddCustomIdentity(builder.Configuration);
 
-builder.Services.AddCookieAuthentication(builder.Configuration);
 builder.Services.AddAuthorization();
-builder.Services.AddControllersWithViews();
+
 builder.Services.AddApplication();
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorPages();
 
@@ -19,7 +24,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();    
+    app.UseDeveloperExceptionPage();
 }
 else
 {
@@ -27,20 +32,19 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
-app.UseRouting();
+// app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();  
+app.UseCookiePolicy();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
+app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=Login}/{id?}")
-    .WithStaticAssets();
-
-app.MapRazorPages()
-   .WithStaticAssets();
+    pattern: "{controller=Home}/{action=Index}");
 
 app.Run();
+

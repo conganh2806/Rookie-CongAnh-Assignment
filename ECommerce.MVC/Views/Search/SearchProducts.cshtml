@@ -1,0 +1,159 @@
+@model List<ProductDTO>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/search-results.css" />
+}
+
+<div class="search-results-container">
+    <div class="search-header">
+        <h2>'@ViewData["Query"]' - search results</h2>
+        <p>@Model.Count items</p>
+        <hr />
+    </div>
+
+    <div class="main-content-container">
+        <!-- Categories Sidebar -->
+        <div class="filter-sidebar">
+            <h4>Categories</h4>
+            <div class="category-group">
+                <div class="category-parent"><span>Gaming</span> <span class="count">238</span></div>
+                <div class="category-child"><span>Games</span> <span class="count">143</span></div>
+                <div class="category-child"><span>DLCs</span> <span class="count">59</span></div>
+                <div class="category-child"><span>Points & Currencies</span> <span class="count">29</span></div>
+                <div class="category-child"><span>Gaming Subscriptions</span> <span class="count">4</span></div>
+                <div class="category-child"><span>Gaming Gift Cards</span> <span class="count">2</span></div>
+                <div class="category-child"><span>Random</span> <span class="count">1</span></div>
+            </div>
+
+            <div class="category-group">
+                <div class="category-parent"><span>Mobile Games</span> <span class="count">3</span></div>
+            </div>
+
+            <div class="category-group">
+                <div class="category-parent"><span>Other</span> <span class="count">3</span></div>
+            </div>
+
+            <h4>Price (USD)</h4>
+            <div class="price-filter">
+                <div class="price-inputs">
+                    <input type="text" placeholder="From" class="form-control" />
+                    <span class="separator">-</span>
+                    <input type="text" placeholder="To" class="form-control" />
+                </div>
+            </div>
+
+            <h4>Availability</h4>
+            <div class="availability-filter">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="available-items" />
+                    <label for="available-items">Items available in</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="search-results">
+            <div class="results-header">
+                <div class="view-options">
+                    <button class="btn-view list-view active"><i class="fas fa-list"></i></button>
+                    <button class="btn-view grid-view"><i class="fas fa-th-large"></i></button>
+                </div>
+                <div class="sort-options">
+                    <span>Sort by</span>
+                    <select class="form-select">
+                        <option selected>Best match</option>
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="product-list">
+                @foreach (var product in Model)
+                {
+                    <div class="product-card" data-id="@product.Id" data-slug="@product.Slug">
+                        <div class="product-image">
+                            <img src="@Html.BuildMediaUrl(product.ImageURL)" alt="@product.Name" />
+                        </div>
+
+                        <div class="product-details">
+                            <h4 class="product-title">@product.Name</h4>
+
+                            <div class="product-meta">
+                                <div class="meta-row">
+                                    <span class="meta-label">Platform</span>
+                                    <span class="meta-value">Microsoft Store</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span class="meta-label">Type</span>
+                                    <span class="meta-value">Key</span>
+                                </div>
+                                <div class="meta-row">
+                                    <span class="meta-label">Region</span>
+                                    <span class="meta-value">GLOBAL</span>
+                                </div>
+
+                                <div class="activation-info">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span class="activation-badge">Can activate in: Vietnam</span>
+                                </div>
+
+                                @if (product.IsFeatured)
+                                {
+                                    <div class="sponsored-tag">SPONSORED</div>
+                                }
+
+                                <div class="product-price">
+                                    <div class="current-price">
+                                        @product.Price.ToString("0.00") USD
+                                    </div>
+
+                                    @if (product.Discount > 0 && product.Discount < 100)
+                                    {
+                                        decimal originalPrice = product.Price / (1 - (decimal)product.Discount / 100);
+
+                                        <div class="original-price">
+                                            @originalPrice.ToString("0.00") USD
+                                        </div>
+
+                                        <div class="discount-badge">
+                                            -@product.Discount.ToString("0")%
+                                        </div>
+                                    }
+                                    else if (product.Discount == 100)
+                                    {
+                                        <div class="original-price">FREE</div>
+                                        <div class="discount-badge">-100%</div>
+                                    }
+                                </div>
+
+                                <button class="btn-favorite">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.product-card').on('click', function () {
+            const productId = $(this).data('id');
+            const slug = $(this).data('slug');
+            if (productId && slug) {
+                window.location.href = '/products/' + slug + '-i' + productId;
+            }
+        });
+
+        $('.btn-favorite').on('click', function (e) {
+            e.stopPropagation(); 
+            const icon = $(this).find('i');
+            icon.toggleClass('far fas'); 
+        });
+    });
+</script>

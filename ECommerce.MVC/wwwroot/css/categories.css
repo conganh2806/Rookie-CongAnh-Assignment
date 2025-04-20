@@ -1,0 +1,129 @@
+.categories-nav {
+    background-color: #222;
+    padding: 10px 0;
+    position: relative;
+}
+
+.category-dropdown {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.category-dropdown button {
+    background: none;
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.category-dropdown #toggleCategories {
+    background-color: #222;
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+}
+
+.category-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.category-item {
+    position: relative;
+    background: #f1f1f1; 
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+
+.category-item a {
+    padding: 10px;
+    display: block;
+    text-decoration: none !important;
+    background: inherit;
+    color: #333 !important;
+}
+
+
+.category-item:hover .subcategory-dropdown {
+    display: block;
+}
+
+.category-item:hover a {
+    background-color: #f1f1f1;
+}
+
+.subcategory-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.subcategory-item {
+    position: relative;
+    padding: 10px;
+}
+
+.subcategory-item a {
+    padding: 5px 15px;
+    text-decoration: none !important;
+    background: #e9e9e9;
+    color: #333 !important; 
+}
+
+.subcategory-dropdown {
+    display: none;
+    position: absolute;
+    left: 100%; 
+    top: 0;
+    background: #f9f9f9; 
+    border: 1px solid #ddd; 
+    z-index: 10;
+    width: auto;
+    white-space: nowrap;
+}
+
+.subcategory-dropdown .subcategory-list {
+    position: absolute;
+    left: 100%; 
+    top: 0;
+}
+
+.custom-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 250px;
+    background-color: #111;
+    z-index: 1000;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+}
+
+.custom-dropdown-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.custom-dropdown-menu ul li {
+    padding: 12px 20px;
+    border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    background: #f1f1f1;
+}
+
+.custom-dropdown-menu ul li:hover {
+    background-color: #f1f1f1;
+}
+
+.custom-dropdown-menu ul li:after {
+    content: "›";
+    font-size: 20px;
+}

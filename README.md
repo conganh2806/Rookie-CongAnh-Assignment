@@ -1,7 +1,11 @@
 # Game Ecommerce
+![LOGO](./assets/image.png)
 
 ## Project Setup
 ### Note: All commands must be run from the ./Ecommerce directory.
+
+## Setup .env
+### Rename .env.example to .env and start config
 
 ## Development Environment
 ### 1. Copy the appsettings.example.json file.
@@ -17,6 +21,43 @@ appsettings.Development.json
 appsettings.json
 ```
 
+# Database Configuration
+```sh
+"Host=database;Port=5432;Database=ecommerce_db;Username=root;Password=root"
+```
+## 🧠 Remember: In Docker, the host name to connect to the database should be database (the name of the service in docker-compose.yml), not localhost.
+
+# Minio Configuration
+## -- In appsettings.*.json, if in Development environment, settings like this
+<pre lang="md">
+```json
+"MinioSettings": {
+  "Endpoint": "localhost:9000",
+  "AccessKey": "${MINIO_ROOT_USER}",
+  "SecretKey": "${MINIO_ROOT_PASSWORD}",
+  "BucketName": "ecommerce-media",
+  "UseSSL": false
+}
+</pre>
+### Note that access key and secret key must get from env file
+
+# VNPAY Configuration
+🚧 *This section is currently under development.* 
+
+## -- Deploy to docker -- 
+### Build and run
+```sh
+docker compose up --build
+```
+### Run 
+```sh 
+docker compose up -d 
+```
+
+## ⚠️ Note:
+After deploying to Docker, if you want to run the application **outside Docker (locally)**, make sure to change `"Host=database"` back to `"Host=localhost"` in your `appsettings.*.json`.
+## -- Finally, run 
+
 # Entity Framework Core
 ## -- Add a new migration -- 
 ```sh
@@ -25,17 +66,24 @@ dotnet ef migrations add [Migration-Msg] --project ECommerce.Infrastructure --st
 
 ### Replace [MigrationName] with a descriptive name for your migration.
 
+### Then, change back database config to localhost
+```sh
+"Host=localhost;Port=5432;Database=ecommerce_db;Username=root;Password=root"
+```
+
 ## -- Apply Migrations to the Database --
 ```sh
 dotnet ef database update --project ECommerce.Infrastructure --startup-project ECommerce.API
 ```
 
-## -- Deploy to docker -- 
-### Build
+
+## -- Run seed command --
 ```sh
-docker compose up --build
+cd .\ECommerce.API\
 ```
-### Run 
-```sh 
-docker compose up -d 
+```sh
+dotnet run seed
 ```
+
+### ⚠️ Note:
+If it give error when seed, try again for a few times

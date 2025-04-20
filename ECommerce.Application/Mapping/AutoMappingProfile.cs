@@ -1,6 +1,9 @@
 using AutoMapper;
 using ECommerce.Application.DTOs;
+using ECommerce.Application.DTOs.Common;
+using ECommerce.Application.DTOs.Request;
 using ECommerce.Domain.Entities;
+using ECommerce.Domain.Entities.ApplicationUser;
 
 namespace ECommerce.Application.Mapping
 {
@@ -8,13 +11,22 @@ namespace ECommerce.Application.Mapping
     {
         public AutoMappingProfile()
         {
-            CreateMap<Product, ProductDTO>()
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => 
-                        src.Categories != null && src.Categories.Any()
-                            ? src.Categories.First().Name
-                            : string.Empty
-                    ));
-
+            CreateMap<Product, ProductDTO>().ForMember(dest => dest.CategoryNames,
+                                opt => opt.MapFrom(src => src.Categories.Select(c => c.Name)));
+            CreateMap<Product, ProductFeatureResponse>();
+            CreateMap<Product, ProductDetailResponse>();
+            CreateMap<ProductCreateRequest, Product>();
+            CreateMap<ProductUpdateRequest, Product>();
+            CreateMap<Category, CategoryDto>();
+            CreateMap<CategoryCreateRequest, Category>();
+            CreateMap<CategoryUpdateRequest, Category>();
+            CreateMap<OrderCreateRequest, Order>();
+            CreateMap<OrderUpdateRequest, Order>();
+            CreateMap<Order, OrderDto>();
+            CreateMap<UserDto, User>();
+            CreateMap<UserUpdateRequest, User>();
+            CreateMap<User, UserDto>();
+            CreateMap<CreateMediaFileRequest, UploadMediaFileResponse>();
         }
     }
 }

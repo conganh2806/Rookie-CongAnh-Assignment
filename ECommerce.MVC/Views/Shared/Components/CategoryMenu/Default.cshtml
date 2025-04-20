@@ -1,0 +1,19 @@
+@model List<CategoryDto>
+
+<ul>
+    @foreach (var category in Model)
+    {
+        <li class="category-item">
+            <a href="/products/categories?categoryId=@category.Id">
+                @category.Name
+            </a>
+
+            @if (category.SubCategories != null && category.SubCategories.Any())
+            {
+                <div class="subcategory-dropdown">
+                    <partial name="Partials/CategoryChildren" model="@category.SubCategories" />
+                </div>
+            }
+        </li>
+    }
+</ul>

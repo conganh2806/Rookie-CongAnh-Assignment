@@ -5,13 +5,15 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using ECommerce.Application.Settings;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace ECommerce.Infrastructure.Extensions
 {
     public static partial class ExtensionMethods
     {
         public static IServiceCollection AddJWTAuthentication(this IServiceCollection services,
-                                                                        IConfiguration configuration)
+                                                                IConfiguration configuration)
         {
             var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
 
@@ -37,17 +39,18 @@ namespace ECommerce.Infrastructure.Extensions
         }
 
         public static IServiceCollection AddCookieAuthentication(this IServiceCollection services, 
-                                                                        IConfiguration configuration)
+                                                                IConfiguration configuration)
         {
-            services.AddAuthentication(options => {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            })
-            .AddCookie(options => {
-                options.LoginPath = "/Account/Login";
-                options.LogoutPath = "/Account/Logout";
-                options.AccessDeniedPath = "/Account/AccessDenied";
-            });
+            services.AddAuthentication(IdentityConstants.ApplicationScheme)
+                    .AddCookie(IdentityConstants.ApplicationScheme, options =>
+                    {
+                        options.LoginPath = "/Account/Login";
+                        options.LogoutPath = "/Account/Logout";
+                        options.AccessDeniedPath = "/Account/AccessDenied";
+                        options.Cookie.Name = ".ECommerce.Auth";
+                        options.SlidingExpiration = true;
+                        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+                    });
 
             return services;
         }

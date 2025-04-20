@@ -16,10 +16,11 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public IQueryable<User> Ts =>  _context.Users.AsQueryable();
+    public IQueryable<User> Entity => _context.Users.AsQueryable();
 
     public void Add(User user)
     {
+        System.Console.WriteLine($"Add: {user.LastName}");
         _context.Users.Add(user);
     }
 
