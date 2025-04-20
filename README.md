@@ -21,6 +21,12 @@ appsettings.Development.json
 appsettings.json
 ```
 
+# Database Configuration
+```sh
+"Host=;Port=5432;Database=ecommerce_db;Username=root;Password=root"
+```
+## 🧠 Remember: In Docker, the host name to connect to the database should be database (the name of the service in docker-compose.yml), not localhost.
+
 # Minio Configuration
 ## -- In appsettings.*.json, if in Development environment, settings like this
 ```markdown
@@ -38,7 +44,7 @@ appsettings.json
 🚧 *This section is currently under development.* 
 
 ## -- Deploy to docker -- 
-### Build
+### Build and run
 ```sh
 docker compose up --build
 ```
