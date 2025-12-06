@@ -1,13 +1,13 @@
 using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
-using ECommerce.MVC.Models;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using ECommerce.Application.Interfaces;
 using ECommerce.Application.Services;
+using ECommerce.Domain.Entities.ApplicationUser;
+using ECommerce.MVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
-using ECommerce.Domain.Entities.ApplicationUser;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.MVC.Controllers
 {
@@ -17,19 +17,21 @@ namespace ECommerce.MVC.Controllers
         private readonly ICategoryService _categoryService;
         private readonly UserManager<User> _userManager;
 
-        public HomeController(ICategoryService categoryService,
-                             IProductService productService,
-                            ILogger<HomeController> logger,
-                            UserManager<User> userManager)
+        public HomeController(
+            ICategoryService categoryService,
+            IProductService productService,
+            ILogger<HomeController> logger,
+            UserManager<User> userManager
+        )
             : base(logger)
         {
             _categoryService = categoryService;
             _productService = productService;
             _userManager = userManager;
         }
-        
+
         public IActionResult Index()
-        {   
+        {
             return View();
         }
 
@@ -41,11 +43,12 @@ namespace ECommerce.MVC.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel 
-            { 
-                RequestId = Activity.Current?.Id ?? 
-                HttpContext.TraceIdentifier 
-            });
+            return View(
+                new ErrorViewModel
+                {
+                    RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+                }
+            );
         }
     }
 }

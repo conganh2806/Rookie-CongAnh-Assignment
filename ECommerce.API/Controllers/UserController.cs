@@ -1,10 +1,9 @@
-using AutoMapper;
+using System.Net;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Services;
 using ECommerce.Domain.Entities.ApplicationUser;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace ECommerce.API.Controllers
 {
@@ -15,8 +14,8 @@ namespace ECommerce.API.Controllers
     {
         private readonly IUserService _userService;
 
-        public UserController(ILogger<User> logger, IUserService userService) 
-        : base(logger)
+        public UserController(ILogger<User> logger, IUserService userService)
+            : base(logger)
         {
             _userService = userService;
         }
@@ -33,7 +32,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> GetById(string id)
         {
             var user = await _userService.GetByIdAsync(id);
-            if (user == null) 
+            if (user == null)
             {
                 return Error("User not found", HttpStatusCode.NotFound);
             }
@@ -44,11 +43,12 @@ namespace ECommerce.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] UserUpdateRequest request)
         {
-            if (!ModelState.IsValid) return Error("Error validate", HttpStatusCode.BadRequest);
+            if (!ModelState.IsValid)
+                return Error("Error validate", HttpStatusCode.BadRequest);
 
             var user = await _userService.UpdateAsync(id, request);
 
-            if (user == null) 
+            if (user == null)
             {
                 return Error("User not found", HttpStatusCode.NotFound);
             }
@@ -61,8 +61,7 @@ namespace ECommerce.API.Controllers
         {
             await _userService.DeleteAsync(id);
 
-            return Success<User?>(null, "Delete user successfully.");  
+            return Success<User?>(null, "Delete user successfully.");
         }
-
     }
 }

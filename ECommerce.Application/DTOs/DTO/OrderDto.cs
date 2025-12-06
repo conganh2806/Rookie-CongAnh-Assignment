@@ -11,5 +11,5 @@ namespace ECommerce.Application.DTOs
         public PaymentStatus PaymentStatus { get; set; }
         public OrderStatus Status { get; set; }
         public string? Note { get; set; }
-    }    
+    }
 }

@@ -1,12 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.MVC.Models;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using CommunityToolkit.HighPerformance.Helpers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerce.MVC.Controllers
 {
@@ -14,7 +12,7 @@ namespace ECommerce.MVC.Controllers
     {
         private readonly ICookieAuthService _authService;
 
-        public AccountController(ICookieAuthService authService, ILogger<AccountController> logger) 
+        public AccountController(ICookieAuthService authService, ILogger<AccountController> logger)
             : base(logger)
         {
             _authService = authService;
@@ -38,7 +36,7 @@ namespace ECommerce.MVC.Controllers
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Email = model.Email,
-                Password = model.Password
+                Password = model.Password,
             };
 
             var result = await _authService.RegisterAsync(request);
@@ -67,12 +65,8 @@ namespace ECommerce.MVC.Controllers
         {
             if (!ModelState.IsValid)
                 return View(model);
-                
-            var request = new LoginRequest
-            {
-                Email = model.Email,
-                Password = model.Password
-            };
+
+            var request = new LoginRequest { Email = model.Email, Password = model.Password };
 
             var result = await _authService.LoginAsync(request);
 
@@ -81,7 +75,7 @@ namespace ECommerce.MVC.Controllers
                 ModelState.AddModelError("", "Email or password is incorrect.");
                 return View(model);
             }
-            
+
             return RedirectToAction("Index", "Home");
         }
 
@@ -100,16 +94,16 @@ namespace ECommerce.MVC.Controllers
                 return RedirectToAction("Login");
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var email  = User.FindFirst(ClaimTypes.Email)?.Value;
-            var first  = User.FindFirst(ClaimTypes.GivenName)?.Value;
-            var last   = User.FindFirst(ClaimTypes.Surname)?.Value;
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var first = User.FindFirst(ClaimTypes.GivenName)?.Value;
+            var last = User.FindFirst(ClaimTypes.Surname)?.Value;
 
             var model = new ProfileViewModel
             {
-                UserId    = userId!,
-                Email     = email!,
+                UserId = userId!,
+                Email = email!,
                 FirstName = first!,
-                LastName  = last!
+                LastName = last!,
             };
             return View(model);
         }
@@ -117,12 +111,12 @@ namespace ECommerce.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> SimpleLogin()
         {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, "testuser@example.com")
-            };
+            var claims = new List<Claim> { new Claim(ClaimTypes.Name, "testuser@example.com") };
 
-            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var identity = new ClaimsIdentity(
+                claims,
+                CookieAuthenticationDefaults.AuthenticationScheme
+            );
             var principal = new ClaimsPrincipal(identity);
 
             await HttpContext.SignInAsync(
@@ -131,8 +125,9 @@ namespace ECommerce.MVC.Controllers
                 new AuthenticationProperties
                 {
                     IsPersistent = true,
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30)
-                });
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30),
+                }
+            );
 
             return RedirectToAction("Protected");
         }

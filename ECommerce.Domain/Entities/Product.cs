@@ -3,8 +3,8 @@ using ECommerce.Domain.Entities.Enum;
 namespace ECommerce.Domain.Entities
 {
     public class Product : BaseEntity
-    { 
-        public string Slug { get; set; } = default!; 
+    {
+        public string Slug { get; set; } = default!;
         public string? Description { get; set; }
         public decimal Price { get; set; }
         public float Discount { get; set; }
@@ -13,9 +13,8 @@ namespace ECommerce.Domain.Entities
         public ProductStatus ProductStatus { get; set; }
         public string? ImageURL { get; set; }
         public bool IsFeatured { get; set; }
-        
+
         public virtual ICollection<Category> Categories { get; set; } = new List<Category>();
         public virtual OrderDetail OrderDetail { get; set; } = default!;
-
     }
 }

@@ -22,7 +22,8 @@ namespace ECommerce.Infrastructure.Services
             IOptions<MinioSettings> options,
             IMinioClient minioClient,
             IMediaFileRepository mediaFileRepository,
-            IProductRepository productRepository)
+            IProductRepository productRepository
+        )
         {
             _minio = options.Value;
             _minioClient = minioClient;
@@ -30,8 +31,11 @@ namespace ECommerce.Infrastructure.Services
             _productRepository = productRepository;
         }
 
-        public async Task<string> CreatePresignedUrlAsync(CreatePresignedUrlRequest request, 
-                                                            string objectType, string objectId)
+        public async Task<string> CreatePresignedUrlAsync(
+            CreatePresignedUrlRequest request,
+            string objectType,
+            string objectId
+        )
         {
             var fileExtension = request.ContentType.Split("/")[1];
 
@@ -62,7 +66,7 @@ namespace ECommerce.Infrastructure.Services
                 ObjectType = objectType,
                 ObjectId = objectId,
                 S3Key = s3Key,
-                IsUpload = false
+                IsUpload = false,
             };
 
             _mediaFileRepository.Add(mediaFile);
@@ -70,16 +74,19 @@ namespace ECommerce.Infrastructure.Services
 
             // Create PresignUrl
             var presignedUrl = await _minioClient.PresignedPutObjectAsync(
-                new PresignedPutObjectArgs().WithBucket(_minio.BucketName)
-                                            .WithObject(s3Key)
-                                            .WithExpiry(_minio.ExpiredHoursPresignUrl * 3600));
+                new PresignedPutObjectArgs()
+                    .WithBucket(_minio.BucketName)
+                    .WithObject(s3Key)
+                    .WithExpiry(_minio.ExpiredHoursPresignUrl * 3600)
+            );
 
             return presignedUrl;
         }
 
         public async Task<string> UploadFileAsync(CreateMediaFileRequest request)
         {
-            var s3Key = $"{request.ObjectType}/{Guid.NewGuid()}.{request.FileExtension.TrimStart('.')}";
+            var s3Key =
+                $"{request.ObjectType}/{Guid.NewGuid()}.{request.FileExtension.TrimStart('.')}";
 
             var bucketExists = await _minioClient.BucketExistsAsync(
                 new BucketExistsArgs().WithBucket(_minio.BucketName)
@@ -88,7 +95,8 @@ namespace ECommerce.Infrastructure.Services
             if (!bucketExists)
             {
                 await _minioClient.MakeBucketAsync(
-                    new MakeBucketArgs().WithBucket(_minio.BucketName));
+                    new MakeBucketArgs().WithBucket(_minio.BucketName)
+                );
             }
 
             await CheckExistMediaFileRecord(request.ObjectType, request.ObjectId, s3Key);
@@ -101,22 +109,21 @@ namespace ECommerce.Infrastructure.Services
                 ObjectType = request.ObjectType,
                 ObjectId = request.ObjectId,
                 S3Key = s3Key,
-                IsUpload = true
+                IsUpload = true,
             };
 
             _mediaFileRepository.Add(mediaFile);
 
-
-            var resp = await _minioClient.PutObjectAsync(new PutObjectArgs()
-                .WithBucket(_minio.BucketName)
-                .WithObject(s3Key)
-                .WithStreamData(request.FileStream)
-                .WithObjectSize(request.FileStream.Length)
-                .WithContentType(request.ContentType)
+            var resp = await _minioClient.PutObjectAsync(
+                new PutObjectArgs()
+                    .WithBucket(_minio.BucketName)
+                    .WithObject(s3Key)
+                    .WithStreamData(request.FileStream)
+                    .WithObjectSize(request.FileStream.Length)
+                    .WithContentType(request.ContentType)
             );
 
-            await UpdateImageUrl(objectType: request.ObjectType, 
-                                    objectId: request.ObjectId, s3Key);
+            await UpdateImageUrl(objectType: request.ObjectType, objectId: request.ObjectId, s3Key);
 
             await _mediaFileRepository.UnitOfWork.SaveChangesAsync();
 
@@ -125,8 +132,9 @@ namespace ECommerce.Infrastructure.Services
 
         public async Task UpdateStatusMediaFileAsync(string s3Key)
         {
-            var mediaFile = await _mediaFileRepository.Entity.FirstOrDefaultAsync(
-                                                                s => s.S3Key == s3Key);
+            var mediaFile = await _mediaFileRepository.Entity.FirstOrDefaultAsync(s =>
+                s.S3Key == s3Key
+            );
 
             if (mediaFile == null)
             {
@@ -144,18 +152,22 @@ namespace ECommerce.Infrastructure.Services
             await _mediaFileRepository.UnitOfWork.SaveChangesAsync();
         }
 
-        private async Task CheckExistMediaFileRecord(string objectType, string objectId, 
-                                                    string s3Key)
+        private async Task CheckExistMediaFileRecord(
+            string objectType,
+            string objectId,
+            string s3Key
+        )
         {
-            var existedRecord = await _mediaFileRepository.Entity
-            .FirstOrDefaultAsync(_ => _.ObjectId == objectId && _.ObjectType == objectType);
+            var existedRecord = await _mediaFileRepository.Entity.FirstOrDefaultAsync(_ =>
+                _.ObjectId == objectId && _.ObjectType == objectType
+            );
 
             if (existedRecord is not null)
             {
                 _mediaFileRepository.Delete(existedRecord);
-                await _minioClient.RemoveObjectAsync(new RemoveObjectArgs()
-                    .WithBucket(_minio.BucketName)
-                    .WithObject(s3Key));
+                await _minioClient.RemoveObjectAsync(
+                    new RemoveObjectArgs().WithBucket(_minio.BucketName).WithObject(s3Key)
+                );
             }
         }
 
@@ -164,9 +176,9 @@ namespace ECommerce.Infrastructure.Services
             switch (objectType)
             {
                 case "product":
-                    var product = await _productRepository.Entity.FirstOrDefaultAsync(
-                        p => p.Id == objectId
-                        );
+                    var product = await _productRepository.Entity.FirstOrDefaultAsync(p =>
+                        p.Id == objectId
+                    );
 
                     if (product is null)
                     {
@@ -177,11 +189,8 @@ namespace ECommerce.Infrastructure.Services
 
                     break;
                 default:
-                    throw new NotSupportedException(
-                        $"ObjectType '{objectType}' is not supported."
-                    );
+                    throw new NotSupportedException($"ObjectType '{objectType}' is not supported.");
             }
-
         }
     }
 }

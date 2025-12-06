@@ -1,11 +1,11 @@
-using Moq;
 using AutoMapper;
-using ECommerce.Application.Services;
-using ECommerce.Domain.Interfaces;
-using ECommerce.Domain.Entities;
-using ECommerce.Application.DTOs;
 using ECommerce.Application.Domain.Interfaces;
+using ECommerce.Application.DTOs;
 using ECommerce.Application.DTOs.Request;
+using ECommerce.Application.Services;
+using ECommerce.Domain.Entities;
+using ECommerce.Domain.Interfaces;
+using Moq;
 
 namespace ECommerce.Tests.Services.Products
 {
@@ -24,16 +24,19 @@ namespace ECommerce.Tests.Services.Products
             _mockMapper = new Mock<IMapper>();
 
             _mockUnitOfWork = new Mock<IUnitOfWork>();
-            _mockUnitOfWork.Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(1);
+            _mockUnitOfWork
+                .Setup(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(1);
 
-            _mockProductRepo.Setup(r => r.UnitOfWork)
-                .Returns(_mockUnitOfWork.Object);
+            _mockProductRepo.Setup(r => r.UnitOfWork).Returns(_mockUnitOfWork.Object);
 
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Product, ProductDTO>().ForMember(dest => dest.CategoryNames,
-                            opt => opt.MapFrom(src => src.Categories.Select(c => c.Name)));
+                cfg.CreateMap<Product, ProductDTO>()
+                    .ForMember(
+                        dest => dest.CategoryNames,
+                        opt => opt.MapFrom(src => src.Categories.Select(c => c.Name))
+                    );
                 cfg.CreateMap<Product, ProductDetailResponse>();
                 cfg.CreateMap<ProductCreateRequest, Product>();
                 cfg.CreateMap<ProductUpdateRequest, Product>();

@@ -12,7 +12,7 @@ services:
       - ASPNETCORE_URLS=http://+:5017
     networks: [docker-network]
 
-  mvc: 
+  mvc:
     container_name: ${PROJECT_NAME}_mvc
     build:
       dockerfile: ./${PROJECT_NAME}.MVC/Dockerfile
@@ -35,7 +35,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - ./${PROJECT_NAME}.Deployment/postgres/.data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     networks: [docker-network]
 
   redis:
@@ -45,8 +45,7 @@ services:
     ports:
       - "${REDIS_PORT}:6379"
     volumes:
-      - ./${PROJECT_NAME}.Deployment/redis/.data/db:/root/redis
-      - ./${PROJECT_NAME}.Deployment/redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - redis_data:/data
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_PORT=${REDIS_PORT}
@@ -58,8 +57,8 @@ services:
     container_name: ${PROJECT_NAME}_minio
     restart: unless-stopped
     ports:
-      - "${MINIO_PORT_S3_API}:9000"     # S3 API
-      - "${MINIO_PORT_CONSOLE}:9001"     # Console
+      - "${MINIO_PORT_S3_API}:9000" # S3 API
+      - "${MINIO_PORT_CONSOLE}:9001" # Console
     volumes:
       - ./${PROJECT_NAME}.Deployment/minio/data:/data
     environment:
@@ -71,3 +70,7 @@ services:
 networks:
   docker-network:
     driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

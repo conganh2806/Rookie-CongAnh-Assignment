@@ -15,9 +15,8 @@ namespace ECommerce.API.Controllers
     {
         private readonly IJWTAuthService _jwtService;
 
-        public AuthController(IJWTAuthService jwtService, 
-                                ILogger<AuthController> logger) 
-                : base(logger)
+        public AuthController(IJWTAuthService jwtService, ILogger<AuthController> logger)
+            : base(logger)
         {
             _jwtService = jwtService;
         }
@@ -36,7 +35,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var result = await _jwtService.LoginAsync(request);
-            return result == null 
+            return result == null
                 ? Error(Constants.LOGIN_ERROR, HttpStatusCode.Unauthorized)
                 : Success(result, Constants.LOGIN_SUCCESS);
         }
@@ -45,7 +44,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
         {
             var result = await _jwtService.RefreshTokenAsync(request);
-            if (result == null) 
+            if (result == null)
             {
                 throw new UnAuthorizedException("Refresh token not valid or expired!");
             }

@@ -18,10 +18,12 @@ namespace ECommerce.API.Controllers
         private readonly IProductService _productService;
         private readonly IMediaFileService _mediaFileService;
 
-        public ProductsController(IProductService productService, 
-                                    ILogger<Product> logger,
-                                    IMediaFileService mediaFileService)
-                : base(logger)
+        public ProductsController(
+            IProductService productService,
+            ILogger<Product> logger,
+            IMediaFileService mediaFileService
+        )
+            : base(logger)
         {
             _productService = productService;
             _mediaFileService = mediaFileService;
@@ -40,7 +42,7 @@ namespace ECommerce.API.Controllers
         {
             var product = await _productService.GetByIdAsync(id);
 
-            if (product == null) 
+            if (product == null)
             {
                 return Error("Product not found", HttpStatusCode.NotFound);
             }
@@ -67,14 +69,14 @@ namespace ECommerce.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ProductCreateRequest request)
         {
-            if(!ModelState.IsValid) 
+            if (!ModelState.IsValid)
             {
                 return Error("Error validate", HttpStatusCode.BadRequest);
-            }   
+            }
 
             var product = await _productService.CreateAsync(request);
 
-            if (product == null) 
+            if (product == null)
             {
                 return Error("Product not found", HttpStatusCode.NotFound);
             }
@@ -85,14 +87,14 @@ namespace ECommerce.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] ProductUpdateRequest request)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return Error("Error validate", HttpStatusCode.BadRequest);
-            }   
+            }
 
             var product = await _productService.UpdateAsync(id, request);
 
-            if (product == null) 
+            if (product == null)
             {
                 return Error("Product not found", HttpStatusCode.NotFound);
             }
@@ -104,12 +106,14 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             await _productService.DeleteAsync(id);
-            
+
             return Success<Product?>(null, "Delete product successfully.");
         }
 
         [HttpPost("upload-media")]
-        public async Task<IActionResult> UploadProductMedia([FromForm] UploadMediaFileRequest request)
+        public async Task<IActionResult> UploadProductMedia(
+            [FromForm] UploadMediaFileRequest request
+        )
         {
             var file = request.File;
 
@@ -125,7 +129,7 @@ namespace ECommerce.API.Controllers
                 ContentType = file.ContentType,
                 ObjectType = typeof(Product).Name.ToLower(),
                 ObjectId = request.ProductId,
-                FileStream = file.OpenReadStream()
+                FileStream = file.OpenReadStream(),
             };
 
             var fileUrl = await _mediaFileService.UploadFileAsync(createRequest);
@@ -135,7 +139,7 @@ namespace ECommerce.API.Controllers
                 FileName = createRequest.FileName,
                 FileExtension = createRequest.FileExtension,
                 ContentType = createRequest.ContentType,
-                FileUrl = fileUrl
+                FileUrl = fileUrl,
             };
 
             return Success(response, "Upload media for product success !");

@@ -14,6 +14,7 @@ namespace ECommerce.Application.Services
         private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;
         private readonly IConfigurationProvider _config;
+
         public OrderService(IOrderRepository orderRepository, IMapper mapper)
         {
             _orderRepository = orderRepository;
@@ -23,17 +24,19 @@ namespace ECommerce.Application.Services
 
         public Task<List<OrderDto>> GetAllAsync()
         {
-            return _orderRepository.Entity.ProjectTo<OrderDto>(_config)
-                            .AsNoTracking()
-                            .ToListAsync();
+            return _orderRepository
+                .Entity.ProjectTo<OrderDto>(_config)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public Task<OrderDto?> GetByIdAsync(string id)
         {
-            return _orderRepository.Entity.Where(o => o.Id == id)
-                            .ProjectTo<OrderDto>(_config)
-                            .AsNoTracking()
-                            .FirstOrDefaultAsync();
+            return _orderRepository
+                .Entity.Where(o => o.Id == id)
+                .ProjectTo<OrderDto>(_config)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
         }
 
         public async Task<OrderDto> CreateAsync(OrderCreateRequest request)
@@ -56,11 +59,10 @@ namespace ECommerce.Application.Services
 
         public async Task DeleteAsync(string id)
         {
-            var order = await _orderRepository.Entity.Where(o => o.Id == id)
-                                                    .FirstOrDefaultAsync();
+            var order = await _orderRepository.Entity.Where(o => o.Id == id).FirstOrDefaultAsync();
             if (order == null)
             {
-                throw new NotFoundException($"Order with id {id} not found.");   
+                throw new NotFoundException($"Order with id {id} not found.");
             }
 
             _orderRepository.Delete(order);

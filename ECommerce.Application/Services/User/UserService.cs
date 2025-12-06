@@ -9,7 +9,7 @@ namespace ECommerce.Application.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<User> _userManager;   
+        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
         public UserService(UserManager<User> userManager, IMapper mapper)
@@ -30,7 +30,6 @@ namespace ECommerce.Application.Services
             return _mapper.Map<UserDto>(user);
         }
 
-        
         public async Task<UserDto> UpdateAsync(string id, UserUpdateRequest request)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
@@ -49,7 +48,7 @@ namespace ECommerce.Application.Services
         public async Task DeleteAsync(string id)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
-            
+
             if (user == null)
             {
                 throw new NotFoundException($"User with id: {id} not found.");

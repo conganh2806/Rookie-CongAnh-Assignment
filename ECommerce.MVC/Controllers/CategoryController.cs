@@ -7,8 +7,10 @@ namespace ECommerce.MVC.Controllers
     {
         private readonly ICategoryService _categoryService;
 
-        public CategoryController(ICategoryService categoryService, 
-                                    ILogger<CategoryController> logger) 
+        public CategoryController(
+            ICategoryService categoryService,
+            ILogger<CategoryController> logger
+        )
             : base(logger)
         {
             _categoryService = categoryService;

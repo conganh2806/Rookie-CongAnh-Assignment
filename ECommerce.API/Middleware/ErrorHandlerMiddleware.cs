@@ -10,6 +10,7 @@ namespace ECommerce.API.Middleware
     public class ErrorHandlerMiddleware
     {
         private readonly RequestDelegate _next;
+
         public ErrorHandlerMiddleware(RequestDelegate next)
         {
             _next = next;
@@ -29,7 +30,6 @@ namespace ECommerce.API.Middleware
 
         private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-
             var response = context.Response;
 
             if (response.HasStarted)
@@ -39,7 +39,7 @@ namespace ECommerce.API.Middleware
             var errorDetail = new ErrorDetails()
             {
                 StatusCode = (int)System.Net.HttpStatusCode.InternalServerError,
-                Message = exception.Message
+                Message = exception.Message,
             };
             switch (exception)
             {
@@ -68,7 +68,8 @@ namespace ECommerce.API.Middleware
 
                 case Minio.Exceptions.AuthorizationException e:
                     response.StatusCode = (int)HttpStatusCode.Unauthorized;
-                    errorDetail.Message = @"MinIO authorization failed. 
+                    errorDetail.Message =
+                        @"MinIO authorization failed. 
                                             Please check AccessKey/SecretKey.";
                     break;
 
@@ -97,7 +98,7 @@ namespace ECommerce.API.Middleware
             var serializeOptions = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = SnakeCaseNamingPolicy.Instance,
-                WriteIndented = true
+                WriteIndented = true,
             };
             await response.WriteAsync(JsonSerializer.Serialize(errorDetail, serializeOptions));
         }

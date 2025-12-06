@@ -1,6 +1,5 @@
 using ECommerce.Application.DTOs;
 using ECommerce.Application.DTOs.Request;
-using ECommerce.Application.Services;
 
 namespace ECommerce.Application.Interfaces
 {
@@ -18,4 +17,3 @@ namespace ECommerce.Application.Interfaces
         Task<List<ProductDTO>> SearchProductsAsync(string query);
     }
 }
-

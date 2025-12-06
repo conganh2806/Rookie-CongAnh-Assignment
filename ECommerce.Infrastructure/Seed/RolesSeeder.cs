@@ -5,8 +5,10 @@ namespace ECommerce.Infrastructure.Persistence.Seed
 {
     public class RolesSeeder
     {
-        public async Task SeedAsync(UserManager<User> userManager, 
-                                        RoleManager<IdentityRole> roleManager)
+        public async Task SeedAsync(
+            UserManager<User> userManager,
+            RoleManager<IdentityRole> roleManager
+        )
         {
             string[] roleNames = { "Admin", "User" };
 

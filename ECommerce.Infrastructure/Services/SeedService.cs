@@ -20,10 +20,16 @@ namespace ECommerce.Infrastructure.Services
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public SeedService(UserSeeder userSeeder, RolesSeeder roleSeeder,
-                             ProductSeeder productSeeder, ApplicationDbContext context,
-                             CategorySeeder categorySeeder, OrderSeeder orderSeeder,
-                                UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public SeedService(
+            UserSeeder userSeeder,
+            RolesSeeder roleSeeder,
+            ProductSeeder productSeeder,
+            ApplicationDbContext context,
+            CategorySeeder categorySeeder,
+            OrderSeeder orderSeeder,
+            UserManager<User> userManager,
+            RoleManager<IdentityRole> roleManager
+        )
         {
             _userSeeder = userSeeder;
             _roleSeeder = roleSeeder;

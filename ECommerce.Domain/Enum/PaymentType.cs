@@ -7,6 +7,6 @@ namespace ECommerce.Domain.Enum
         Paypal,
         VNPay,
         Momo,
-        CashOnDelivery
+        CashOnDelivery,
     }
 }
