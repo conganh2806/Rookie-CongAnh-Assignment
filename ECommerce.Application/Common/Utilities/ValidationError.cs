@@ -12,6 +12,7 @@ namespace ECommerce.Common.Utilities
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string? Field { get; }
         public string Message { get; }
+
         public ValidationError(string field, string message)
         {
             Field = field != string.Empty ? field : null;
@@ -24,13 +25,17 @@ namespace ECommerce.Common.Utilities
         public string Message { get; }
         public int StatusCode { get; }
         public List<ValidationError> Errors { get; }
+
         public ValidationResultModel(ModelStateDictionary modelState)
         {
             Message = Constants.VALIDATION_FAILED;
             StatusCode = 400;
-            Errors = modelState.Keys
-                    .SelectMany(key => modelState[key].Errors.Select(x => new ValidationError(key, x.ErrorMessage.ToString())))
-                    .ToList();
+            Errors = modelState
+                .Keys.SelectMany(key =>
+                    modelState[key]
+                        .Errors.Select(x => new ValidationError(key, x.ErrorMessage.ToString()))
+                )
+                .ToList();
         }
     }
 

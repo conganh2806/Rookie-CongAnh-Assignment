@@ -13,6 +13,7 @@ namespace ECommerce.Application.Services
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
         private readonly IConfigurationProvider _config;
+
         public CategoryService(ICategoryRepository categoryRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
@@ -22,9 +23,10 @@ namespace ECommerce.Application.Services
 
         public async Task<List<CategoryDto>> GetAllAsync()
         {
-            var categories = await _categoryRepository.Entity.ProjectTo<CategoryDto>(_config)
-                                                            .AsNoTracking()
-                                                            .ToListAsync();
+            var categories = await _categoryRepository
+                .Entity.ProjectTo<CategoryDto>(_config)
+                .AsNoTracking()
+                .ToListAsync();
 
             var result = categories.Where(c => c.ParentId == null).ToList();
             foreach (var parentCategory in result)
@@ -32,7 +34,7 @@ namespace ECommerce.Application.Services
                 parentCategory.SubCategories = GetSubCategories(categories, parentCategory.Id);
             }
 
-            return result;    
+            return result;
         }
 
         private List<CategoryDto> GetSubCategories(List<CategoryDto> categories, string? parentId)
@@ -49,27 +51,30 @@ namespace ECommerce.Application.Services
 
         public async Task<CategoryDto?> GetByIdAsync(string id)
         {
-            return await _categoryRepository.Entity.Where(c => c.Id == id)
-                        .ProjectTo<CategoryDto>(_config)
-                        .AsNoTracking()
-                        .FirstOrDefaultAsync();
+            return await _categoryRepository
+                .Entity.Where(c => c.Id == id)
+                .ProjectTo<CategoryDto>(_config)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
         }
 
         public async Task<CategoryDto?> GetBySlugAsync(string slug)
         {
-            return await _categoryRepository.Entity.Where(c => c.Slug == slug)
-                        .ProjectTo<CategoryDto>(_config)
-                        .AsNoTracking()
-                        .FirstOrDefaultAsync();
+            return await _categoryRepository
+                .Entity.Where(c => c.Slug == slug)
+                .ProjectTo<CategoryDto>(_config)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
         }
 
         public async Task<CategoryDto> CreateAsync(CategoryCreateRequest request)
         {
-            if(!string.IsNullOrWhiteSpace(request.ParentId))
+            if (!string.IsNullOrWhiteSpace(request.ParentId))
             {
-                var parentCategory = await _categoryRepository.Entity
-                                            .FirstOrDefaultAsync(c => c.Id == request.ParentId);
-                if (parentCategory == null) 
+                var parentCategory = await _categoryRepository.Entity.FirstOrDefaultAsync(c =>
+                    c.Id == request.ParentId
+                );
+                if (parentCategory == null)
                 {
                     throw new NotFoundException(
                         $"Parent category with id {request.ParentId} not found."
@@ -86,8 +91,7 @@ namespace ECommerce.Application.Services
 
         public async Task<CategoryDto> UpdateAsync(string id, CategoryUpdateRequest request)
         {
-            var category = await _categoryRepository.Entity
-                        .FirstOrDefaultAsync(c => c.Id == id);
+            var category = await _categoryRepository.Entity.FirstOrDefaultAsync(c => c.Id == id);
 
             if (category == null)
             {
@@ -96,13 +100,13 @@ namespace ECommerce.Application.Services
 
             if (!string.IsNullOrWhiteSpace(request.ParentId))
             {
-                var parentCategory = await _categoryRepository.Entity
-                    .FirstOrDefaultAsync(c => c.Id == request.ParentId);
+                var parentCategory = await _categoryRepository.Entity.FirstOrDefaultAsync(c =>
+                    c.Id == request.ParentId
+                );
 
                 if (parentCategory == null)
                 {
-                    throw new NotFoundException
-                    (
+                    throw new NotFoundException(
                         $"Parent category with id {request.ParentId} not found."
                     );
                 }
@@ -118,16 +122,16 @@ namespace ECommerce.Application.Services
         public async Task DeleteAsync(string id)
         {
             var category = await _categoryRepository.Entity.FirstOrDefaultAsync(c => c.Id == id);
-            if (category == null) 
+            if (category == null)
             {
-               throw new NotFoundException($"Category with id {id} not found.");
+                throw new NotFoundException($"Category with id {id} not found.");
             }
 
             if (await _categoryRepository.Entity.AnyAsync(c => c.ParentId == category.Id))
             {
                 throw new InvalidOperationException(
                     "Cannot delete a category that has subcategories."
-                    );
+                );
             }
 
             _categoryRepository.Delete(category);

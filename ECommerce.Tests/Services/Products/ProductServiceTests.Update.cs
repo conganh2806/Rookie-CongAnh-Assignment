@@ -20,49 +20,48 @@ namespace ECommerce.Tests.Services.Products
                 Name = "Old Game",
                 Categories = new List<Category>
                 {
-                    new Category { Id = "cat-001", Name = "Action" }
-                }
+                    new Category { Id = "cat-001", Name = "Action" },
+                },
             };
 
             var updateRequest = new ProductUpdateRequest
             {
                 Name = "New Game",
-                CategoryIds = new List<string> { "cat-002" }
+                CategoryIds = new List<string> { "cat-002" },
             };
 
             var updatedCategories = new List<Category>
             {
-                new Category { Id = "cat-002", Name = "Adventure" }
+                new Category { Id = "cat-002", Name = "Adventure" },
             };
 
             var updatedProduct = new Product
             {
                 Id = productId,
                 Name = "New Game",
-                Categories = updatedCategories
+                Categories = updatedCategories,
             };
 
             var expectedDTO = new ProductDTO
             {
                 Id = productId,
                 Name = "New Game",
-                CategoryNames = new List<string> { "Adventure" }
+                CategoryNames = new List<string> { "Adventure" },
             };
 
             var mockProductQueryable = new List<Product> { originalProduct }
-                .AsQueryable().BuildMock();
+                .AsQueryable()
+                .BuildMock();
 
-            _mockProductRepo.Setup(repo => repo.Entity)
-                .Returns(mockProductQueryable);
+            _mockProductRepo.Setup(repo => repo.Entity).Returns(mockProductQueryable);
 
-            _mockCategoryRepo.Setup(repo => repo.Entity)
+            _mockCategoryRepo
+                .Setup(repo => repo.Entity)
                 .Returns(updatedCategories.AsQueryable().BuildMock());
 
-            _mockMapper.Setup(m => m.Map(updateRequest, originalProduct))
-                .Returns(updatedProduct);
+            _mockMapper.Setup(m => m.Map(updateRequest, originalProduct)).Returns(updatedProduct);
 
-            _mockMapper.Setup(m => m.Map<ProductDTO>(updatedProduct))
-                .Returns(expectedDTO);
+            _mockMapper.Setup(m => m.Map<ProductDTO>(updatedProduct)).Returns(expectedDTO);
 
             // Act
             var result = await _productService.UpdateAsync(productId, updateRequest);
@@ -73,7 +72,10 @@ namespace ECommerce.Tests.Services.Products
             Assert.Contains("Adventure", result.CategoryNames);
 
             _mockProductRepo.Verify(r => r.Update(It.IsAny<Product>()), Times.Once);
-            _mockProductRepo.Verify(r => r.UnitOfWork.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+            _mockProductRepo.Verify(
+                r => r.UnitOfWork.SaveChangesAsync(It.IsAny<CancellationToken>()),
+                Times.Once
+            );
         }
 
         [Fact]
@@ -83,18 +85,18 @@ namespace ECommerce.Tests.Services.Products
             var productId = "non-existent";
             var mockEmpty = new List<Product>().AsQueryable().BuildMock();
 
-            _mockProductRepo.Setup(r => r.Entity)
-                            .Returns(mockEmpty);
+            _mockProductRepo.Setup(r => r.Entity).Returns(mockEmpty);
 
             var updateRequest = new ProductUpdateRequest
             {
                 Name = "Doesn't Matter",
-                CategoryIds = new List<string> { "cat-001" }
+                CategoryIds = new List<string> { "cat-001" },
             };
 
             // Act & Assert
             await Assert.ThrowsAsync<NotFoundException>(() =>
-                _productService.UpdateAsync(productId, updateRequest));
+                _productService.UpdateAsync(productId, updateRequest)
+            );
         }
 
         [Fact]
@@ -105,21 +107,21 @@ namespace ECommerce.Tests.Services.Products
             var product = new Product { Id = productId, Name = "Game" };
 
             var mockQueryable = new List<Product> { product }
-                .AsQueryable().BuildMock();
+                .AsQueryable()
+                .BuildMock();
 
-            _mockProductRepo.Setup(r => r.Entity)
-                            .Returns(mockQueryable);
+            _mockProductRepo.Setup(r => r.Entity).Returns(mockQueryable);
 
             var request = new ProductUpdateRequest
             {
                 Name = "New Name",
-                CategoryIds = new List<string>() // empty!
+                CategoryIds = new List<string>(), // empty!
             };
 
             // Act & Assert
             await Assert.ThrowsAsync<BadRequestException>(() =>
-                _productService.UpdateAsync(productId, request));
+                _productService.UpdateAsync(productId, request)
+            );
         }
-
     }
 }

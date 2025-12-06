@@ -1,7 +1,7 @@
+using ECommerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
-using ECommerce.Infrastructure.Persistence;
 
 namespace ECommerce.Infrastructure
 {
@@ -20,7 +20,7 @@ namespace ECommerce.Infrastructure
 
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
             optionsBuilder.UseNpgsql(connectionString);
-            
+
             return new ApplicationDbContext(optionsBuilder.Options);
         }
     }

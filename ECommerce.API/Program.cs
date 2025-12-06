@@ -2,7 +2,6 @@ using System.CommandLine;
 using ECommerce.API.Middleware;
 using ECommerce.Application;
 using ECommerce.Application.Interfaces;
-using ECommerce.Application.Settings;
 using ECommerce.Infrastructure;
 using ECommerce.Infrastructure.Extensions;
 using ECommerce.JsonNamingPolicy;
@@ -13,15 +12,14 @@ builder.Services.AddCustomIdentity(builder.Configuration);
 builder.Services.AddJWTAuthentication(builder.Configuration);
 builder.Services.AddCustomAuthorization(builder.Configuration);
 
-
-
 builder.Services.AddApplication();
 
-builder.Services.AddInfrastructure(builder.Configuration); 
+builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddSeeder(builder.Configuration);
 builder.Services.AddAPIService(builder.Configuration);
 
-builder.Services.AddControllers()
+builder
+    .Services.AddControllers()
     .AddJsonOptions(options =>
     {
         // Use snake_case for both requests and responses

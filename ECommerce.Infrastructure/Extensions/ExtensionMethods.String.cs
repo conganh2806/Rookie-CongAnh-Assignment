@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace ECommerce.Infrastructure.Extensions
 {
     public static partial class ExtensionMethods
-    { 
+    {
         public static string CombineWithSpace(this string str, string other)
         {
             if (string.IsNullOrWhiteSpace(str))
@@ -15,8 +15,8 @@ namespace ECommerce.Infrastructure.Extensions
         }
 
         // public static void GenerateSlug(this string name, out string slug)
-        // { 
-        //     //slug = 
+        // {
+        //     //slug =
         // }
     }
 }

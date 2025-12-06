@@ -7,10 +7,10 @@ public class OrderSeeder
 {
     public async Task SeedAsync(ApplicationDbContext context)
     {
-        if (await context.Orders.AnyAsync()) return;
+        if (await context.Orders.AnyAsync())
+            return;
 
-        var user = await context.Users
-                        .FirstOrDefaultAsync(u => u.Email == "user@game.com");
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == "user@game.com");
         var product = await context.Products.OrderBy(p => p.Name).FirstOrDefaultAsync();
 
         if (user != null && product != null)
@@ -20,11 +20,11 @@ public class OrderSeeder
                 Id = Guid.NewGuid().ToString(),
                 UserId = user.Id,
                 TotalAmount = product.Price,
-                PaymentType = PaymentType.VNPay, 
-                PaymentStatus = PaymentStatus.Pending, 
+                PaymentType = PaymentType.VNPay,
+                PaymentStatus = PaymentStatus.Pending,
                 Status = OrderStatus.Pending,
             };
-            
+
             context.Orders.Add(order);
 
             var orderDetail = new OrderDetail

@@ -1,8 +1,8 @@
-namespace ECommerce.Domain.Entities.Enum 
-{ 
+namespace ECommerce.Domain.Entities.Enum
+{
     public enum ProductStatus
-    { 
-        Inactive, 
+    {
+        Inactive,
         Active,
     }
 }

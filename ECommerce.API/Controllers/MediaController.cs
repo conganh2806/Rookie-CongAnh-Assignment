@@ -1,5 +1,3 @@
-using AutoMapper;
-using ECommerce.Application.DTOs;
 using ECommerce.Application.DTOs.Common;
 using ECommerce.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -14,8 +12,7 @@ namespace ECommerce.API.Controllers
     {
         private readonly IMediaFileService _mediaService;
 
-        public MediaController(IMediaFileService mediaService, 
-                                ILogger<MediaController> logger)
+        public MediaController(IMediaFileService mediaService, ILogger<MediaController> logger)
             : base(logger)
         {
             _mediaService = mediaService;
@@ -23,15 +20,19 @@ namespace ECommerce.API.Controllers
 
         [HttpPost("presign")]
         public async Task<IActionResult> CreatePresignedUrl(
-                                        [FromBody] CreatePresignedUrlRequest request)
+            [FromBody] CreatePresignedUrlRequest request
+        )
         {
             if (!ModelState.IsValid)
             {
                 return Error("Invalid request.");
             }
 
-            var url = await _mediaService.CreatePresignedUrlAsync(request, request.ObjectType, 
-                                                                    request.ObjectId);
+            var url = await _mediaService.CreatePresignedUrlAsync(
+                request,
+                request.ObjectType,
+                request.ObjectId
+            );
 
             return Success(url, "Presigned URL created successfully.");
         }
@@ -48,7 +49,7 @@ namespace ECommerce.API.Controllers
         public async Task<IActionResult> MarkUploaded(string s3Key)
         {
             await _mediaService.UpdateStatusMediaFileAsync(s3Key);
-            
+
             return NoContent();
         }
     }

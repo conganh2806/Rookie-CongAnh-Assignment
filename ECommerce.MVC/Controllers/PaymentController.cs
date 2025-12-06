@@ -1,12 +1,12 @@
+using System;
+using ECommerce.MVC.Controllers;
+using ECommerce.MVC.Models;
 using Microsoft.AspNetCore.Mvc;
+using SQLitePCL;
 using VNPAY.NET;
 using VNPAY.NET.Enums;
 using VNPAY.NET.Models;
 using VNPAY.NET.Utilities;
-using System;
-using ECommerce.MVC.Models;
-using ECommerce.MVC.Controllers;
-using SQLitePCL;
 
 namespace Backend_API_Testing.Controllers
 {
@@ -15,18 +15,22 @@ namespace Backend_API_Testing.Controllers
         private readonly IVnpay _vnpay;
         private readonly IConfiguration _configuration;
 
-        public VnpayController(IVnpay vnPayservice, 
-                                IConfiguration configuration,
-                                ILogger<VnpayController> logger)
-                : base(logger)
+        public VnpayController(
+            IVnpay vnPayservice,
+            IConfiguration configuration,
+            ILogger<VnpayController> logger
+        )
+            : base(logger)
         {
             _vnpay = vnPayservice;
             _configuration = configuration;
 
-            _vnpay.Initialize(_configuration["Vnpay:TmnCode"] ?? string.Empty,
-                            _configuration["Vnpay:HashSecret"] ?? string.Empty,
-                            _configuration["Vnpay:BaseUrl"] ?? string.Empty,
-                            _configuration["Vnpay:CallbackUrl"] ?? string.Empty);
+            _vnpay.Initialize(
+                _configuration["Vnpay:TmnCode"] ?? string.Empty,
+                _configuration["Vnpay:HashSecret"] ?? string.Empty,
+                _configuration["Vnpay:BaseUrl"] ?? string.Empty,
+                _configuration["Vnpay:CallbackUrl"] ?? string.Empty
+            );
         }
 
         [HttpGet("CreatePaymentUrl")]
@@ -42,10 +46,10 @@ namespace Backend_API_Testing.Controllers
                     Money = money,
                     Description = description,
                     IpAddress = ipAddress,
-                    BankCode = BankCode.ANY, 
-                    CreatedDate = DateTime.Now, 
-                    Currency = Currency.VND, 
-                    Language = DisplayLanguage.Vietnamese
+                    BankCode = BankCode.ANY,
+                    CreatedDate = DateTime.Now,
+                    Currency = Currency.VND,
+                    Language = DisplayLanguage.Vietnamese,
                 };
 
                 var paymentUrl = _vnpay.GetPaymentUrl(request);
@@ -54,7 +58,7 @@ namespace Backend_API_Testing.Controllers
             }
             catch (Exception ex)
             {
-                return View("Error", new ErrorViewModel { Message = ex.Message }); 
+                return View("Error", new ErrorViewModel { Message = ex.Message });
             }
         }
 

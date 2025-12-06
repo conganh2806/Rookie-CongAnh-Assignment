@@ -11,10 +11,12 @@ namespace ECommerce.MVC.Controllers
         private readonly IRedisCartService _cartService;
         private readonly IOrderService _orderService;
 
-        public CheckoutController(IRedisCartService cartService, 
-                                IOrderService orderService,
-                                ILogger<CheckoutController> logger)
-                : base(logger)
+        public CheckoutController(
+            IRedisCartService cartService,
+            IOrderService orderService,
+            ILogger<CheckoutController> logger
+        )
+            : base(logger)
         {
             _cartService = cartService;
             _orderService = orderService;
@@ -25,7 +27,7 @@ namespace ECommerce.MVC.Controllers
         {
             var userId = GetUserId();
 
-            if(userId is null)
+            if (userId is null)
             {
                 //return not found
             }
@@ -45,7 +47,6 @@ namespace ECommerce.MVC.Controllers
                 PaymentType = PaymentType.CashOnDelivery,
                 Status = OrderStatus.Processing,
                 Note = "Purchase order at " + DateTime.Now.ToString("g"),
-                
             };
 
             await _orderService.CreateAsync(orderRequest);
@@ -57,5 +58,4 @@ namespace ECommerce.MVC.Controllers
 
         public IActionResult Success() => View();
     }
-
 }

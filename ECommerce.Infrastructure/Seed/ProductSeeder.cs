@@ -8,28 +8,30 @@ namespace ECommerce.Infrastructure.Persistence.Seed
     {
         public async Task SeedAsync(ApplicationDbContext context)
         {
-            if (await context.Products.AnyAsync()) return;
+            if (await context.Products.AnyAsync())
+                return;
 
             // Ensure categories are seeded first
-            var actionId = await context.Categories
-                .Where(c => c.Name == "Action")
+            var actionId = await context
+                .Categories.Where(c => c.Name == "Action")
                 .Select(c => c.Id)
                 .FirstOrDefaultAsync();
 
-            var rpgId = await context.Categories
-                .Where(c => c.Name == "RPG")
+            var rpgId = await context
+                .Categories.Where(c => c.Name == "RPG")
                 .Select(c => c.Id)
                 .FirstOrDefaultAsync();
 
-            var shooterId = await context.Categories
-                .Where(c => c.Name == "Shooter")
+            var shooterId = await context
+                .Categories.Where(c => c.Name == "Shooter")
                 .Select(c => c.Id)
                 .FirstOrDefaultAsync();
 
             if (actionId == null || rpgId == null || shooterId == null)
             {
                 throw new InvalidOperationException(
-                    "Game categories must be seeded before seeding products.");
+                    "Game categories must be seeded before seeding products."
+                );
             }
 
             var products = new List<Product>
@@ -38,7 +40,8 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                 {
                     Name = "God of War",
                     Slug = "god-of-war",
-                    Description = "Action-packed adventure game featuring Kratos, a Greek god, and his son.",
+                    Description =
+                        "Action-packed adventure game featuring Kratos, a Greek god, and his son.",
                     Price = 59.99m,
                     Discount = 0.1f,
                     Quantity = 100,
@@ -46,7 +49,7 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                     ProductStatus = ProductStatus.Active,
                     ImageURL = "https://example.com/god-of-war.jpg",
                     IsFeatured = true,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow,
                 },
                 new Product
                 {
@@ -60,13 +63,14 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                     ProductStatus = ProductStatus.Active,
                     ImageURL = "https://example.com/elden-ring.jpg",
                     IsFeatured = true,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow,
                 },
                 new Product
                 {
                     Name = "Call of Duty: Modern Warfare",
                     Slug = "call-of-duty-modern-warfare",
-                    Description = "First-person shooter game with multiplayer and single-player modes.",
+                    Description =
+                        "First-person shooter game with multiplayer and single-player modes.",
                     Price = 49.99m,
                     Discount = 0.2f,
                     Quantity = 150,
@@ -74,13 +78,14 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                     ProductStatus = ProductStatus.Active,
                     ImageURL = "https://example.com/call-of-duty.jpg",
                     IsFeatured = false,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow,
                 },
                 new Product
                 {
                     Name = "Cyberpunk 2077",
                     Slug = "cyberpunk-2077",
-                    Description = "Open-world RPG set in a dystopian future where technology and crime rule.",
+                    Description =
+                        "Open-world RPG set in a dystopian future where technology and crime rule.",
                     Price = 79.99m,
                     Discount = 0.15f,
                     Quantity = 120,
@@ -88,13 +93,14 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                     ProductStatus = ProductStatus.Active,
                     ImageURL = "https://example.com/cyberpunk-2077.jpg",
                     IsFeatured = true,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow,
                 },
                 new Product
                 {
                     Name = "The Witcher 3",
                     Slug = "the-witcher-3",
-                    Description = "Epic RPG featuring Geralt of Rivia in a story-driven, open-world fantasy.",
+                    Description =
+                        "Epic RPG featuring Geralt of Rivia in a story-driven, open-world fantasy.",
                     Price = 39.99m,
                     Discount = 0.3f,
                     Quantity = 200,
@@ -102,7 +108,7 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                     ProductStatus = ProductStatus.Active,
                     ImageURL = "https://example.com/the-witcher-3.jpg",
                     IsFeatured = false,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow,
                 },
                 new Product
                 {
@@ -116,7 +122,7 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                     ProductStatus = ProductStatus.Active,
                     ImageURL = "https://example.com/minecraft.jpg",
                     IsFeatured = true,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow,
                 },
                 new Product
                 {
@@ -130,13 +136,14 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                     ProductStatus = ProductStatus.Active,
                     ImageURL = "https://example.com/fortnite.jpg",
                     IsFeatured = true,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow,
                 },
                 new Product
                 {
                     Name = "Assassin's Creed Valhalla",
                     Slug = "assassins-creed-valhalla",
-                    Description = "Action-adventure game set in the Viking age with open-world exploration.",
+                    Description =
+                        "Action-adventure game set in the Viking age with open-world exploration.",
                     Price = 59.99m,
                     Discount = 0.1f,
                     Quantity = 90,
@@ -144,13 +151,14 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                     ProductStatus = ProductStatus.Active,
                     ImageURL = "https://example.com/assassins-creed-valhalla.jpg",
                     IsFeatured = false,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow,
                 },
                 new Product
                 {
                     Name = "FIFA 21",
                     Slug = "fifa-21",
-                    Description = "Soccer simulation video game with online and offline play modes.",
+                    Description =
+                        "Soccer simulation video game with online and offline play modes.",
                     Price = 49.99m,
                     Discount = 0.2f,
                     Quantity = 100,
@@ -158,7 +166,7 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                     ProductStatus = ProductStatus.Active,
                     ImageURL = "https://example.com/fifa-21.jpg",
                     IsFeatured = false,
-                    CreatedAt = DateTime.UtcNow
+                    CreatedAt = DateTime.UtcNow,
                 },
                 new Product
                 {
@@ -172,8 +180,8 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                     ProductStatus = ProductStatus.Active,
                     ImageURL = "https://example.com/gran-turismo-7.jpg",
                     IsFeatured = true,
-                    CreatedAt = DateTime.UtcNow
-                }
+                    CreatedAt = DateTime.UtcNow,
+                },
             };
 
             context.Products.AddRange(products);

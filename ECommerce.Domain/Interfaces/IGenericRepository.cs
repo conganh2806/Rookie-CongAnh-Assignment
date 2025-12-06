@@ -1,6 +1,7 @@
 using ECommerce.Domain.Interfaces;
 
-public interface IGenericRepository<T> where T : class
+public interface IGenericRepository<T>
+    where T : class
 {
     IQueryable<T> Entity { get; }
     void Add(T entity);

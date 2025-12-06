@@ -2,7 +2,5 @@ using ECommerce.Core.Entities;
 
 namespace ECommerce.Domain.Interfaces
 {
-    public interface IMediaFileRepository : IGenericRepository<MediaFile>
-    {
-    }
+    public interface IMediaFileRepository : IGenericRepository<MediaFile> { }
 }

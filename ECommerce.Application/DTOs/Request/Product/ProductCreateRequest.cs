@@ -25,11 +25,11 @@ namespace ECommerce.Application.DTOs
 
         [Required(ErrorMessage = "Sold amount is required.")]
         [Range(0, int.MaxValue, ErrorMessage = "Sold amount cannot be negative.")]
-        public int Sold { get; set; } 
+        public int Sold { get; set; }
 
         [EnumDataType(typeof(ProductStatus), ErrorMessage = "Invalid product status.")]
         public ProductStatus ProductStatus { get; set; }
-        
+
         public List<string> CategoryIds { get; set; } = new List<string>();
         public string Slug { get; set; } = default!;
         public string ImageURL { get; set; } = default!;

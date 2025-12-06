@@ -18,9 +18,11 @@ namespace ECommerce.Application.Services
         private readonly IMapper _mapper;
         private readonly IConfigurationProvider _config;
 
-        public ProductService(IProductRepository productRepository, 
-                                ICategoryRepository categoryRepository,
-                                IMapper mapper)        
+        public ProductService(
+            IProductRepository productRepository,
+            ICategoryRepository categoryRepository,
+            IMapper mapper
+        )
         {
             _productRepository = productRepository;
             _categoryRepository = categoryRepository;
@@ -30,44 +32,48 @@ namespace ECommerce.Application.Services
 
         public async Task<List<ProductDTO>> GetAllAsync()
         {
-            return await _productRepository.Entity.ProjectTo<ProductDTO>(_config)
-                            .AsNoTracking()
-                            .ToListAsync();
+            return await _productRepository
+                .Entity.ProjectTo<ProductDTO>(_config)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<List<ProductDTO>> GetByCategoryAsync(string categoryId)
         {
-            return await _productRepository.Entity.Where(p => p.Categories
-                                                    .Any(c => c.Id == categoryId))
-                                                    .ProjectTo<ProductDTO>(_config)
-                                                    .AsNoTracking()
-                                                    .ToListAsync();
+            return await _productRepository
+                .Entity.Where(p => p.Categories.Any(c => c.Id == categoryId))
+                .ProjectTo<ProductDTO>(_config)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<ProductDTO?> GetByIdAsync(string id)
         {
-            return await _productRepository.Entity.Where(p => p.Id == id)
-                                                    .ProjectTo<ProductDTO>(_config)
-                                                    .AsNoTracking()
-                                                    .FirstOrDefaultAsync();  
+            return await _productRepository
+                .Entity.Where(p => p.Id == id)
+                .ProjectTo<ProductDTO>(_config)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
         }
 
         public async Task<ProductDetailResponse?> GetDetails(string id)
         {
-            var product = await _productRepository.Entity.Include(p => p.Categories)
-                                                    .Where(p => p.Id == id)                                                    
-                                                    .FirstOrDefaultAsync();
-        
+            var product = await _productRepository
+                .Entity.Include(p => p.Categories)
+                .Where(p => p.Id == id)
+                .FirstOrDefaultAsync();
+
             if (product == null)
             {
                 throw new NotFoundException($"Product with id {id} not found.");
             }
 
-            var categoryNames = product.Categories.Select(c => c.Name)
-                                                    .Where(name => name != null)   
-                                                    .Select(name => name!)  
-                                                    .ToList();
-                                                    
+            var categoryNames = product
+                .Categories.Select(c => c.Name)
+                .Where(name => name != null)
+                .Select(name => name!)
+                .ToList();
+
             var productDetail = _mapper.Map<ProductDetailResponse>(product);
             productDetail.CategoryNames = categoryNames;
 
@@ -76,22 +82,23 @@ namespace ECommerce.Application.Services
 
         public async Task<List<ProductDTO>> GetBySlugAsync(string slug)
         {
-            return await _productRepository.Entity.Where(p => p.Slug == slug)
-                                                    .ProjectTo<ProductDTO>(_config)
-                                                    .AsNoTracking()
-                                                    .ToListAsync(); 
+            return await _productRepository
+                .Entity.Where(p => p.Slug == slug)
+                .ProjectTo<ProductDTO>(_config)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<ProductDTO> CreateAsync(ProductCreateRequest request)
         {
-            var categories = await _categoryRepository.Entity
-                                            .Where(c => request.CategoryIds.Contains(c.Id))
-                                            .ToListAsync();
-                                            
+            var categories = await _categoryRepository
+                .Entity.Where(c => request.CategoryIds.Contains(c.Id))
+                .ToListAsync();
+
             var product = _mapper.Map<Product>(request);
             product.Categories = categories;
             // product.Slug = product.Name.GenerateSlug();
-            
+
             _productRepository.Add(product);
             await _productRepository.UnitOfWork.SaveChangesAsync();
 
@@ -100,11 +107,11 @@ namespace ECommerce.Application.Services
 
         public async Task<ProductDTO> UpdateAsync(string id, ProductUpdateRequest request)
         {
-            var product = await _productRepository.Entity
-                                            .Include(p => p.Categories)
-                                            .FirstOrDefaultAsync(p => p.Id == id);
+            var product = await _productRepository
+                .Entity.Include(p => p.Categories)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
-            if(product == null) 
+            if (product == null)
             {
                 throw new NotFoundException($"Product with id {id} not found.");
             }
@@ -115,13 +122,14 @@ namespace ECommerce.Application.Services
             }
 
             product = _mapper.Map(request, product);
-            var categories = await _categoryRepository.Entity.Where(c => 
-                                    request.CategoryIds.Contains(c.Id)).ToListAsync();
+            var categories = await _categoryRepository
+                .Entity.Where(c => request.CategoryIds.Contains(c.Id))
+                .ToListAsync();
 
             product.Categories = categories;
             _productRepository.Update(product);
             await _productRepository.UnitOfWork.SaveChangesAsync();
-            
+
             return _mapper.Map<ProductDTO>(product);
         }
 
@@ -141,27 +149,29 @@ namespace ECommerce.Application.Services
 
         public async Task<List<ProductFeatureResponse>> GetFeaturedAsync(int take)
         {
-            return await _productRepository.Entity.Where(p => p.IsFeatured)
-                                                    .ProjectTo<ProductFeatureResponse>(_config)
-                                                    .AsNoTracking()
-                                                    .OrderBy(p => p.Price)
-                                                    .Take(take)
-                                                    .ToListAsync();
+            return await _productRepository
+                .Entity.Where(p => p.IsFeatured)
+                .ProjectTo<ProductFeatureResponse>(_config)
+                .AsNoTracking()
+                .OrderBy(p => p.Price)
+                .Take(take)
+                .ToListAsync();
         }
 
         public async Task<List<ProductDTO>> SearchProductsAsync(string keyword)
         {
-            if (string.IsNullOrWhiteSpace(keyword)) 
+            if (string.IsNullOrWhiteSpace(keyword))
             {
                 return new List<ProductDTO>();
             }
 
-            return await _productRepository.Entity.Where(p =>
-                                        (p.Name != null && p.Name.Contains(keyword)) ||
-                                        (p.Description != null && p.Description.Contains(keyword)))
-                                    .ProjectTo<ProductDTO>(_config)
-                                    .ToListAsync();
+            return await _productRepository
+                .Entity.Where(p =>
+                    (p.Name != null && p.Name.Contains(keyword))
+                    || (p.Description != null && p.Description.Contains(keyword))
+                )
+                .ProjectTo<ProductDTO>(_config)
+                .ToListAsync();
         }
     }
 }
-

@@ -1,6 +1,6 @@
 using ECommerce.Application;
-using ECommerce.Infrastructure.Extensions;
 using ECommerce.Infrastructure;
+using ECommerce.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,16 +35,13 @@ else
 // app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseRouting();  
+app.UseRouting();
 app.UseCookiePolicy();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}");
+app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}");
 
 app.Run();
-
