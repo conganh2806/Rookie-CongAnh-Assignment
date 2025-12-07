@@ -3,17 +3,20 @@ using System;
 using ECommerce.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ECommerce.Infrastructure.Data.Migrations
+namespace ECommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251207164353_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -141,13 +144,13 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasColumnName("normalized_name");
 
                     b.HasKey("Id")
-                        .HasName("pk_asp_net_roles");
+                        .HasName("pk_roles");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("AspNetRoles", (string)null);
+                    b.ToTable("roles", (string)null);
                 });
 
             modelBuilder.Entity("ECommerce.Domain.Entities.ApplicationUser.User", b =>
@@ -517,30 +520,6 @@ namespace ECommerce.Infrastructure.Data.Migrations
                     b.ToTable("products", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text")
-                        .HasColumnName("id");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("text")
-                        .HasColumnName("concurrency_stamp");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text")
-                        .HasColumnName("name");
-
-                    b.Property<string>("NormalizedName")
-                        .HasColumnType("text")
-                        .HasColumnName("normalized_name");
-
-                    b.HasKey("Id")
-                        .HasName("pk_roles");
-
-                    b.ToTable("roles", (string)null);
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
@@ -742,7 +721,7 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_role_claims_asp_net_roles_role_id");
+                        .HasConstraintName("fk_role_claims_roles_role_id");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -772,7 +751,7 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_user_roles_asp_net_roles_role_id");
+                        .HasConstraintName("fk_user_roles_roles_role_id");
 
                     b.HasOne("ECommerce.Domain.Entities.ApplicationUser.User", null)
                         .WithMany()

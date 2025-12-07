@@ -14,7 +14,7 @@ namespace ECommerce.Infrastructure.Extensions
         )
         {
             services
-                .AddIdentity<User, IdentityRole>()
+                .AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 

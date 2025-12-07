@@ -68,8 +68,8 @@ namespace ECommerce.Infrastructure
             IConfiguration configuration
         )
         {
-            services.AddTransient<UserSeeder>();
             services.AddTransient<RolesSeeder>();
+            services.AddTransient<UserSeeder>();
             services.AddTransient<ProductSeeder>();
             services.AddTransient<CategorySeeder>();
             services.AddTransient<OrderSeeder>();

@@ -1,5 +1,4 @@
 using ECommerce.Application.Interfaces;
-using ECommerce.Domain.Entities;
 using ECommerce.Domain.Entities.ApplicationUser;
 using ECommerce.Infrastructure.Persistence;
 using ECommerce.Infrastructure.Persistence.Seed;
