@@ -4,28 +4,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ECommerce.Infrastructure.Data.Migrations
+namespace ECommerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "AspNetRoles",
-                columns: table => new
-                {
-                    id = table.Column<string>(type: "text", nullable: false),
-                    name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    normalized_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    concurrency_stamp = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_asp_net_roles", x => x.id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "categories",
                 columns: table => new
@@ -102,8 +88,8 @@ namespace ECommerce.Infrastructure.Data.Migrations
                 columns: table => new
                 {
                     id = table.Column<string>(type: "text", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: true),
-                    normalized_name = table.Column<string>(type: "text", nullable: true),
+                    name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    normalized_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     concurrency_stamp = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
@@ -147,27 +133,6 @@ namespace ECommerce.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "role_claims",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    role_id = table.Column<string>(type: "text", nullable: false),
-                    claim_type = table.Column<string>(type: "text", nullable: true),
-                    claim_value = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_role_claims", x => x.id);
-                    table.ForeignKey(
-                        name: "fk_role_claims_asp_net_roles_role_id",
-                        column: x => x.role_id,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "category_product",
                 columns: table => new
                 {
@@ -187,6 +152,27 @@ namespace ECommerce.Infrastructure.Data.Migrations
                         name: "fk_category_product_products_products_id",
                         column: x => x.products_id,
                         principalTable: "products",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "role_claims",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    role_id = table.Column<string>(type: "text", nullable: false),
+                    claim_type = table.Column<string>(type: "text", nullable: true),
+                    claim_value = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_role_claims", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_role_claims_roles_role_id",
+                        column: x => x.role_id,
+                        principalTable: "roles",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -270,9 +256,9 @@ namespace ECommerce.Infrastructure.Data.Migrations
                 {
                     table.PrimaryKey("pk_user_roles", x => new { x.user_id, x.role_id });
                     table.ForeignKey(
-                        name: "fk_user_roles_asp_net_roles_role_id",
+                        name: "fk_user_roles_roles_role_id",
                         column: x => x.role_id,
-                        principalTable: "AspNetRoles",
+                        principalTable: "roles",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -336,12 +322,6 @@ namespace ECommerce.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "RoleNameIndex",
-                table: "AspNetRoles",
-                column: "normalized_name",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "ix_categories_parent_id",
                 table: "categories",
                 column: "parent_id");
@@ -383,6 +363,12 @@ namespace ECommerce.Infrastructure.Data.Migrations
                 name: "ix_role_claims_role_id",
                 table: "role_claims",
                 column: "role_id");
+
+            migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                table: "roles",
+                column: "normalized_name",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_user_claims_user_id",
@@ -427,9 +413,6 @@ namespace ECommerce.Infrastructure.Data.Migrations
                 name: "role_claims");
 
             migrationBuilder.DropTable(
-                name: "roles");
-
-            migrationBuilder.DropTable(
                 name: "user_claims");
 
             migrationBuilder.DropTable(
@@ -451,7 +434,7 @@ namespace ECommerce.Infrastructure.Data.Migrations
                 name: "products");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "roles");
 
             migrationBuilder.DropTable(
                 name: "users");
