@@ -1,14 +1,14 @@
 using System.Net;
 
-namespace ECommerce.Application.Common 
-{ 
-    public class BaseResponse<T> 
-    { 
+namespace ECommerce.Application.Common
+{
+    public class BaseResponse<T>
+    {
         public HttpStatusCode StatusCode { get; set; }
         public string Message { get; set; } = default!;
         public T? Data { get; set; }
 
-        public BaseResponse() {}
+        public BaseResponse() { }
 
         public BaseResponse(HttpStatusCode statusCode, string message, T? data = default)
         {
@@ -22,7 +22,7 @@ namespace ECommerce.Application.Common
             {
                 StatusCode = HttpStatusCode.OK,
                 Message = message,
-                Data = data
+                Data = data,
             };
 
         public static BaseResponse<T> Fail(string message, HttpStatusCode statusCode) =>
@@ -30,7 +30,7 @@ namespace ECommerce.Application.Common
             {
                 StatusCode = statusCode,
                 Message = message,
-                Data = default
+                Data = default,
             };
     }
 }

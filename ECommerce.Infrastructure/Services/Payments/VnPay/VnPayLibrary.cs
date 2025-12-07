@@ -8,10 +8,12 @@ namespace ECommerce.Infrastructure.Services.Payments
     public class VnPayLibrary
     {
         public const string VERSION = "2.1.0";
-        private readonly SortedList<string, string> _requestData = 
-                                                new SortedList<String, String>(new VnPayCompare());        
-        private readonly SortedList<string, string> _responseData =             
-                                                new SortedList<String, String>(new VnPayCompare());
+        private readonly SortedList<string, string> _requestData = new SortedList<String, String>(
+            new VnPayCompare()
+        );
+        private readonly SortedList<string, string> _responseData = new SortedList<String, String>(
+            new VnPayCompare()
+        );
 
         public void AddRequestData(string key, string value)
         {
@@ -38,17 +40,19 @@ namespace ECommerce.Infrastructure.Services.Payments
             {
                 if (!string.IsNullOrEmpty(kv.Value))
                 {
-                    data.Append($"{WebUtility.UrlEncode(kv.Key)}={WebUtility.UrlEncode(kv.Value)}&");
+                    data.Append(
+                        $"{WebUtility.UrlEncode(kv.Key)}={WebUtility.UrlEncode(kv.Value)}&"
+                    );
                 }
-            }   
+            }
 
             var queryString = data.ToString();
             baseUrl += "?" + queryString;
 
             var signData = queryString;
 
-            if(signData.Length > 0)
-            { 
+            if (signData.Length > 0)
+            {
                 signData = signData.Remove(data.Length - 1, 1);
             }
 
@@ -87,7 +91,9 @@ namespace ECommerce.Infrastructure.Services.Payments
             {
                 if (!string.IsNullOrEmpty(kv.Value))
                 {
-                    data.Append($"{WebUtility.UrlEncode(kv.Key)}={WebUtility.UrlEncode(kv.Value)}&");
+                    data.Append(
+                        $"{WebUtility.UrlEncode(kv.Key)}={WebUtility.UrlEncode(kv.Value)}&"
+                    );
                 }
             }
 
@@ -106,9 +112,12 @@ namespace ECommerce.Infrastructure.Services.Payments
     {
         public int Compare(string? x, string? y)
         {
-            if (x == y) return 0;
-            if (x == null) return -1;
-            if (y == null) return 1;
+            if (x == y)
+                return 0;
+            if (x == null)
+                return -1;
+            if (y == null)
+                return 1;
             var vnpCompare = CompareInfo.GetCompareInfo("en-US");
             return vnpCompare.Compare(x, y, CompareOptions.Ordinal);
         }

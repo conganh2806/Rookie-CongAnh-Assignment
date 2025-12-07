@@ -22,12 +22,15 @@ namespace ECommerce.Infrastructure
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, 
-                                                            IConfiguration configuration)
+        public static IServiceCollection AddInfrastructure(
+            this IServiceCollection services,
+            IConfiguration configuration
+        )
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(connectionString));
+                options.UseNpgsql(connectionString)
+            );
 
             //Minio
             services.Configure<MinioSettings>(configuration.GetSection("MinioSettings"));
@@ -35,7 +38,7 @@ namespace ECommerce.Infrastructure
             services.AddSingleton(serviceProvider =>
             {
                 var config = serviceProvider.GetRequiredService<IOptions<MinioSettings>>().Value;
-                
+
                 return new MinioClient()
                     .WithEndpoint(config.Endpoint)
                     .WithCredentials(config.AccessKey, config.SecretKey)
@@ -46,7 +49,8 @@ namespace ECommerce.Infrastructure
             services.AddScoped<IMediaFileService, MediaFileService>();
 
             //Redis
-            services.AddSingleton<IConnectionMultiplexer>(sp => { 
+            services.AddSingleton<IConnectionMultiplexer>(sp =>
+            {
                 var configuration = ConfigurationOptions.Parse("localhost:6379", true);
                 return ConnectionMultiplexer.Connect(configuration);
             });
@@ -55,15 +59,17 @@ namespace ECommerce.Infrastructure
             services.Configure<VNPaySettings>(configuration.GetSection("VnPay"));
 
             services.AddRepository(configuration);
-            
+
             return services;
         }
 
-        public static IServiceCollection AddSeeder(this IServiceCollection services, 
-                                                            IConfiguration configuration)
+        public static IServiceCollection AddSeeder(
+            this IServiceCollection services,
+            IConfiguration configuration
+        )
         {
-            services.AddTransient<UserSeeder>();
             services.AddTransient<RolesSeeder>();
+            services.AddTransient<UserSeeder>();
             services.AddTransient<ProductSeeder>();
             services.AddTransient<CategorySeeder>();
             services.AddTransient<OrderSeeder>();
@@ -72,8 +78,10 @@ namespace ECommerce.Infrastructure
             return services;
         }
 
-        private static IServiceCollection AddRepository(this IServiceCollection services, 
-                                                            IConfiguration configuration)
+        private static IServiceCollection AddRepository(
+            this IServiceCollection services,
+            IConfiguration configuration
+        )
         {
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -84,8 +92,10 @@ namespace ECommerce.Infrastructure
             return services;
         }
 
-        public static IServiceCollection AddAPIService(this IServiceCollection services, 
-                                                            IConfiguration configuration)
+        public static IServiceCollection AddAPIService(
+            this IServiceCollection services,
+            IConfiguration configuration
+        )
         {
             services.AddScoped<IJWTAuthService, JWTAuthService>();
             services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
@@ -93,9 +103,11 @@ namespace ECommerce.Infrastructure
             return services;
         }
 
-        public static IServiceCollection AddMVCService(this IServiceCollection services, 
-                                                            IConfiguration configuration) 
-        { 
+        public static IServiceCollection AddMVCService(
+            this IServiceCollection services,
+            IConfiguration configuration
+        )
+        {
             services.AddScoped<ICookieAuthService, CookieAuthService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<IRedisCartService, RedisCartService>();

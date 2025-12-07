@@ -8,4 +8,3 @@ namespace ECommerce.Application.DTOs
         public decimal Price { get; set; }
     }
 }
-

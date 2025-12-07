@@ -5,8 +5,7 @@ namespace ECommerce.Infrastructure.Persistence.Seed
 {
     public class RolesSeeder
     {
-        public async Task SeedAsync(UserManager<User> userManager, 
-                                        RoleManager<IdentityRole> roleManager)
+        public async Task SeedAsync(UserManager<User> userManager, RoleManager<Role> roleManager)
         {
             string[] roleNames = { "Admin", "User" };
 
@@ -15,7 +14,7 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                 var roleExist = await roleManager.RoleExistsAsync(roleName);
                 if (!roleExist)
                 {
-                    await roleManager.CreateAsync(new IdentityRole(roleName));
+                    await roleManager.CreateAsync(new Role { Name = roleName });
                 }
             }
         }

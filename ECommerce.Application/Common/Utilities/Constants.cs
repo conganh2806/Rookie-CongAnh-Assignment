@@ -11,7 +11,7 @@ namespace ECommerce.Application.Common.Utilities
         #region PAGED LIST
         public const int PAGESIZE = 10;
         public const int PAGENUMBER = 1;
-        #endregion    
+        #endregion
 
         #region VALIDATION MODEL MESSAGE
         public const string VALIDATION_FAILED = "Validation Failed!";
@@ -30,7 +30,8 @@ namespace ECommerce.Application.Common.Utilities
 
         #region RESPONSE API MESSAGE CHANGE PASSWORD
         public const string CHANGEPASSSWORD_SUCCCESS = "Password Changed Successfully";
-        public const string CONFIRMPASSWORD_ERROR = "The New Password And Confirm Password Do Not Match";
+        public const string CONFIRMPASSWORD_ERROR =
+            "The New Password And Confirm Password Do Not Match";
         public const string OLDPASSSWORD_ERROR = "Current Password Incorrect";
         #endregion
 
@@ -43,11 +44,13 @@ namespace ECommerce.Application.Common.Utilities
         public const string LOGIN_SUCCESS = "Login to the system successfully!";
         public const string LOGIN_ACOUNT_LOCKED = "Account temporarily locked!";
         public const string LOGIN_Email_NOT_CONFIRM = "Email Not Confirm. Please check again!";
-        public const string REFRESH_TOKEN_INVALID = "Invalid refresh token.";   
+        public const string REFRESH_TOKEN_INVALID = "Invalid refresh token.";
         #endregion
 
         #region  FOLDER PATH
-        public static string ROOT_PATH = Directory.GetParent(Directory.GetCurrentDirectory())!.FullName;
+        public static string ROOT_PATH = Directory
+            .GetParent(Directory.GetCurrentDirectory())!
+            .FullName;
         public static string ROOT_PATH_DATA = "Domain";
         public static string ROOT_PATH_MAIL_TEMPLATE = "Common/MailTemplates";
         public static string ROOT_PATH_SEED_DATA = "Common/SeedData";
@@ -59,8 +62,8 @@ namespace ECommerce.Application.Common.Utilities
         public static TimeSpan TimeStepBooking = new TimeSpan(2, 0, 0);
         #endregion
 
-        #region Request Limit 
-        public static int RequestLimit = 20; 
+        #region Request Limit
+        public static int RequestLimit = 20;
         public static TimeSpan RequestLimitTime = new TimeSpan(1, 0, 0);
         #endregion
     }

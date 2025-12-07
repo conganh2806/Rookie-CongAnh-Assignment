@@ -22,18 +22,20 @@ namespace ECommerce.Infrastructure.Extensions
 
             return hash.ToString();
         }
-     
+
         internal static string GetIpAddress(HttpContext httpContext)
         {
             string? ipAddress = string.Empty;
             try
             {
-                ipAddress = httpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault() 
-                                                                            ?? string.Empty;
+                ipAddress =
+                    httpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault() ?? string.Empty;
 
-                if (string.IsNullOrEmpty(ipAddress) || 
-                    (ipAddress.ToLower() == "unknown") || 
-                    ipAddress.Length > 45)
+                if (
+                    string.IsNullOrEmpty(ipAddress)
+                    || (ipAddress.ToLower() == "unknown")
+                    || ipAddress.Length > 45
+                )
                 {
                     ipAddress = httpContext.Connection.RemoteIpAddress?.ToString();
                 }

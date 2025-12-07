@@ -1,14 +1,14 @@
-using ECommerce.Domain.Interfaces;
-using ECommerce.Application.DTOs;
-using ECommerce.Domain.Entities.ApplicationUser;
-using Microsoft.Extensions.Options;
-using ECommerce.Application.Settings;
-using System.Text;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using System.Text;
+using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
+using ECommerce.Application.Settings;
+using ECommerce.Domain.Entities.ApplicationUser;
+using ECommerce.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ECommerce.Application.Services.Authentication;
 
@@ -17,8 +17,7 @@ public class JWTAuthService : IJWTAuthService
     private readonly IUserRepository _userRepository;
     private readonly JwtSettings _jwtSettings;
 
-    public JWTAuthService(IUserRepository userRepository, 
-                            IOptions<JwtSettings> jwtOptions)
+    public JWTAuthService(IUserRepository userRepository, IOptions<JwtSettings> jwtOptions)
     {
         _userRepository = userRepository;
         _jwtSettings = jwtOptions.Value;
@@ -50,8 +49,9 @@ public class JWTAuthService : IJWTAuthService
 
     public async Task<JWTLoginAuthResponse?> LoginAsync(LoginRequest request)
     {
-        var user = await _userRepository.Entity.Where(u => u.Email == request.Email)
-                                              .FirstOrDefaultAsync();
+        var user = await _userRepository
+            .Entity.Where(u => u.Email == request.Email)
+            .FirstOrDefaultAsync();
 
         if (user == null || !PasswordMatches(request.Password, user.PasswordHash!))
         {
@@ -72,9 +72,9 @@ public class JWTAuthService : IJWTAuthService
 
     public async Task<JWTLoginAuthResponse?> RefreshTokenAsync(RefreshTokenRequest request)
     {
-
-        var user = await _userRepository.Entity
-                                        .FirstOrDefaultAsync(u => u.RefreshToken == request.Token);
+        var user = await _userRepository.Entity.FirstOrDefaultAsync(u =>
+            u.RefreshToken == request.Token
+        );
 
         if (user == null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
         {
@@ -87,14 +87,14 @@ public class JWTAuthService : IJWTAuthService
         var newRefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
         user.RefreshToken = newRefreshToken;
         user.RefreshTokenExpiryTime = newRefreshTokenExpiryTime;
-    
+
         await _userRepository.UnitOfWork.SaveChangesAsync();
-        
+
         return new JWTLoginAuthResponse
         {
             Token = accessToken.Token,
             RefreshToken = newRefreshToken,
-            Expiration = newRefreshTokenExpiryTime
+            Expiration = newRefreshTokenExpiryTime,
         };
     }
 
@@ -111,33 +111,35 @@ public class JWTAuthService : IJWTAuthService
     private JWTLoginAuthResponse GenerateToken(User user)
     {
         string role = "Admin";
-        
+
         var key = Encoding.UTF8.GetBytes(_jwtSettings.Secret);
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.GivenName, user.LastName ?? string.Empty),
-                new Claim(ClaimTypes.Surname, user.FirstName ?? string.Empty),
-                new Claim(ClaimTypes.Role, role)
-            }),
+            Subject = new ClaimsIdentity(
+                new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                    new Claim(ClaimTypes.GivenName, user.LastName ?? string.Empty),
+                    new Claim(ClaimTypes.Surname, user.FirstName ?? string.Empty),
+                    new Claim(ClaimTypes.Role, role),
+                }
+            ),
             Expires = DateTime.UtcNow.AddHours(_jwtSettings.ExpirationHours),
             Issuer = _jwtSettings.Issuer,
             Audience = _jwtSettings.Audience,
             SigningCredentials = new SigningCredentials(
-                new SymmetricSecurityKey(key), 
+                new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature
-            )
+            ),
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        return new JWTLoginAuthResponse 
+        return new JWTLoginAuthResponse
         {
             Token = tokenHandler.WriteToken(token),
             RefreshToken = Guid.NewGuid().ToString(),
-            Expiration = tokenDescriptor.Expires!.Value
+            Expiration = tokenDescriptor.Expires!.Value,
         };
     }
 }

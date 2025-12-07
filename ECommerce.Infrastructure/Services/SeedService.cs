@@ -1,5 +1,4 @@
 using ECommerce.Application.Interfaces;
-using ECommerce.Domain.Entities;
 using ECommerce.Domain.Entities.ApplicationUser;
 using ECommerce.Infrastructure.Persistence;
 using ECommerce.Infrastructure.Persistence.Seed;
@@ -18,12 +17,18 @@ namespace ECommerce.Infrastructure.Services
         private readonly ApplicationDbContext _context;
 
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<Role> _roleManager;
 
-        public SeedService(UserSeeder userSeeder, RolesSeeder roleSeeder,
-                             ProductSeeder productSeeder, ApplicationDbContext context,
-                             CategorySeeder categorySeeder, OrderSeeder orderSeeder,
-                                UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public SeedService(
+            UserSeeder userSeeder,
+            RolesSeeder roleSeeder,
+            ProductSeeder productSeeder,
+            ApplicationDbContext context,
+            CategorySeeder categorySeeder,
+            OrderSeeder orderSeeder,
+            UserManager<User> userManager,
+            RoleManager<Role> roleManager
+        )
         {
             _userSeeder = userSeeder;
             _roleSeeder = roleSeeder;

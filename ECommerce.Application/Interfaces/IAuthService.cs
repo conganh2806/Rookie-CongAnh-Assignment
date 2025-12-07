@@ -3,10 +3,9 @@ using ECommerce.Application.DTOs.Response;
 
 namespace ECommerce.Application.Interfaces
 {
-    public interface IAuthService<TResponse> 
+    public interface IAuthService<TResponse>
         where TResponse : IAuthResponse
     {
         Task<TResponse?> LoginAsync(LoginRequest request);
     }
-
 }

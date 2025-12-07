@@ -11,7 +11,7 @@ namespace ECommerce.Core.Entities
         public string ObjectId { get; set; } = default!;
         public string? S3Key { get; set; }
         public bool IsUpload { get; set; } = false;
-        public long FileSize { get; set; } 
+        public long FileSize { get; set; }
         public string? Url { get; set; }
     }
 }

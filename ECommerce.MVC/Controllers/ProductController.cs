@@ -9,7 +9,7 @@ namespace ECommerce.MVC.Controllers
     {
         private readonly IProductService _productService;
 
-        public ProductController(IProductService productService, ILogger<ProductController> logger) 
+        public ProductController(IProductService productService, ILogger<ProductController> logger)
             : base(logger)
         {
             _productService = productService;
@@ -34,12 +34,12 @@ namespace ECommerce.MVC.Controllers
         {
             var product = await _productService.GetDetails(id);
 
-            if(product is null)
+            if (product is null)
             {
                 throw new NotFoundException("Product not found !");
             }
 
             return View("ProductDetail", product);
         }
-    }   
+    }
 }

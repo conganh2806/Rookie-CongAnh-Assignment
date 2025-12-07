@@ -13,9 +13,11 @@ namespace ECommerce.Infrastructure.Services
         private readonly UserManager<User> _userManager;
         private readonly IHttpContextAccessor _contextAccessor;
 
-        public CookieAuthService(SignInManager<User> signInManager,
-                                UserManager<User> userManager,
-                                IHttpContextAccessor contextAccessor)
+        public CookieAuthService(
+            SignInManager<User> signInManager,
+            UserManager<User> userManager,
+            IHttpContextAccessor contextAccessor
+        )
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -25,10 +27,12 @@ namespace ECommerce.Infrastructure.Services
         public async Task<CookieAuthResponse?> LoginAsync(LoginRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
-            if (user == null) return null;
+            if (user == null)
+                return null;
 
             var isValid = await _userManager.CheckPasswordAsync(user, request.Password);
-            if (!isValid) return null;
+            if (!isValid)
+                return null;
 
             await _signInManager.SignInAsync(user, isPersistent: true);
 
@@ -37,7 +41,7 @@ namespace ECommerce.Infrastructure.Services
                 UserId = user.Id,
                 Email = user.Email!,
                 FirstName = user.FirstName ?? string.Empty,
-                LastName = user.LastName ?? string.Empty
+                LastName = user.LastName ?? string.Empty,
             };
         }
 
@@ -48,7 +52,7 @@ namespace ECommerce.Infrastructure.Services
                 UserName = request.Email,
                 Email = request.Email,
                 FirstName = request.FirstName,
-                LastName = request.LastName
+                LastName = request.LastName,
             };
 
             var result = await _userManager.CreateAsync(user, request.Password);
@@ -62,7 +66,7 @@ namespace ECommerce.Infrastructure.Services
                 UserId = user.Id,
                 Email = user.Email!,
                 FirstName = user.FirstName,
-                LastName = user.LastName
+                LastName = user.LastName,
             };
         }
 

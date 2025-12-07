@@ -10,9 +10,8 @@ namespace ECommerce.Infrastructure.Services
         private readonly IProductService _productService;
         private readonly string _cartKeyPrefix = "cart:";
 
-        public RedisCartService(IConnectionMultiplexer redis,
-                                IProductService productService)
-        { 
+        public RedisCartService(IConnectionMultiplexer redis, IProductService productService)
+        {
             _db = redis.GetDatabase();
             _productService = productService;
         }
@@ -20,31 +19,24 @@ namespace ECommerce.Infrastructure.Services
         public async Task<CartDto> AddOrUpdateItemAsync(string userId, CartItemDto item)
         {
             var cartKey = GetCartKey(userId);
-            
+
             var existingQuantity = await _db.HashGetAsync(cartKey, item.ProductId);
-            int newQuantity = existingQuantity.HasValue ? (int)existingQuantity + item.Quantity 
-                                                        : item.Quantity;
+            int newQuantity = existingQuantity.HasValue
+                ? (int)existingQuantity + item.Quantity
+                : item.Quantity;
 
             await _db.HashSetAsync(cartKey, item.ProductId, newQuantity);
-            
+
             var cartItems = await GetAllItemsInCartAsync(userId);
 
-            return new CartDto
-            {
-                UserId = userId,
-                Items = cartItems
-            };
+            return new CartDto { UserId = userId, Items = cartItems };
         }
 
         public async Task<CartDto> GetCartAsync(string userId)
         {
             var cartItems = await GetAllItemsInCartAsync(userId);
-            
-            return new CartDto
-            {
-                UserId = userId,
-                Items = cartItems
-            };
+
+            return new CartDto { UserId = userId, Items = cartItems };
         }
 
         private async Task<List<CartItemDto>> GetAllItemsInCartAsync(string userId)
@@ -65,13 +57,15 @@ namespace ECommerce.Infrastructure.Services
                 if (product is null)
                     continue;
 
-                cartItems.Add(new CartItemDto
-                {
-                    ProductId = product.Id,
-                    ProductName = product.Name,
-                    Price = product.Price,
-                    Quantity = quantity
-                });
+                cartItems.Add(
+                    new CartItemDto
+                    {
+                        ProductId = product.Id,
+                        ProductName = product.Name,
+                        Price = product.Price,
+                        Quantity = quantity,
+                    }
+                );
             }
 
             return cartItems;

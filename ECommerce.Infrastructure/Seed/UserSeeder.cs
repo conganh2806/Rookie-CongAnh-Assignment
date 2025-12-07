@@ -1,7 +1,6 @@
 using ECommerce.Domain.Entities.ApplicationUser;
-using Microsoft.AspNetCore.Identity;
-using BCrypt.Net;
 using ECommerce.Domain.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace ECommerce.Infrastructure.Persistence.Seed
 {
@@ -9,16 +8,15 @@ namespace ECommerce.Infrastructure.Persistence.Seed
     {
         private readonly IUserRepository _userRepository;
 
-        public UserSeeder(IUserRepository userRepository,
-                            RoleManager<IdentityRole> roleManager)
+        public UserSeeder(IUserRepository userRepository, RoleManager<Role> roleManager)
         {
             _userRepository = userRepository;
         }
 
-        public async Task SeedAsync(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public async Task SeedAsync(UserManager<User> userManager, RoleManager<Role> roleManager)
         {
-           var adminUser = await userManager.FindByEmailAsync("admin@example.com");
-            
+            var adminUser = await userManager.FindByEmailAsync("admin@example.com");
+
             if (adminUser is null)
             {
                 adminUser = new User
@@ -29,7 +27,7 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                     LastName = "User",
                     EmailConfirmed = true,
                 };
-            
+
                 var result = await userManager.CreateAsync(adminUser);
 
                 if (result.Succeeded)

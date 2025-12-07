@@ -17,7 +17,7 @@ namespace ECommerce.Tests.Services.Products
             var productCreateRequest = new ProductCreateRequest
             {
                 Name = "Game X",
-                CategoryIds = new List<string> { "cat-001", "cat-002" }
+                CategoryIds = new List<string> { "cat-001", "cat-002" },
             };
 
             var categoriesFromRepo = new List<Category> { category1, category2 };
@@ -25,25 +25,28 @@ namespace ECommerce.Tests.Services.Products
             {
                 Id = "p-001",
                 Name = "Game X",
-                Categories = categoriesFromRepo
+                Categories = categoriesFromRepo,
             };
 
             var expectedProductDTO = new ProductDTO
             {
                 Id = "p-001",
                 Name = "Game X",
-                CategoryNames = new List<string> { "Action", "Adventure" }
+                CategoryNames = new List<string> { "Action", "Adventure" },
             };
 
-            _mockCategoryRepo.Setup(repo => repo.Entity)
+            _mockCategoryRepo
+                .Setup(repo => repo.Entity)
                 .Returns(categoriesFromRepo.AsQueryable().BuildMock()); // Mock IQueryable
 
-            _mockMapper.Setup(mapper => mapper.Map<Product>(It.IsAny<ProductCreateRequest>()))
+            _mockMapper
+                .Setup(mapper => mapper.Map<Product>(It.IsAny<ProductCreateRequest>()))
                 .Returns(product);
 
-            _mockMapper.Setup(mapper => mapper.Map<ProductDTO>(It.IsAny<Product>()))
+            _mockMapper
+                .Setup(mapper => mapper.Map<ProductDTO>(It.IsAny<Product>()))
                 .Returns(expectedProductDTO);
-                
+
             // Act
             var result = await _productService.CreateAsync(productCreateRequest);
 
@@ -55,9 +58,10 @@ namespace ECommerce.Tests.Services.Products
             Assert.Contains("Adventure", result?.CategoryNames!);
 
             _mockProductRepo.Verify(repo => repo.Add(It.IsAny<Product>()), Times.Once);
-            _mockProductRepo.Verify(repo => 
-                repo.UnitOfWork.SaveChangesAsync(CancellationToken.None), 
-                Times.Once);
+            _mockProductRepo.Verify(
+                repo => repo.UnitOfWork.SaveChangesAsync(CancellationToken.None),
+                Times.Once
+            );
         }
     }
 }

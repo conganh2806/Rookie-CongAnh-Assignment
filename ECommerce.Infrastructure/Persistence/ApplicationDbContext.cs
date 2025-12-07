@@ -10,8 +10,8 @@ namespace ECommerce.Infrastructure.Persistence
 {
     public class ApplicationDbContext : IdentityDbContext<User, Role, string>, IUnitOfWork
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
-        : base(options) { }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options) { }
 
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -19,8 +19,7 @@ namespace ECommerce.Infrastructure.Persistence
         public DbSet<OrderDetail> OrderDetails { get; set; }
         public DbSet<MediaFile> MediaFiles { get; set; }
 
-        public override Task<int> SaveChangesAsync(
-            CancellationToken cancellationToken = default)
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             return base.SaveChangesAsync(cancellationToken);
         }
@@ -37,7 +36,7 @@ namespace ECommerce.Infrastructure.Persistence
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
             modelBuilder.Entity<User>().ToTable("users");
-            modelBuilder.Entity<IdentityRole>().ToTable("roles");
+            modelBuilder.Entity<Role>().ToTable("roles");
             modelBuilder.Entity<IdentityUserRole<string>>(b => b.ToTable("user_roles"));
             modelBuilder.Entity<IdentityUserClaim<string>>(b => b.ToTable("user_claims"));
             modelBuilder.Entity<IdentityUserLogin<string>>(b => b.ToTable("user_logins"));
