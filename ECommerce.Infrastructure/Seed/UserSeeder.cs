@@ -8,15 +8,12 @@ namespace ECommerce.Infrastructure.Persistence.Seed
     {
         private readonly IUserRepository _userRepository;
 
-        public UserSeeder(IUserRepository userRepository, RoleManager<IdentityRole> roleManager)
+        public UserSeeder(IUserRepository userRepository, RoleManager<Role> roleManager)
         {
             _userRepository = userRepository;
         }
 
-        public async Task SeedAsync(
-            UserManager<User> userManager,
-            RoleManager<IdentityRole> roleManager
-        )
+        public async Task SeedAsync(UserManager<User> userManager, RoleManager<Role> roleManager)
         {
             var adminUser = await userManager.FindByEmailAsync("admin@example.com");
 
