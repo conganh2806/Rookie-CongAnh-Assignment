@@ -9,6 +9,7 @@ using ECommerce.JsonNamingPolicy;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCustomIdentity(builder.Configuration);
+builder.Services.AddCustomPasswordHasher();
 builder.Services.AddJWTAuthentication(builder.Configuration);
 builder.Services.AddCustomAuthorization(builder.Configuration);
 
@@ -55,6 +56,21 @@ if (args.Length > 0)
     return;
 }
 
+builder.Services.AddCors(option =>
+{
+    option.AddPolicy(
+        "AdminPage",
+        policy =>
+        {
+            policy
+                .WithOrigins("http://localhost:3000")
+                .WithHeaders("Authorization", "Content-Type")
+                .AllowAnyMethod()
+                .AllowCredentials();
+        }
+    );
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -70,6 +86,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("AdminPage");
 
 using (var scope = app.Services.CreateScope())
 {
