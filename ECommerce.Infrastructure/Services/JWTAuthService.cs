@@ -1,11 +1,13 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using ECommerce.Application.Common.Utilities.Exceptions;
 using ECommerce.Application.DTOs;
 using ECommerce.Application.Interfaces;
 using ECommerce.Application.Settings;
 using ECommerce.Domain.Entities.ApplicationUser;
 using ECommerce.Domain.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -16,11 +18,20 @@ public class JWTAuthService : IJWTAuthService
 {
     private readonly IUserRepository _userRepository;
     private readonly JwtSettings _jwtSettings;
+    private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly UserManager<User> _userManager;
 
-    public JWTAuthService(IUserRepository userRepository, IOptions<JwtSettings> jwtOptions)
+    public JWTAuthService(
+        IUserRepository userRepository,
+        IOptions<JwtSettings> jwtOptions,
+        IPasswordHasher<User> passwordHasher,
+        UserManager<User> userManager
+    )
     {
         _userRepository = userRepository;
         _jwtSettings = jwtOptions.Value;
+        _passwordHasher = passwordHasher;
+        _userManager = userManager;
     }
 
     public async Task<bool?> RegisterAsync(RegisterRequest request)
@@ -32,17 +43,20 @@ public class JWTAuthService : IJWTAuthService
 
         var user = new User
         {
+            UserName = request.Email,
             Email = request.Email,
-            PasswordHash = HashPassword(request.Password),
             FirstName = request.FirstName,
             LastName = request.LastName,
             RefreshToken = Guid.NewGuid().ToString(),
             RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7),
         };
 
-        _userRepository.Add(user);
+        user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
 
+        _userRepository.Add(user);
         await _userRepository.UnitOfWork.SaveChangesAsync();
+
+        await _userManager.AddToRoleAsync(user, "User");
 
         return true;
     }
@@ -53,15 +67,36 @@ public class JWTAuthService : IJWTAuthService
             .Entity.Where(u => u.Email == request.Email)
             .FirstOrDefaultAsync();
 
-        if (user == null || !PasswordMatches(request.Password, user.PasswordHash!))
+        if (user is null)
+            return null;
+
+        if (string.IsNullOrEmpty(user.PasswordHash))
+            return null;
+
+        var verifyHashedPasswordResult = _passwordHasher.VerifyHashedPassword(
+            user,
+            user.PasswordHash,
+            request.Password
+        );
+
+        if (verifyHashedPasswordResult == PasswordVerificationResult.Failed)
         {
             return null;
         }
 
-        var response = GenerateToken(user);
+        if (verifyHashedPasswordResult == PasswordVerificationResult.SuccessRehashNeeded)
+        {
+            user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
+            _userRepository.Update(user);
+            await _userRepository.UnitOfWork.SaveChangesAsync();
+        }
+
+        var response = await GenerateTokenAsync(user);
 
         user.RefreshToken = response.RefreshToken;
-        user.RefreshTokenExpiryTime = response.Expiration.AddDays(7);
+        user.RefreshTokenExpiryTime = response.Expiration.AddDays(
+            _jwtSettings.RefreshTokenExpiryTime
+        );
 
         _userRepository.Update(user);
 
@@ -76,55 +111,43 @@ public class JWTAuthService : IJWTAuthService
             u.RefreshToken == request.Token
         );
 
-        if (user == null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
+        if (user is null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
         {
             return null;
         }
 
-        var accessToken = GenerateToken(user);
+        var response = await GenerateTokenAsync(user);
 
-        var newRefreshToken = Guid.NewGuid().ToString();
-        var newRefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-        user.RefreshToken = newRefreshToken;
-        user.RefreshTokenExpiryTime = newRefreshTokenExpiryTime;
+        user.RefreshToken = response.RefreshToken;
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpiryTime);
 
         await _userRepository.UnitOfWork.SaveChangesAsync();
 
-        return new JWTLoginAuthResponse
+        return response;
+    }
+
+    private async Task<JWTLoginAuthResponse> GenerateTokenAsync(User user)
+    {
+        var roles = await _userManager.GetRolesAsync(user);
+
+        var claims = new List<Claim>
         {
-            Token = accessToken.Token,
-            RefreshToken = newRefreshToken,
-            Expiration = newRefreshTokenExpiryTime,
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Email, user.Id.ToString()),
+            new Claim(ClaimTypes.GivenName, user.LastName ?? string.Empty),
+            new Claim(ClaimTypes.Surname, user.FirstName ?? string.Empty),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
-    }
 
-    private bool PasswordMatches(string password, string hashedPassword)
-    {
-        return BCrypt.Net.BCrypt.Verify(password, hashedPassword);
-    }
-
-    private string HashPassword(string password)
-    {
-        return BCrypt.Net.BCrypt.HashPassword(password);
-    }
-
-    private JWTLoginAuthResponse GenerateToken(User user)
-    {
-        string role = "Admin";
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
 
         var key = Encoding.UTF8.GetBytes(_jwtSettings.Secret);
-        var tokenHandler = new JwtSecurityTokenHandler();
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(
-                new[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                    new Claim(ClaimTypes.GivenName, user.LastName ?? string.Empty),
-                    new Claim(ClaimTypes.Surname, user.FirstName ?? string.Empty),
-                    new Claim(ClaimTypes.Role, role),
-                }
-            ),
+            Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddHours(_jwtSettings.ExpirationHours),
             Issuer = _jwtSettings.Issuer,
             Audience = _jwtSettings.Audience,
@@ -134,6 +157,7 @@ public class JWTAuthService : IJWTAuthService
             ),
         };
 
+        var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return new JWTLoginAuthResponse
         {

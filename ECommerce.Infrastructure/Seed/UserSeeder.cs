@@ -28,7 +28,7 @@ namespace ECommerce.Infrastructure.Persistence.Seed
                     EmailConfirmed = true,
                 };
 
-                var result = await userManager.CreateAsync(adminUser);
+                var result = await userManager.CreateAsync(adminUser, "Password@123");
 
                 if (result.Succeeded)
                 {

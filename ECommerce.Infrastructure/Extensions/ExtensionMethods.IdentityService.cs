@@ -1,5 +1,6 @@
 using ECommerce.Domain.Entities.ApplicationUser;
 using ECommerce.Infrastructure.Persistence;
+using ECommerce.Infrastructure.Services.PasswordHasher;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +18,13 @@ namespace ECommerce.Infrastructure.Extensions
                 .AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            return services;
+        }
+
+        public static IServiceCollection AddCustomPasswordHasher(this IServiceCollection services)
+        {
+            services.AddScoped<IPasswordHasher<User>, BCryptPasswordHasher>();
 
             return services;
         }

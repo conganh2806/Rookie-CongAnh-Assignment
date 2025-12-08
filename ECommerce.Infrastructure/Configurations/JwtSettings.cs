@@ -6,4 +6,5 @@ public class JwtSettings
     public string Audience { get; set; } = default!;
     public string Secret { get; set; } = default!;
     public int ExpirationHours { get; set; } = 1;
+    public int RefreshTokenExpiryTime { get; set; } = 7; //Days
 }
