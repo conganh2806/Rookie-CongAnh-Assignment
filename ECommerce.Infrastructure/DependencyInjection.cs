@@ -1,8 +1,6 @@
 using ECommerce.Application.Domain.Interfaces;
 using ECommerce.Application.DTOs.Common;
 using ECommerce.Application.Interfaces;
-using ECommerce.Application.Services.Authentication;
-using ECommerce.Application.Settings;
 using ECommerce.Domain.Interfaces;
 using ECommerce.ECommerce.Application.DTOs.Common;
 using ECommerce.Infrastructure.Persistence;
@@ -88,17 +86,6 @@ namespace ECommerce.Infrastructure
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMediaFileRepository, MediaFileRepository>();
-
-            return services;
-        }
-
-        public static IServiceCollection AddAPIService(
-            this IServiceCollection services,
-            IConfiguration configuration
-        )
-        {
-            services.AddScoped<IJWTAuthService, JWTAuthService>();
-            services.Configure<JwtSettings>(configuration.GetSection("Jwt"));
 
             return services;
         }

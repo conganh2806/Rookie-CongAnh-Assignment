@@ -3,6 +3,7 @@ using AutoMapper;
 using ECommerce.Application.Common.Utilities;
 using ECommerce.Application.Common.Utilities.Exceptions;
 using ECommerce.Application.DTOs;
+using ECommerce.Application.DTOs.Request;
 using ECommerce.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -47,6 +48,20 @@ namespace ECommerce.API.Controllers
             if (result == null)
             {
                 throw new UnAuthorizedException("Refresh token not valid or expired!");
+            }
+
+            return Success(result);
+        }
+
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<IActionResult> GetMe()
+        {
+            var result = await _jwtService.GetMeAsync();
+
+            if (result is null)
+            {
+                throw new NotFoundException("User could not be found");
             }
 
             return Success(result);

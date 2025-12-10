@@ -1,4 +1,5 @@
 using System.CommandLine;
+using ECommerce.API;
 using ECommerce.API.Middleware;
 using ECommerce.Application;
 using ECommerce.Application.Interfaces;
@@ -82,12 +83,11 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseHttpsRedirection();
 
+app.UseCors("AdminPage");
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseCors("AdminPage");
 
 using (var scope = app.Services.CreateScope())
 {

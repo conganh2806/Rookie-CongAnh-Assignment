@@ -1,8 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using ECommerce.Application.Common.Utilities.Exceptions;
+using AutoMapper;
 using ECommerce.Application.DTOs;
+using ECommerce.Application.DTOs.Request;
+using ECommerce.Application.Entities.ApplicationUser;
 using ECommerce.Application.Interfaces;
 using ECommerce.Application.Settings;
 using ECommerce.Domain.Entities.ApplicationUser;
@@ -20,18 +22,24 @@ public class JWTAuthService : IJWTAuthService
     private readonly JwtSettings _jwtSettings;
     private readonly IPasswordHasher<User> _passwordHasher;
     private readonly UserManager<User> _userManager;
+    private readonly IMapper _mapper;
+    private readonly ICurrentUser _currentUser;
 
     public JWTAuthService(
         IUserRepository userRepository,
         IOptions<JwtSettings> jwtOptions,
         IPasswordHasher<User> passwordHasher,
-        UserManager<User> userManager
+        UserManager<User> userManager,
+        IMapper mapper,
+        ICurrentUser currentUser
     )
     {
         _userRepository = userRepository;
         _jwtSettings = jwtOptions.Value;
         _passwordHasher = passwordHasher;
         _userManager = userManager;
+        _mapper = mapper;
+        _currentUser = currentUser;
     }
 
     public async Task<bool?> RegisterAsync(RegisterRequest request)
@@ -133,9 +141,9 @@ public class JWTAuthService : IJWTAuthService
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Id.ToString()),
-            new Claim(ClaimTypes.GivenName, user.LastName ?? string.Empty),
-            new Claim(ClaimTypes.Surname, user.FirstName ?? string.Empty),
+            new Claim(ClaimTypes.Email, user.Email!),
+            new Claim(ClaimTypes.GivenName, user.FirstName ?? string.Empty),
+            new Claim(ClaimTypes.Surname, user.LastName ?? string.Empty),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
 
@@ -165,5 +173,19 @@ public class JWTAuthService : IJWTAuthService
             RefreshToken = Guid.NewGuid().ToString(),
             Expiration = tokenDescriptor.Expires!.Value,
         };
+    }
+
+    public async Task<GetMeResponse?> GetMeAsync()
+    {
+        var user = await _userManager.FindByIdAsync(_currentUser.UserId);
+        if (user is null)
+            return null;
+
+        var roles = await _userManager.GetRolesAsync(user);
+
+        var getMeResponse = _mapper.Map<GetMeResponse>(user);
+        getMeResponse.Roles = roles.ToList();
+
+        return getMeResponse;
     }
 }

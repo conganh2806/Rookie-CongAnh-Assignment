@@ -1,5 +1,7 @@
 using ECommerce.Application.DTOs;
+using ECommerce.Application.DTOs.Request;
 using ECommerce.Application.DTOs.Response;
+using ECommerce.Application.Entities.ApplicationUser;
 using ECommerce.Application.Interfaces;
 using ECommerce.Domain.Entities.ApplicationUser;
 using Microsoft.AspNetCore.Http;
@@ -79,6 +81,11 @@ namespace ECommerce.Infrastructure.Services
         {
             var user = _contextAccessor.HttpContext?.User;
             return Task.FromResult(user?.Identity?.IsAuthenticated ?? false);
+        }
+
+        public Task<GetMeResponse?> GetMeAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

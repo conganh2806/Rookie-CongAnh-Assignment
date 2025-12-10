@@ -18,7 +18,7 @@ namespace ECommerce.Infrastructure.Services.PasswordHasher
         {
             if (BCrypt.Net.BCrypt.Verify(providedPassword, hashedPassword))
             {
-                if (BCrypt.Net.BCrypt.PasswordNeedsRehash(hashedPassword, newMinimumWorkLoad: 12))
+                if (BCrypt.Net.BCrypt.PasswordNeedsRehash(hashedPassword, 10))
                 {
                     return PasswordVerificationResult.SuccessRehashNeeded;
                 }

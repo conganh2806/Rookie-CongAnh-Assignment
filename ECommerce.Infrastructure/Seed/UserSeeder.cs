@@ -32,7 +32,7 @@ namespace ECommerce.Infrastructure.Persistence.Seed
 
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(adminUser, "User");
+                    await userManager.AddToRoleAsync(adminUser, "Admin");
                 }
             }
 
